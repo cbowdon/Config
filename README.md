@@ -2,10 +2,13 @@
 
 If it's important, version it!
 
+## Usage
+Clone this repo and run install_configs.sh, which will backup existing files and replace them with a sym link.
+
 ## Bash
 - .bashrc - Arch
-- .bash profile - OSX
-TODO merge these 2 so I can checkout directly into ~
+- .bash_profile - OSX
+TODO merge these two so I can install all-in-one
 
 # Powershell
 - profile.ps1
