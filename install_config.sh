@@ -5,5 +5,6 @@ function link {
 
 link .screenrc
 link .vimrc
-link .bashrc
 link .emacs
+# TODO merge with .bash_profile
+#link .bashrc
