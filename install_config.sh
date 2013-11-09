@@ -3,8 +3,12 @@ function link {
     ls -al ~ | grep $1
 }
 
+# TODO for file in $(ls -la | grep ????)
+
 link .screenrc
 link .vimrc
 link .emacs
-# TODO merge with .bash_profile
+link .vim/plugin/slime.vim
+
+# TODO Merge with .bash_profile / make system for PATH per system
 #link .bashrc

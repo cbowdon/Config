@@ -51,3 +51,8 @@ function opencv11 () {
 }
 
 alias clojure='java -cp .m2/repository/org/clojure/clojure/1.5.1/clojure-1.5.1.jar clojure.main'
+
+# Colorful git!
+git config --global color.diff auto
+git config --global color.status auto
+git config --global color.branch auto
