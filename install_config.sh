@@ -1,5 +1,5 @@
 function link {
-    ln -sfb $(pwd)/$1 ~/$1
+    ln -sf $(pwd)/$1 ~/$1
     ls -al ~/$1
 }
 

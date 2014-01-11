@@ -3,7 +3,11 @@ set backupdir=~/.vim/backups
 "Hide swaps
 set directory=~/.vim/backups
 
-colorscheme default "set colorscheme (evening, peachpuff also good)
+colorscheme default
+"if has ('gui')
+"    colorscheme slate
+"endif
+
 set guioptions-=T "remove toolbar
 set number "show linenumber
 "set numberwidth=4
@@ -56,6 +60,11 @@ autocmd FileType css set textwidth=80
 autocmd FileType js set tabstop=4
 autocmd FileType js set shiftwidth=4
 autocmd FileType js set textwidth=80
+
+let g:syntastic_javascript_checker = "jshint"
+
+"Clojure
+autocmd FileType clj set expandtabs
 
 "Markdown
 au BufRead,BufNewFile *.md set filetype=markdown

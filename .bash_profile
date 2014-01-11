@@ -21,8 +21,15 @@ export PATH=/Users/chris/Library/Haskell/bin:$PATH
 #Add /usr/local/bin to PATH
 export PATH=/usr/local/bin:$PATH
 
+# Java
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home/
 # Clojure
 export PATH=/Users/chris/Library/Clojure/bin:$PATH
+
+# Maven
+export M2_HOME=/usr/local/apache-maven/apache-maven-3.1.1
+export M2=$M2_HOME/bin
+export PATH=$M2:$PATH
 
 # let's have a nicer prompt:
 PS1='\[\e[0;32m\]\h: \W\[\e[0m\] '
