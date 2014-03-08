@@ -61,7 +61,8 @@ autocmd FileType js set tabstop=4
 autocmd FileType js set shiftwidth=4
 autocmd FileType js set textwidth=80
 
-let g:syntastic_javascript_checker = "jshint"
+"Mozilla pdf.js
+"let g:syntastic_javascript_checker = "jslint"
 
 "Clojure
 autocmd FileType clj set expandtabs
