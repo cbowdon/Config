@@ -70,6 +70,9 @@ autocmd FileType clj set expandtabs
 "Markdown
 au BufRead,BufNewFile *.md set filetype=markdown
 
+"TypeScript
+"au BufRead,BufNewFile *.ts set filetype=typescript
+
 "Autocompletion
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
@@ -117,5 +120,9 @@ au BufWinEnter ?* silent loadview
 au FileType haskell nnoremap <buffer> <F1> :HdevtoolsType<CR>
 au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
 au FileType haskell nnoremap <buffer> <silent> <F3> :HdevtoolsInfo<CR>
+
+" CtrlP plugin
+" http://kien.github.io/ctrlp.vim/#installation
+set runtimepath^=~/.vim/bundle/ctrlp.vim
 
 execute pathogen#infect()
