@@ -125,4 +125,13 @@ au FileType haskell nnoremap <buffer> <silent> <F3> :HdevtoolsInfo<CR>
 " http://kien.github.io/ctrlp.vim/#installation
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 
+" OmniSharp
+" https://github.com/nosami/Omnisharp
+set noshowmatch
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+set completeopt=longest,menuone,preview
+set splitbelow
+autocmd FileType cs nnoremap <F5> :wa!<cr>:OmniSharpBuildAsync<cr>
+set hidden
+
 execute pathogen#infect()
