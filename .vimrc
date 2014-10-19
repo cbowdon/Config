@@ -61,14 +61,25 @@ autocmd FileType js set tabstop=4
 autocmd FileType js set shiftwidth=4
 autocmd FileType js set textwidth=80
 
-"Mozilla pdf.js
+"TypeScript
+autocmd FileType ts set tabstop=4
+autocmd FileType ts set shiftwidth=4
+autocmd FileType ts set textwidth=80
+
+"Syntastic
 "let g:syntastic_javascript_checker = "jslint"
+"let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': [], 'passive_filetypes': ['typescript'] }
+nnoremap `` :SyntasticCheck<CR>
+
 
 "Clojure
 autocmd FileType clj set expandtabs
 
 "Markdown
 au BufRead,BufNewFile *.md set filetype=markdown
+
+"Handlebars
+au BufRead,BufNewFile *.hbs set filetype=html syntax=html
 
 "TypeScript
 "au BufRead,BufNewFile *.ts set filetype=typescript
@@ -85,41 +96,44 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 nnoremap <CR> :noh<CR><CR>
 
 "Trim trailing whitespace
-nnoremap :trim :%s/\s\+$//g
+nnoremap :trim :%s/\s\+$//g<CR>
 autocmd BufWritePre * :%s/\s\+$//e
 
 "Prevent MiddleMouse
-:nnoremap <MiddleMouse> <Nop>
-:inoremap <MiddleMouse> <Nop>
-:nnoremap <2-MiddleMouse> <Nop>
-:inoremap <2-MiddleMouse> <Nop>
-:nnoremap <3-MiddleMouse> <Nop>
-:inoremap <3-MiddleMouse> <Nop>
+nnoremap <MiddleMouse> <Nop>
+inoremap <MiddleMouse> <Nop>
+nnoremap <2-MiddleMouse> <Nop>
+inoremap <2-MiddleMouse> <Nop>
+nnoremap <3-MiddleMouse> <Nop>
+inoremap <3-MiddleMouse> <Nop>
 
 "Map C++-style commenting
-:map :\\ :s/\/\///g <CR> :noh <CR>
-:map :// :s/^\(.\+\)/\/\/\1/g <CR> :noh <CR>
+nnoremap :\\ :s/\/\///g <CR> :noh <CR>
+nnoremap :// :s/^\(.\+\)/\/\/\1/g <CR> :noh <CR>
 
 "Comment colors
 "hi Comment ctermfg=white ctermbg=red
 "hi Visual ctermfg=brown ctermbg=black
+
+" Fucking folds
+set foldmethod=manual
 
 "Make/load views
 au BufWinLeave ?* mkview
 au BufWinEnter ?* silent loadview
 
 "Emacs-style command line movement
-:cnoremap <C-a> <Home>
-:cnoremap <C-b> <Left>
-:cnoremap <C-f> <Right>
-:cnoremap <C-d> <Delete>
-:cnoremap <C-e> <End>
+cnoremap <C-a> <Home>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
+cnoremap <C-d> <Delete>
+cnoremap <C-e> <End>
 
 "Haskell hdevtools mappings
 "get plugin from https://github.com/bitc/vim-hdevtools.git
-au FileType haskell nnoremap <buffer> <F1> :HdevtoolsType<CR>
-au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
-au FileType haskell nnoremap <buffer> <silent> <F3> :HdevtoolsInfo<CR>
+"au FileType haskell nnoremap <buffer> <F1> :HdevtoolsType<CR>
+"au FileType haskell nnoremap <buffer> <silent> <F2> :HdevtoolsClear<CR>
+"au FileType haskell nnoremap <buffer> <silent> <F3> :HdevtoolsInfo<CR>
 
 " CtrlP plugin
 " http://kien.github.io/ctrlp.vim/#installation
