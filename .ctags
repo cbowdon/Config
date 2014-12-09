@@ -1,10 +1,17 @@
+--recurse=yes
+--tag-relative=yes
+--exclude=.git
+--exclude=*bower_components/*
+--exclude=*node_modules/*
+
 --langdef=typescript
 --langmap=typescript:.ts
---regex-typescript=/^[ \t]*(export)?[ \t]*class[ \t]+([a-zA-Z0-9_]+)/\2/c,classes/
---regex-typescript=/^[ \t]*(export)?[ \t]*module[ \t]+([a-zA-Z0-9_]+)/\2/n,modules/
---regex-typescript=/^[ \t]*(export)?[ \t]*function[ \t]+([a-zA-Z0-9_]+)/\2/f,functions/
---regex-typescript=/^[ \t]*export[ \t]+var[ \t]+([a-zA-Z0-9_]+)/\1/v,variables/
---regex-typescript=/^[ \t]*var[ \t]+([a-zA-Z0-9_]+)[ \t]*=[ \t]*function[ \t]*\(\)/\1/v,varlambdas/
---regex-typescript=/^[ \t]*(export)?[ \t]*(public|private)[ \t]+([a-zA-Z0-9_]+)/\3/m,members/
---regex-typescript=/^[ \t]*(export)?[ \t]*interface[ \t]+([a-zA-Z0-9_]+)/\2/i,interfaces/
---regex-typescript=/^[ \t]*(export)?[ \t]*enum[ \t]+([a-zA-Z0-9_]+)/\2/e,enums/
+--langmap=typescript:.d.ts
+--regex-typescript=/^ *(export )? *var +([a-zA-Z0-9_]+)/\2/v,variables/
+--regex-typescript=/^ *(export )? *function +([a-zA-Z0-9_]+)/\2/f,functions/
+--regex-typescript=/^ *(export )? *module +([a-zA-Z0-9_]+)/\2/n,modules/
+--regex-typescript=/^ *(export )? *interface \t]+([a-zA-Z0-9_]+)/\2/i,interfaces/
+--regex-typescript=/^ *(export )? *class +([a-zA-Z0-9_]+)/\2/c,classes/
+--regex-typescript=/(public |private ) *([a-zA-Z0-9_]+)/\2/p,membervars/
+--regex-typescript=/^ *(public |private ) *([a-zA-Z0-9_]+)/\2/m,methods/
+--regex-typescript=/^ *(export)? *enum +([a-zA-Z0-9_]+)/\2/e,enums/

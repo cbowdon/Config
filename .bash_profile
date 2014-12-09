@@ -25,6 +25,9 @@ export PATH=/usr/local/bin:$PATH
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home/
 # Clojure
 export PATH=/Users/chris/Library/Clojure/bin:$PATH
+alias clojure='java -cp .m2/repository/org/clojure/clojure/1.5.1/clojure-1.5.1.jar clojure.main'
+
+export TS_LIB=/usr/local/lib/node_modules/typescript/bin/lib.d.ts
 
 # Maven
 export M2_HOME=/usr/local/apache-maven/apache-maven-3.1.1
@@ -56,8 +59,6 @@ function opencv11 () {
 	c++ -std=c++11 -stdlib=libc++ $1.cpp -o $1 -bind_at_load `pkg-config --cflags opencv` `pkg-config --libs opencv`
 	echo "Done"
 }
-
-alias clojure='java -cp .m2/repository/org/clojure/clojure/1.5.1/clojure-1.5.1.jar clojure.main'
 
 # Colorful git!
 git config --global color.diff auto
