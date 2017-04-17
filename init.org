@@ -1,0 +1,891 @@
+* Package repositories
+Get packages from ELPA, MELPA +and org+.
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                           ("melpa" . "https://melpa.org/packages/")))
+  (package-initialize)
+#+END_SRC
+
+GPG is not necessarily installed on Windows.
+#+BEGIN_SRC emacs-lisp
+  (when (eq system-type 'nt)
+    (setq package-check-signature nil))
+#+END_SRC
+
+From here-on out =use-package= loads packages. We almost always want to =:ensure= and =:defer= package loads.
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (require 'use-package)
+
+  (setq use-package-always-ensure t
+        use-package-always-defer t)
+#+END_SRC
+
+* Init file
+It's convenient to be able to get at this quickly.
+#+BEGIN_SRC emacs-lisp
+  (defun init-file ()
+    (interactive)
+    (cond ((eq system-type 'windows-nt) "C:/Cygwin64/home/chris.bowdon/init.org")
+          (t "~/init.org")))
+
+  (defun find-init-file ()
+    (interactive)
+    (find-file (init-file)))
+#+END_SRC
+
+I prefer not to clutter =.emacs= with customizations, so create an =init-custom.el=.
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file "~/init-custom.el")
+  (load-file custom-file)
+#+END_SRC
+
+* Proxy
+Provide functions to set all the necessary proxy variables for =$day_job=, assuming that =proxy-host= and =proxy-port= are set in =custom-file=.
+#+BEGIN_SRC emacs-lisp
+  (defun proxy-make-url (host port &optional username password)
+    (concat
+     (when (or username password)
+       (format "%s:%s@"
+               (if (not username) "" username)
+               (if (not password) "" password)))
+     (format "%s:%s" host port)))
+
+  (defun proxy-set (http-proxy)
+    "Set proxy variables that Emacs uses from the provided HTTP-PROXY string."
+    (setenv "HTTP_PROXY" (format "https://%s" http-proxy))
+    (setq url-proxy-services (list (cons "http" http-proxy)
+                                   (cons "https" http-proxy))))
+
+  (defun proxy-set-with-user ()
+    "Set proxy using current user login name and asking for password."
+    (interactive)
+    (proxy-set (proxy-make-url proxy-host
+                               proxy-port
+                               (user-login-name)
+                               (read-passwd "Password: "))))
+#+END_SRC
+
+* Evil
+** Packages
+Join the dark side.
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+    :demand
+    :config (evil-mode 1))
+  (require 'evil)
+
+  (use-package evil-leader
+    :demand
+    :config (progn
+              (setq evil-leader/in-all-states t)
+              (global-evil-leader-mode)))
+
+  (require 'evil-leader)
+
+  (evil-leader/set-leader ",")
+  (evil-leader/set-key
+    "/" 'comment-region
+    "\\\\" 'uncomment-region
+    "." 'find-init-file
+    "b" 'buffer-menu
+    "d" 'dired
+    "p" 'proced
+    "w" 'toggle-truncate-lines
+    "u" 'upcase-word
+    "x" 'delete-trailing-whitespace)
+
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+When defining a ton of shortcuts, it's nice to have a guide.
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key :demand)
+  (which-key-mode)
+#+END_SRC
+
+I prefer not to clobber the default bindings with evil bindings in some modes.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'evil-emacs-state-modes 'dired-mode)
+  (add-to-list 'evil-emacs-state-modes 'proced-mode)
+  (add-to-list 'evil-emacs-state-modes 'eshell-mode)
+  (add-to-list 'evil-emacs-state-modes 'term-mode)
+  (add-to-list 'evil-emacs-state-modes 'diff-mode)
+  (add-to-list 'evil-emacs-state-modes 'vc-mode)
+#+END_SRC
+
+** Keyboard mapping
+Set CAPSLOCK as another ESC. In GNOME 3 and MacOS use the system settings GUI. In X, use the function below. In Windows... screw around with the registry?
+#+BEGIN_SRC emacs-lisp
+  (defun set-x-caps-escape ()
+    "Set CAPSLOCK to be another ESC key in X."
+    (interactive)
+    (shell-command "setxkbmap -option caps:escape"))
+#+END_SRC
+For future reference, find =rules/base.lst= in the =xkb= directory to learn all the options. (See the [[elisp:(man "setxkbmap")][man page]].)
+
+On some laptop keyboards (e.g. MBP) CTRL has been squashed into an unergonomic position by the FN key. =god-mode= and =evil-god-state= saves us from this RSI.
+#+BEGIN_SRC emacs-lisp
+  (use-package god-mode :demand)
+  (use-package evil-god-state :demand)
+  ;; Not sure if prefer ";" or ",," as shortcut here
+  (define-key evil-normal-state-map (kbd ";") 'evil-execute-in-god-state)
+  (define-key evil-visual-state-map (kbd ";") 'evil-execute-in-god-state)
+  (define-key global-map (kbd "C-<escape>") 'evil-normal-state)
+  (define-key global-map (kbd "M-<escape>") 'god-mode)
+  (define-key global-map (kbd "C-M-<escape>") 'god-local-mode)
+  (evil-leader/set-key "," 'evil-execute-in-god-state)
+#+END_SRC
+
+I've bound =C-<escape>= in particular because in =term-mode= it's possible to get stuck in =evil-god-state= if you hit some combinations.
+
+[[https://github.com/chrisdone/god-mode][Basic =god-mode= usage:]]
+- =abc= → =C-a C-b C-c=
+- =ab c= → =C-a C-b c=
+- =gf= → =M-f=
+- =Gf= → =C-M-f=
+- =12f= → =M-12 C-f=
+- =gf..= → =M-f M-f M-f=
+- =uco= → =C-u C-c C-o=
+
+** Shell shortcuts
+#+BEGIN_SRC emacs-lisp
+  (evil-leader/set-key
+    "se" 'eshell
+    "st" 'term
+    "sc" 'shell-command
+    "sr" 'shell-command-on-region)
+#+END_SRC
+
+** Mode shortcuts
+Sometimes the right mode isn't picked up by buffer name/shebang.
+#+BEGIN_SRC emacs-lisp
+  (evil-leader/set-key
+    "mc" 'column-number-mode
+    "md" 'markdown-mode
+    "mh" 'html-mode
+    "mj" 'javascript-mode
+    "ml" 'linum-mode
+    "mo" 'org-mode
+    "ms" 'shell-mode
+    "mx" 'nxml-mode)
+#+END_SRC
+
+* Programming
+** General
+Company mode is my preferred auto-completion package because it seems to be best supported by the languages I use.
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :demand
+    :config (add-hook 'prog-mode-hook #'(lambda () (company-mode))))
+#+END_SRC
+
+By default every text editor should display line and column number, and not wrap text.
+#+BEGIN_SRC emacs-lisp
+  (setq-default truncate-lines t)
+  (add-hook 'prog-mode-hook 'column-number-mode)
+  (add-hook 'prog-mode-hook 'linum-mode)
+  ;; linum still helpful in structured docs like org
+  (add-hook 'org-mode-hook 'linum-mode)
+#+END_SRC
+
+Electric indent interferes with lots of modes' own indenting, so disable it.
+#+BEGIN_SRC emacs-lisp
+  (setq electric-indent-inhibit t)
+#+END_SRC
+
+** Emacs Lisp
+Nobody likes dynamic binding by default.
+#+BEGIN_SRC emacs-lisp :padline no
+  (setq lexical-binding t)
+#+END_SRC
+
+It's often handy to know if we're using *nix.
+#+BEGIN_SRC emacs-lisp
+  (defun is-nix ()
+    (or (equal system-type 'gnu)
+        (equal system-type 'gnu/linux)
+        (equal system-type 'gnu/kfreebsd)
+        (equal system-type 'darwin)))
+#+END_SRC
+
+A handy timer macro.
+#+BEGIN_SRC emacs-lisp
+  (defmacro time-sexp (body)
+    "Run the BODY s-expression(s) and print the time between start and finish."
+    `(let ((t0 (float-time))
+           (result (progn ,body))
+           (t1 (float-time)))
+       (with-current-buffer (pop-to-buffer "*time-sexp*" nil t)
+         (goto-char (point-max))
+         (insert
+          (format "time-sexp: %s\n" (quote ,body))
+          (format "--> %fs\n" (- t1 t0))))
+       result))
+#+END_SRC
+
+*** Seq, subr-x and threading macros
+Emacs 25 brought some mod cons to the language that are worth shimming in older Emacsen.
+#+BEGIN_SRC emacs-lisp
+  (defun emacs-version-less-than (major-number)
+    (and
+     (string-match "\\([0-9]+\\)\\.[0-9]+.*" emacs-version)
+     (> major-number (string-to-number (match-string 1 emacs-version)))))
+
+  (when (emacs-version-less-than 25)
+
+    (use-package seq )
+
+    (defmacro internal--thread-argument (first? &rest forms)
+      "Internal implementation for `thread-first' and `thread-last'.
+  When Argument FIRST? is non-nil argument is threaded first, else
+  last.  FORMS are the expressions to be threaded."
+      (pcase forms
+        (`(,x (,f . ,args) . ,rest)
+         `(internal--thread-argument
+           ,first? ,(if first? `(,f ,x ,@args) `(,f ,@args ,x)) ,@rest))
+        (`(,x ,f . ,rest) `(internal--thread-argument ,first? (,f ,x) ,@rest))
+        (_ (car forms))))
+
+    (defmacro thread-first (&rest forms)
+      "Thread FORMS elements as the first argument of their succesor.
+  Example:
+      (thread-first
+        5
+        (+ 20)
+        (/ 25)
+        -
+        (+ 40))
+  Is equivalent to:
+      (+ (- (/ (+ 5 20) 25)) 40)
+  Note how the single `-' got converted into a list before
+  threading."
+      (declare (indent 1)
+               (debug (form &rest [&or symbolp (sexp &rest form)])))
+      `(internal--thread-argument t ,@forms))
+
+    (defmacro thread-last (&rest forms)
+      "Thread FORMS elements as the last argument of their succesor.
+  Example:
+      (thread-last
+        5
+        (+ 20)
+        (/ 25)
+        -
+        (+ 40))
+  Is equivalent to:
+      (+ 40 (- (/ 25 (+ 20 5))))
+  Note how the single `-' got converted into a list before
+  threading."
+      (declare (indent 1) (debug thread-first))
+      `(internal--thread-argument nil ,@forms)))
+#+END_SRC
+
+Make ad-hoc lisping more comfortable by automatically requiring packages.
+#+BEGIN_SRC emacs-lisp
+(require 'seq)
+(require 'subr-x)
+
+(add-hook 'emacs-lisp-mode-hook #'(lambda () (prettify-symbols-mode)))
+#+END_SRC
+
+*** REST
+It's nice to wrap the built-in =url= functions into a higher-level API.
+#+BEGIN_SRC emacs-lisp
+  (require 'cl-lib)
+
+  (defvar rest--default-headers '("DNT" . "1")
+    "The default headers include a DNT.")
+
+  (defun rest-- (method url body &rest headers)
+    "Make an HTTP METHOD request to URL with BODY and optional HEADERS.
+  Shows the result in a new buffer."
+    (let ((url-request-method (upcase method))
+          (url-request-extra-headers headers)
+          (url-request-data body))
+      (message (format "%s %s" (upcase method) url))
+      (url-retrieve url
+                    (lambda (status)
+                      (when status
+                        (message (format "RESPONSE STATUS %s <-- %s" status url)))
+                      (rename-buffer "*rest response*" t)
+                      (switch-to-buffer (current-buffer))))))
+
+  (cl-defun rest (&key url (method "GET") (body nil) (headers rest--default-headers))
+    "Make an HTTP METHOD request to URL with BODY and HEADERS.
+  Defaults to a GET request with no body and default headers (see `rest--default-headers').
+  Shows the result in a new buffer."
+    (rest-- method url body headers))
+
+  (cl-defun rest-delete (url &key (headers rest--default-headers))
+    "Make an HTTP DELETE request to URL with optional HEADERS. Shows the result in a new buffer."
+    (rest-- "delete" url nil headers))
+
+  (cl-defun rest-get (url &key (headers rest--default-headers))
+    "Make an HTTP GET request to URL with optional HEADERS. Shows the result in a new buffer."
+    (rest-- "get" url nil headers))
+
+  (cl-defun rest-head (url &key (headers rest--default-headers))
+    "Make an HTTP HEAD request to URL with optional HEADERS. Shows the result in a new buffer."
+    (rest-- "head" url nil headers))
+
+  (cl-defun rest-options (url &key (headers rest--default-headers))
+    "Make an HTTP OPTIONS request to URL with optional HEADERS. Shows the result in a new buffer."
+    (rest-- "options" url nil headers))
+
+  (cl-defun rest-post (url &key (body nil) (headers rest--default-headers))
+    "Make an HTTP POST request to URL with BODY and optional HEADERS. Shows the result in a new buffer."
+    (rest-- "post" url body headers))
+
+  (cl-defun rest-put (url &key (body nil) (headers rest--default-headers))
+    "Make an HTTP PUT request to URL with BODY and optional HEADERS. Shows the result in a new buffer."
+    (rest-- "put" url body headers))
+#+END_SRC
+
+** F#
+Ensure there's a symlink to the F# bin dir!
+#+BEGIN_SRC emacs-lisp
+  (use-package fsharp-mode
+    :mode "\\.fsx?\\'"
+    :config
+    (progn
+      (when (equal system-type 'windows-nt)
+        (let ((fsDir "C:\\Program Files (x86)\\Microsoft SDKs\\F#\\3.1\\Framework\\v4.0"))
+          ;; Doesn't necessarily work - just set your path!
+          (setenv "PATH"
+                  (concat (getenv "PATH")
+                          (format ";%s" fsDir)))
+          (setq exec-path
+                (append exec-path '(fsDir)))))
+      (setq inferior-fsharp-program
+            (cond ((equal system-type 'windows-nt) "Fsi.exe")
+                  ((equal system-type 'cygwin) "/home/chris.bowdon/fs/Fsi.exe")))))
+#+END_SRC
+
+** Python
+Elpy is pretty nifty.
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck)
+
+  (use-package elpy
+    :config (progn
+              (elpy-enable)
+              (setq elpy-rpc-python-command "python3"
+                    python-shell-interpreter "python3")
+              (when (require 'flycheck nil t)
+                (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+                (add-hook 'elpy-mode-hook 'flycheck-mode))))
+#+END_SRC
+
+*** TODO check out anaconda-mode
+
+** TypeScript
+#+BEGIN_SRC emacs-lisp
+  (use-package tide)
+
+  (add-hook 'typescript-mode-hook
+            (lambda ()
+              (tide-setup)
+              (flycheck-mode +1)
+              (setq flycheck-check-syntax-automatically '(save mode-enabled))
+              (eldoc-mode +1)
+              (company-mode-on)))
+#+END_SRC
+
+** Clojure
+#+BEGIN_SRC emacs-lisp
+  (setq cider-auto-jump-to-error nil)
+#+END_SRC
+
+** Java
+#+BEGIN_SRC emacs-lisp
+  (use-package maven-test-mode)
+  (use-package meghanada)
+
+  (add-hook 'java-mode-hook 'meghanada-mode)
+#+END_SRC
+
+** Ansible
+#+BEGIN_SRC emacs-lisp
+  (use-package ansible)
+  (use-package ansible-doc)
+  (use-package company)
+  (use-package company-ansible)
+#+END_SRC
+
+** Ruby
+#+BEGIN_SRC emacs-lisp
+  (use-package inf-ruby)
+
+  (add-hook 'after-init-hook 'inf-ruby-switch-setup)
+
+  (use-package robe)
+
+  (eval-after-load 'company
+    '(push 'company-robe company-backends))
+
+  (evil-leader/set-key-for-mode 'ruby-mode
+    "r" 'robe-start
+    "j" 'robe-jump
+    "c" 'company-robe)
+#+END_SRC
+
+** Rust
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :config (add-hook 'rust-mode-hook '(lambda ()
+                                         (racer-activate)
+                                         (racer-turn-on-eldoc)
+                                         (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
+  (use-package company
+    :config (setq company-idle-delay 0.2
+                  company-minimum-prefix-length 1))
+
+  (use-package company-racer
+    :config (set (make-local-variable 'company-backends)
+                 '(company-racer)))
+
+  ;; racer reads the rust src code to suggest competions
+  ;; git clone https://github.com/rust-lang/rust.git ~/.rust
+  ;; git clone https://github.com/phildawes/racer.git ~/.racer
+  ;; cd ~/.racer
+  ;; cargo build --release
+  (use-package racer
+    
+    
+    :config (setq racer-cmd (expand-file-name "~/.racer/target/release/racer")
+                  racer-rust-src-path (expand-file-name "~/.rust/src")))
+
+  (use-package flycheck  )
+  (use-package flycheck-rust  )
+#+END_SRC
+** XML
+#+BEGIN_SRC emacs-lisp
+  (defun split-xml-lines ()
+    (interactive)
+    ;; to-do use looking-at etc. because replace-regexp is interactive
+    (replace-regexp "> *<" ">\n<"))
+
+  (require 'hideshow)
+  (require 'sgml-mode)
+  (require 'nxml-mode)
+
+  (add-to-list 'hs-special-modes-alist
+               '(nxml-mode
+                 "<!--\\|<[^/>]*[^/]>"
+                 "-->\\|</[^/>]*[^/]>"
+
+                 "<!--"
+                 sgml-skip-tag-forward
+                 nil))
+
+  (add-hook 'nxml-mode-hook 'hs-minor-mode)
+
+  (evil-leader/set-key-for-mode 'nxml-mode
+    "h" 'hs-toggle-hiding)
+#+END_SRC
+
+** PHP
+#+BEGIN_SRC emacs-lisp
+  (use-package php-mode :mode "\\.php\\'")
+
+  (add-to-list 'auto-mode-alist '("\\.ctp\\'" . 'html-mode))
+#+END_SRC
+
+** SQL
+#+BEGIN_SRC emacs-lisp
+  (evil-leader/set-key
+    "q p" 'sql-postgres
+    "q s" 'sql-sqlite)
+#+END_SRC
+
+* Org
+** Evilification
+Aside from setting leader keybindings for my most frequently used options, it's nice to disable evil indentation, which doesn't play nice.
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-org)
+
+  (evil-leader/set-key-for-mode 'org-mode
+    "i" 'org-clock-in
+    "o" 'org-clock-out
+    "r" 'org-clock-report
+    "u" 'org-update-all-dblocks
+    "a" 'org-agenda
+    "t" 'org-todo
+    "T" 'org-set-tags
+    "e" 'org-set-effort
+    "c" 'org-edit-special)
+
+  (evil-leader/set-key-for-mode 'org-mode
+    "TAB" 'org-cycle)
+
+  (add-hook 'org-mode-hook #'(lambda () (electric-indent-local-mode 0)))
+  (add-hook 'org-mode-hook #'(lambda () (setq evil-auto-indent nil)))
+#+END_SRC
+
+** Task management
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files '("~/chris.org")
+        org-enforce-todo-dependencies t
+        org-hide-emphasis-markers t
+        ;; Don't show days when summing times, just hours and minutes
+        org-time-clocksum-format (list :hours "%d"
+                                       :require-hours t
+                                       :minutes ":%02d"
+                                       :require-minutes t))
+#+END_SRC
+
+** Babel
+#+BEGIN_SRC emacs-lisp
+  (setq org-confirm-babel-evaluate #'(lambda (lang body)
+                                       (not (or (string= lang "emacs-lisp")
+                                                (string= lang "python")))))
+
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((emacs-lisp . t)
+                                 (python . t)
+                                 (ditaa . t)))
+#+END_SRC
+
+** Exporting
+Because everyone else uses GitHub-flavored markdown...
+#+BEGIN_SRC emacs-lisp
+    (use-package htmlize)
+    (use-package ox-gfm)
+#+END_SRC
+
+* Neotree
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :config (add-to-list 'evil-emacs-state-modes  'neotree-mode))
+
+  (evil-leader/set-key
+    "n" 'neotree)
+#+END_SRC
+
+* Frame
+#+BEGIN_SRC emacs-lisp
+  (defun set-frame-transparency (fg-percent bg-percent)
+    "Set the transparency of this frame to FG-PERCENT when focused and BG-PERCENT when not focused."
+    (interactive "nforeground percent:\nnbackground percent:")
+    (set-frame-parameter (selected-frame) 'alpha (list fg-percent bg-percent)))
+
+  (set-frame-transparency 93 80)
+
+  (evil-leader/set-key
+    "f" 'toggle-frame-fullscreen)
+
+  (setq frame-title-format
+        (format "Emacs %s (%s) - %s@%s"
+                emacs-version
+                (cond ((eq system-type 'cygwin) "Cygwin")
+                      ((eq system-type 'windows-nt) "Windows")
+                      (t "*nix"))
+                (user-login-name)
+                (system-name)))
+#+END_SRC
+
+* Appearance
+** Themes
+#+BEGIN_SRC emacs-lisp
+  (use-package material-theme)
+  (use-package gruvbox-theme)
+  (use-package ubuntu-theme)
+  (use-package gotham-theme)
+  (use-package django-theme)
+  (use-package color-theme-sanityinc-tomorrow)
+  (use-package creamsody-theme)
+  (use-package monokai-theme)
+  (use-package darkokai-theme)
+#+END_SRC
+
+** Widgets
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode -1)
+
+  (if (frame-parameter nil 'tty)
+        (menu-bar-mode t)
+    (progn
+      (menu-bar-mode nil)
+      (scroll-bar-mode -1)))
+
+  (setq inhibit-splash-screen t
+        ring-bell-function 'ignore)
+#+END_SRC
+
+** Dashboard
+Another good idea lovingly ripped off from Spacemacs.
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :demand
+    :config
+    (progn
+      (dashboard-setup-startup-hook)
+      (setq dashboard-banner-logo-title "[ E M A C S ]"
+            dashboard-startup-banner 'logo
+            dashboard-items '((recents  . 5)
+                              (bookmarks . 5)))))
+#+END_SRC
+
+* Temporary files
+Backups and lock files not required.
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil
+        create-lockfiles nil)
+#+END_SRC
+
+* Encoding
+UTF-8 everywhere, but don't mess with line-endings.
+#+BEGIN_SRC emacs-lisp
+  (if (eq system-type 'windows-nt)
+      (prefer-coding-system 'utf-8-dos)
+    (prefer-coding-system 'utf-8-unix))
+#+END_SRC
+
+* Eshell
+Fix an irritating warning about the pager program.
+#+BEGIN_SRC emacs-lisp
+  (setenv "PAGER" "/bin/cat") ;; fixes git terminal warning
+  (add-hook 'eshell-mode-hook #'(lambda () (setenv "PAGER" "/bin/cat")))
+#+END_SRC
+
+I often manually list after changing directory, so let's automate it.
+#+BEGIN_SRC emacs-lisp
+  (setq eshell-list-files-after-cd t)
+  (setq eshell-ls-initial-args "-lh")
+#+END_SRC
+
+Calling =vim= is deep in my muscle memory, so alias it to =find-file=.
+#+BEGIN_SRC emacs-lisp
+  (defun eshell/vim (file)
+    (find-file file))
+
+  (defun eshell/vimo (file)
+    (find-file-other-window file))
+
+  (defun eshell/emacs (file)
+    (find-file-other-window file))
+#+END_SRC
+
+** Pop-up shell
+Thank you [[howardism.org]]. I no longer use this, but keep it around for reference.
+#+BEGIN_SRC emacs-lisp
+  (defun eshell-here ()
+    "Opens up a new shell in the directory associated with the
+  current buffer's file. The eshell is renamed to match that
+  directory to make multiple eshell windows easier."
+    (interactive)
+    (let* ((parent (if (buffer-file-name)
+                       (file-name-directory (buffer-file-name))
+                     default-directory))
+           (height (/ (window-total-height) 3))
+           (name   (car (last (split-string parent "/" t)))))
+      (split-window-vertically (- height))
+      (other-window 1)
+      (eshell "new")
+      (rename-buffer (concat "*eshell: " name "*"))
+
+      (insert (concat "ls"))
+      (eshell-send-input)))
+
+  (defun eshell/quit ()
+    (insert "exit")
+    (eshell-send-input)
+    (delete-window))
+
+  (defun toggle-eshell ()
+    (interactive)
+    (if (string-match "^\\*eshell: " (buffer-name))
+        (eshell/quit)
+      (eshell-here)))
+#+END_SRC
+
+** Prompt
+You can't be a professional without a try-hard prompt.
+#+BEGIN_SRC emacs-lisp
+  ;; pinched from powerline.el
+  (defun curve-right-xpm (color1 color2)
+    "Return an XPM right curve string representing."
+    (create-image
+     (format "/* XPM */
+  static char * curve_right[] = {
+  \"12 18 2 1\",
+  \". c %s\",
+  \"  c %s\",
+  \"           .\",
+  \"         ...\",
+  \"         ...\",
+  \"       .....\",
+  \"       .....\",
+  \"       .....\",
+  \"      ......\",
+  \"      ......\",
+  \"      ......\",
+  \"      ......\",
+  \"      ......\",
+  \"      ......\",
+  \"       .....\",
+  \"       .....\",
+  \"       .....\",
+  \"         ...\",
+  \"         ...\",
+  \"           .\"};"
+             (if color2 color2 "None")
+             (if color1 color1 "None"))
+     'xpm t :ascent 'center))
+
+  (defun curve-left-xpm (color1 color2)
+    "Return an XPM left curve string representing."
+    (create-image
+     (format "/* XPM */
+  static char * curve_left[] = {
+  \"12 18 2 1\",
+  \". c %s\",
+  \"  c %s\",
+  \".           \",
+  \"...         \",
+  \"...         \",
+  \".....       \",
+  \".....       \",
+  \".....       \",
+  \"......      \",
+  \"......      \",
+  \"......      \",
+  \"......      \",
+  \"......      \",
+  \"......      \",
+  \".....       \",
+  \".....       \",
+  \".....       \",
+  \"...         \",
+  \"...         \",
+  \".           \"};"
+             (if color1 color1 "None")
+             (if color2 color2 "None"))
+     'xpm t :ascent 'center))
+
+  ;; TODO memoize those drawing functions
+
+  (defun eshell-blocky-prompt ()
+    (let ((bg (frame-parameter nil 'background-color))
+          (fg (frame-parameter nil 'foreground-color)))
+      (concat
+       (propertize " " 'display (curve-right-xpm bg "steel blue"))
+       (propertize (eshell/pwd) 'face
+                   (list :foreground "white"
+                         :background "steel blue"))
+       (propertize " " 'display (curve-left-xpm "steel blue" bg))
+       "$ ")))
+       ;;(propertize "$ " 'invisible t))))
+
+  (defconst eshell-blocky-prompt-regexp "^[^#\n]* \$ ")
+
+  (unless (frame-parameter nil 'tty)
+    ;; TODO fancy prompt in terminal mode also
+    (setq eshell-prompt-function 'eshell-blocky-prompt
+          eshell-prompt-regexp eshell-blocky-prompt-regexp))
+#+END_SRC
+
+* Directories
+Neotree is nice if ever I feel lost in a heirarchy.
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    
+    )
+
+  (evil-leader/set-key "n" 'neotree)
+
+  (add-to-list 'evil-emacs-state-modes 'neotree-mode)
+#+END_SRC
+
+Customize dired a bit.
+#+BEGIN_SRC emacs-lisp
+  (setq dired-listing-switches "-lh --group-directories-first")
+#+END_SRC
+
+* VC
+** Magit
+"Better at git than git"
+#+BEGIN_SRC emacs-lisp
+  ;; But apparently not better at compiling and running on multiple platforms...
+  ;; (use-package magit
+  ;;   :config
+  ;;   (progn
+  ;;     (global-set-key (kbd "C-x g") 'magit-status)
+  ;;     (evil-leader/set-key "g" 'magit-status)))
+
+  ;; (use-package evil-magit)
+#+END_SRC
+
+** VC mode
+The built-in =vc= is actually really good for simple tasks.
+#+BEGIN_SRC emacs-lisp
+  (evil-leader/set-key
+    "v d" 'vc-dir
+    "v v" 'vc-next-action
+    "v l" 'vc-print-log
+    "v L" 'vc-print-root-log
+    "v g" 'vc-annotate
+    "v m" 'vc-merge
+    "v u" 'vc-update
+    "v p" 'vc-pull
+    "v P" 'vc-push
+    "v =" 'vc-diff
+    "v D" 'vc-root-diff
+    "v t" 'vc-create-tag
+    "v i" 'vc-create-repo
+    "v c" 'vc-checkout
+    "v s" 'vc-git-stash
+    "v S" 'vc-git-stash-pop)
+#+END_SRC
+
+* OS-specific
+** MacOS
+*** Terminal colors
+[[http://stackoverflow.com/questions/8918910/weird-character-zsh-in-emacs-terminal/8920373#8920373][=term= and =ansi-term= on MacOS needs a bit of setup.]]
+#+BEGIN_SRC emacs-lisp
+  (defun fix-terminal-colors ()
+    "Installs a copy of eterm-color terminfo."
+    (interactive)
+    (let ((path-to-emacs-app "/Applications/Emacs.app"))
+      (shell-command
+       (format "tic -o ~/.terminfo %s/Contents/Resources/etc/e/eterm-color.ti"
+               path-to-emacs-app))))
+#+END_SRC
+
+** Windows
+*** Performance
+[[https://www.reddit.com/r/emacs/comments/55ork0/is_emacs_251_noticeably_slower_than_245_on_windows/][Some tweaks are required on Windows.]]
+#+BEGIN_SRC emacs-lisp
+  (when (eq system-type 'windows-nt)
+    (if (>= emacs-major-version 25)
+        (remove-hook 'find-file-hooks 'vc-refresh-state)
+      (remove-hook 'find-file-hooks 'vc-find-file-hook))
+
+    (progn
+      (setq gc-cons-threshold (* 511 1024 1024)
+            gc-cons-percentage 0.5
+            garbage-collection-messages t)
+      (run-with-idle-timer 5 t #'garbage-collect)))
+#+END_SRC
+
+*** TRAMP
+PuTTY (and so =plink.exe=) is basically your only choice on Windows.
+#+BEGIN_SRC emacs-lisp
+  (when (eq system-type 'windows-nt)
+    (require 'tramp)
+    (setq tramp-default-method "plink"))
+#+END_SRC
+
+** Helpers
+#+BEGIN_SRC emacs-lisp
+  (defun is-nix ()
+    (or (equal system-type "gnu")
+        (equal system-type "gnu/linux")
+        (equal system-type "gnu/kfreebsd")
+        (equal system-type "darwin")))
+#+END_SRC

@@ -3,8 +3,11 @@
 #export DYLD_LIBRARY_PATH=/Applications/CLHEP/lib;
 #source /Applications/geant4.9.4.p02/env.sh;"
 
-# Setting PATH for Python 2.7
-export PATH="/Library/Frameworks/Python.framework/Versions/2.7-32/bin:${PATH}"
+#Add /usr/local/bin to PATH
+export PATH=/usr/local/bin:$PATH
+
+# GNU coreutils
+export PATH=/opt/local/libexec/gnubin:$PATH
 
 # MacPorts
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
@@ -12,21 +15,17 @@ export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 # Racket
 export PATH=/Applications/Racket\ v5.3.4/bin:$PATH
 
-# MySQL
-export PATH=/usr/local/mysql/bin:$PATH
-
 # Haskell
 export PATH=/Users/chris/Library/Haskell/bin:$PATH
 
-#Add /usr/local/bin to PATH
-export PATH=/usr/local/bin:$PATH
-
 # Java
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_45.jdk/Contents/Home/
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_72.jdk/Contents/Home/
+
 # Clojure
 export PATH=/Users/chris/Library/Clojure/bin:$PATH
-alias clojure='java -cp .m2/repository/org/clojure/clojure/1.5.1/clojure-1.5.1.jar clojure.main'
+#alias clojure='java -cp .m2/repository/org/clojure/clojure/1.5.1/clojure-1.5.1.jar clojure.main'
 
+# TypeScript
 export TS_LIB=/usr/local/lib/node_modules/typescript/bin/lib.d.ts
 
 # Maven
@@ -42,6 +41,7 @@ alias ll="ls -lG"
 
 # Vi mode
 alias svi="set -o vi"
+alias vim="mvim -v"
 
 # OpenCV
 export LD_LIBRARY_PATH=/usr/local/lib
@@ -70,3 +70,7 @@ git config --global color.branch auto
 PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
 export PATH
 if [ -e /Users/chris/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/chris/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+function xunit {
+    mono xunit.console.clr4.exe ../../AutoFixture/Src/AutoFixtureUnitTest/bin/Debug/Ploeh.AutoFixtureUnitTest.dll > ~/temp.log
+}
