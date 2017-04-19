@@ -8,8 +8,5 @@
 alias ls='ls --color=auto'
 alias ll='ls -lh'
 
-# Haskell
-export PATH="~/.cabal/bin:"$PATH
-
 #screen -d -R
 alias screen='screen -dRaA'
