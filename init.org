@@ -29,9 +29,12 @@ From here-on out =use-package= loads packages. We almost always want to =:ensure
 It's convenient to be able to get at this quickly.
 #+BEGIN_SRC emacs-lisp
   (defun init-file ()
-    (interactive)
-    (cond ((eq system-type 'windows-nt) "C:/Cygwin64/home/chris.bowdon/init.org")
-          (t "~/init.org")))
+    "Return the full path to my init file. If it is a symlink, find the target."
+    (if (eq system-type 'windows-nt)
+        "C:/Cygwin64/home/chris.bowdon/init.org"
+      (let* ((file-name (expand-file-name "~/init.org"))
+             (symlink-target (file-symlink-p file-name)))
+        (or symlink-target file-name))))
 
   (defun find-init-file ()
     (interactive)
