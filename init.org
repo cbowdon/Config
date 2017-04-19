@@ -108,6 +108,7 @@ When defining a ton of shortcuts, it's nice to have a guide.
   (which-key-mode)
 #+END_SRC
 
+** State modes
 I prefer not to clobber the default bindings with evil bindings in some modes.
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
@@ -381,7 +382,7 @@ Elpy is pretty nifty.
                 (add-hook 'elpy-mode-hook 'flycheck-mode))))
 #+END_SRC
 
-*** TODO check out anaconda-mode
+TODO check out anaconda-mode
 
 ** TypeScript
 #+BEGIN_SRC emacs-lisp
@@ -455,8 +456,8 @@ Elpy is pretty nifty.
   ;; cd ~/.racer
   ;; cargo build --release
   (use-package racer
-    
-    
+
+
     :config (setq racer-cmd (expand-file-name "~/.racer/target/release/racer")
                   racer-rust-src-path (expand-file-name "~/.rust/src")))
 
@@ -793,9 +794,7 @@ You can't be a professional without a try-hard prompt.
 * Directories
 Neotree is nice if ever I feel lost in a heirarchy.
 #+BEGIN_SRC emacs-lisp
-  (use-package neotree
-    
-    )
+  (use-package neotree)
 
   (evil-leader/set-key "n" 'neotree)
 
@@ -846,7 +845,7 @@ The built-in =vc= is actually really good for simple tasks.
 * OS-specific
 ** MacOS
 *** Terminal colors
-[[http://stackoverflow.com/questions/8918910/weird-character-zsh-in-emacs-terminal/8920373#8920373][=term= and =ansi-term= on MacOS needs a bit of setup.]]
+[[http://stackoverflow.com/questions/8918910/weird-character-zsh-in-emacs-terminal/8920373#8920373][It turns out =term= and =ansi-term= on MacOS needs a bit of setup.]]
 #+BEGIN_SRC emacs-lisp
   (defun fix-terminal-colors ()
     "Installs a copy of eterm-color terminfo."
