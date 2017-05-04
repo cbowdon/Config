@@ -169,13 +169,13 @@ I've bound =C-<escape>= in particular because in =term-mode= it's possible to ge
 Sometimes the right mode isn't picked up by buffer name/shebang.
 #+BEGIN_SRC emacs-lisp
   (evil-leader/set-key
-    "mc" 'column-number-mode
     "md" 'markdown-mode
     "mh" 'html-mode
     "mj" 'javascript-mode
-    "ml" 'linum-mode
+    "mnc" 'column-number-mode
+    "mnl" 'linum-mode
     "mo" 'org-mode
-    "ms" 'shell-mode
+    "ms" 'shell-script-mode
     "mx" 'nxml-mode)
 #+END_SRC
 
@@ -505,6 +505,16 @@ TODO check out anaconda-mode
   (evil-leader/set-key
     "q p" 'sql-postgres
     "q s" 'sql-sqlite)
+#+END_SRC
+
+** Config languages
+#+BEGIN_SRC emacs-lisp
+  (use-package apache-mode)
+  (use-package nginx-mode)
+
+  (evil-leader/set-key
+    "mca" 'apache-mode
+    "mcn" 'nginx-mode)
 #+END_SRC
 
 * Org
