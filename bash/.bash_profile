@@ -37,27 +37,23 @@ export PATH=$M2:$PATH
 PS1='\[\e[0;32m\]\h: \W\[\e[0m\] '
 # Enable colors for ls
 alias ls="ls -G"
-alias ll="ls -lG"
-
-# Vi mode
-alias svi="set -o vi"
-alias vim="mvim -v"
+alias ll="ls -lhG"
 
 # OpenCV
 export LD_LIBRARY_PATH=/usr/local/lib
 export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 
 function opencv () {
-	echo "Compiling $1..."
-	# to link ALL the opencv libs:
-	g++ $1.cpp -o $1 -bind_at_load `pkg-config --cflags opencv` `pkg-config --libs opencv`
-	echo "Done"
+    echo "Compiling $1..."
+    # to link ALL the opencv libs:
+    g++ $1.cpp -o $1 -bind_at_load `pkg-config --cflags opencv` `pkg-config --libs opencv`
+    echo "Done"
 }
 
 function opencv11 () {
-	echo "Compiling $1..."
-	c++ -std=c++11 -stdlib=libc++ $1.cpp -o $1 -bind_at_load `pkg-config --cflags opencv` `pkg-config --libs opencv`
-	echo "Done"
+    echo "Compiling $1..."
+    c++ -std=c++11 -stdlib=libc++ $1.cpp -o $1 -bind_at_load `pkg-config --cflags opencv` `pkg-config --libs opencv`
+    echo "Done"
 }
 
 # Colorful git!
@@ -67,10 +63,4 @@ git config --global color.branch auto
 
 # Setting PATH for Python 2.7
 # The orginal version is saved in .bash_profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
-export PATH
-if [ -e /Users/chris/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/chris/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
-
-function xunit {
-    mono xunit.console.clr4.exe ../../AutoFixture/Src/AutoFixtureUnitTest/bin/Debug/Ploeh.AutoFixtureUnitTest.dll > ~/temp.log
-}
+export PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
