@@ -165,6 +165,16 @@ I've bound =C-<escape>= in particular because in =term-mode= it's possible to ge
     "sr" 'shell-command-on-region)
 #+END_SRC
 
+** REPL shortcuts
+#+BEGIN_SRC emacs-lisp
+  (evil-leader/set-key
+    "rd" 'run-dig ;; not exactly a REPL, but fits nonetheless
+    "rf" 'run-fsharp
+    "ri" 'ielm
+    "rp" 'run-python
+    "rr" 'run-ruby)
+#+END_SRC
+
 ** Mode shortcuts
 Sometimes the right mode isn't picked up by buffer name/shebang.
 #+BEGIN_SRC emacs-lisp
@@ -526,7 +536,7 @@ Aside from setting leader keybindings for my most frequently used options, it's 
   (evil-leader/set-key-for-mode 'org-mode
     "i" 'org-clock-in
     "o" 'org-clock-out
-    "r" 'org-clock-report
+    ;;"r" 'org-clock-report ; conflicts with repls
     "u" 'org-update-all-dblocks
     "a" 'org-agenda
     "t" 'org-todo
