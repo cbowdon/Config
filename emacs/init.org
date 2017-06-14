@@ -531,8 +531,6 @@ TODO check out anaconda-mode
 ** Evilification
 Aside from setting leader keybindings for my most frequently used options, it's nice to disable evil indentation, which doesn't play nice.
 #+BEGIN_SRC emacs-lisp
-  (use-package evil-org)
-
   (evil-leader/set-key-for-mode 'org-mode
     "i" 'org-clock-in
     "o" 'org-clock-out
