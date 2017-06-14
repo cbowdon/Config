@@ -629,11 +629,9 @@ Because everyone else uses GitHub-flavored markdown...
 #+BEGIN_SRC emacs-lisp
   (tool-bar-mode -1)
 
-  (if (frame-parameter nil 'tty)
-        (menu-bar-mode t)
-    (progn
-      (menu-bar-mode nil)
-      (scroll-bar-mode -1)))
+  (menu-bar-mode -1)
+  (unless (frame-parameter nil 'tty)
+      (scroll-bar-mode -1))
 
   (setq inhibit-splash-screen t
         ring-bell-function 'ignore)
