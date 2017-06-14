@@ -47,6 +47,47 @@ I prefer not to clutter =.emacs= with customizations, so create an =init-custom.
   (load-file custom-file)
 #+END_SRC
 
+* Modules
+I've hacked together a module system so that most of these sections are opt-in.
+#+BEGIN_SRC emacs-lisp
+  (defgroup init-modules nil
+    "The init modules customization group.")
+
+  (defun init-module-load (name)
+    "Load the module NAME."
+    (let ((exec-module (get (quote name) 'module-def)))
+      (when exec-module
+        (funcall exec-module))))
+
+  (defun init-module-set (name value)
+    "Enable/disable the module NAME by setting boolean VALUE."
+    (set-default name value)
+    (when value
+      (message "%s set: evaluating" name)
+      (init-module-load name)))
+
+  (defmacro defmodule (name doc &rest body)
+    "Define an init module called NAME that executes BODY when enabled."
+    (message "Defining module for %s" name)
+    (let ((module-name (intern (format "init-module-%s" name))))
+      ;; Declare var if not already
+      (when (not (boundp module-name))
+        (custom-declare-variable module-name nil
+                                 doc
+                                 :group 'init-modules
+                                 :set 'init-module-set
+                                 :tag (symbol-name name)
+                                 :type '(boolean)))
+      `(progn
+         ;; Stash the definition in the symbol's plist
+         (put (quote ,module-name) 'module-def
+              (lambda () ,@body))
+         ;; If set, evaluate it
+         (when ,module-name
+           (message "Evaluating %s on first def" (quote ,module-name))
+           ,@body))))
+#+END_SRC
+
 * Proxy
 Provide functions to set all the necessary proxy variables for =$day_job=, assuming that =proxy-host= and =proxy-port= are set in =custom-file=.
 #+BEGIN_SRC emacs-lisp
@@ -363,51 +404,55 @@ It's nice to wrap the built-in =url= functions into a higher-level API.
 ** F#
 Ensure there's a symlink to the F# bin dir!
 #+BEGIN_SRC emacs-lisp
-  (use-package fsharp-mode
-    :mode "\\.fsx?\\'"
-    :config
-    (progn
-      (when (equal system-type 'windows-nt)
-        (let ((fsDir "C:\\Program Files (x86)\\Microsoft SDKs\\F#\\3.1\\Framework\\v4.0"))
-          ;; Doesn't necessarily work - just set your path!
-          (setenv "PATH"
-                  (concat (getenv "PATH")
-                          (format ";%s" fsDir)))
-          (setq exec-path
-                (append exec-path '(fsDir)))))
-      (setq inferior-fsharp-program
-            (cond ((equal system-type 'windows-nt) "Fsi.exe")
-                  ((equal system-type 'cygwin) "/home/chris.bowdon/fs/Fsi.exe")))))
+  (defmodule fsharp
+    "Init module for F# development. Installs fsharp-mode and sets up path to interpreter."
+    (use-package fsharp-mode
+      :mode "\\.fsx?\\'"
+      :config
+      (progn
+        (when (equal system-type 'windows-nt)
+          (let ((fsDir "C:\\Program Files (x86)\\Microsoft SDKs\\F#\\3.1\\Framework\\v4.0"))
+            ;; Doesn't necessarily work - just set your path!
+            (setenv "PATH"
+                    (concat (getenv "PATH")
+                            (format ";%s" fsDir)))
+            (setq exec-path
+                  (append exec-path '(fsDir)))))
+        (setq inferior-fsharp-program
+              (cond ((equal system-type 'windows-nt) "Fsi.exe")
+                    ((equal system-type 'cygwin) "/home/chris.bowdon/fs/Fsi.exe"))))))
 #+END_SRC
 
 ** Python
-Elpy is pretty nifty.
+Elpy is currently the best Emacs Python setup I know, although I haven't tried anaconda-mode yet.
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck)
+  (defmodule python3
+    "Init module for Python 3 development. Installs and configures Elpy."
+    (use-package flycheck)
 
-  (use-package elpy
-    :config (progn
-              (elpy-enable)
-              (setq elpy-rpc-python-command "python3"
-                    python-shell-interpreter "python3")
-              (when (require 'flycheck nil t)
-                (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-                (add-hook 'elpy-mode-hook 'flycheck-mode))))
+    (use-package elpy
+      :config (progn
+                (elpy-enable)
+                (setq elpy-rpc-python-command "python3"
+                      python-shell-interpreter "python3")
+                (when (require 'flycheck nil t)
+                  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+                  (add-hook 'elpy-mode-hook 'flycheck-mode)))))
 #+END_SRC
-
-TODO check out anaconda-mode
 
 ** TypeScript
 #+BEGIN_SRC emacs-lisp
-  (use-package tide)
+  (defmodule typescript
+    "Init module for TypeScript development. Installs and configures TIDE."
+    (use-package tide)
 
-  (add-hook 'typescript-mode-hook
-            (lambda ()
-              (tide-setup)
-              (flycheck-mode +1)
-              (setq flycheck-check-syntax-automatically '(save mode-enabled))
-              (eldoc-mode +1)
-              (company-mode-on)))
+    (add-hook 'typescript-mode-hook
+              (lambda ()
+                (tide-setup)
+                (flycheck-mode +1)
+                (setq flycheck-check-syntax-automatically '(save mode-enabled))
+                (eldoc-mode +1)
+                (company-mode-on))))
 #+END_SRC
 
 ** Clojure
