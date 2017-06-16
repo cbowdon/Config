@@ -48,7 +48,7 @@ I prefer not to clutter =.emacs= with customizations, so create an =init-custom.
 #+END_SRC
 
 * Modules
-I've hacked together a module system so that most of these sections are opt-in.
+I've hacked together a module system so that most of these sections are opt-in. At the moment there is a macro =defmodule= that defines this, but it would be nice if I can modify =org-babel-tangle= so that it turns each section into a module (and automatically turns the text into module documentation).
 #+BEGIN_SRC emacs-lisp
   (defgroup init-modules nil
     "The init modules customization group.")
@@ -457,119 +457,141 @@ Elpy is currently the best Emacs Python setup I know, although I haven't tried a
 
 ** Clojure
 #+BEGIN_SRC emacs-lisp
-  (setq cider-auto-jump-to-error nil)
+  (defmodule clojure
+    "Init module for Clojure. A work in progress."
+    (setq cider-auto-jump-to-error nil))
 #+END_SRC
 
 ** Java
+There are a few options for Java development in Emacs, but most rely on integration with an external IDE like Eclipse. In contact, =meghanada= is a nice, relatively minimal setup. =maven-test-mode= is a convenient way to run individual tests rather than passing detailed arguments to =mvn=.
 #+BEGIN_SRC emacs-lisp
-  (use-package maven-test-mode)
-  (use-package meghanada)
+  (defmodule java
+    "Init module for Java."
+    (use-package maven-test-mode)
+    (use-package meghanada)
 
-  (add-hook 'java-mode-hook 'meghanada-mode)
+    (add-hook 'java-mode-hook 'meghanada-mode))
 #+END_SRC
 
 ** Ansible
+Ansible is my configuration management solution of choice. The Emacs support isn't bad.
 #+BEGIN_SRC emacs-lisp
-  (use-package ansible)
-  (use-package ansible-doc)
-  (use-package company)
-  (use-package company-ansible)
+  (defmodule ansible
+    "Init module for Ansible."
+    (use-package ansible)
+    (use-package ansible-doc)
+    (use-package company)
+    (use-package company-ansible))
 #+END_SRC
 
 ** Ruby
+I ended up coding some Ruby for use with Chef and Capistrano.
 #+BEGIN_SRC emacs-lisp
-  (use-package inf-ruby)
+  (defmodule ruby
+    "Init module for Ruby. Uses Robe."
+    (use-package inf-ruby)
 
-  (add-hook 'after-init-hook 'inf-ruby-switch-setup)
+    (add-hook 'after-init-hook 'inf-ruby-switch-setup)
 
-  (use-package robe)
+    (use-package robe)
 
-  (eval-after-load 'company
-    '(push 'company-robe company-backends))
+    (eval-after-load 'company
+      '(push 'company-robe company-backends))
 
-  (evil-leader/set-key-for-mode 'ruby-mode
-    "r" 'robe-start
-    "j" 'robe-jump
-    "c" 'company-robe)
+    (evil-leader/set-key-for-mode 'ruby-mode
+      "r" 'robe-start
+      "j" 'robe-jump
+      "c" 'company-robe))
 #+END_SRC
 
 ** Rust
+Rust support is pretty basic at this stage. Autocompletion comes from a separate program, =racer= that reads the stdlib source code.
 #+BEGIN_SRC emacs-lisp
-  (use-package rust-mode
-    :config (add-hook 'rust-mode-hook '(lambda ()
-                                         (racer-activate)
-                                         (racer-turn-on-eldoc)
-                                         (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
-  (use-package company
-    :config (setq company-idle-delay 0.2
-                  company-minimum-prefix-length 1))
+  (defmodule rust
+    "Init module for Rust. Uses racer for autocompletion."
+    (use-package rust-mode
+      :config (add-hook 'rust-mode-hook '(lambda ()
+                                           (racer-activate)
+                                           (racer-turn-on-eldoc)
+                                           (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))))
+    (use-package company
+      :config (setq company-idle-delay 0.2
+                    company-minimum-prefix-length 1))
 
-  (use-package company-racer
-    :config (set (make-local-variable 'company-backends)
-                 '(company-racer)))
+    (use-package company-racer
+      :config (set (make-local-variable 'company-backends)
+                   '(company-racer)))
 
-  ;; racer reads the rust src code to suggest competions
-  ;; git clone https://github.com/rust-lang/rust.git ~/.rust
-  ;; git clone https://github.com/phildawes/racer.git ~/.racer
-  ;; cd ~/.racer
-  ;; cargo build --release
-  (use-package racer
+    ;; racer reads the rust src code to suggest competions
+    ;; git clone https://github.com/rust-lang/rust.git ~/.rust
+    ;; git clone https://github.com/phildawes/racer.git ~/.racer
+    ;; cd ~/.racer
+    ;; cargo build --release
+    (use-package racer
 
 
-    :config (setq racer-cmd (expand-file-name "~/.racer/target/release/racer")
-                  racer-rust-src-path (expand-file-name "~/.rust/src")))
+      :config (setq racer-cmd (expand-file-name "~/.racer/target/release/racer")
+                    racer-rust-src-path (expand-file-name "~/.rust/src")))
 
-  (use-package flycheck  )
-  (use-package flycheck-rust  )
+    (use-package flycheck  )
+    (use-package flycheck-rust  ))
 #+END_SRC
 ** XML
 #+BEGIN_SRC emacs-lisp
-  (defun split-xml-lines ()
-    (interactive)
-    ;; to-do use looking-at etc. because replace-regexp is interactive
-    (replace-regexp "> *<" ">\n<"))
+  (defmodule xml
+    "Init module for XML. Adds helper functions and tag folding."
+    (defun split-xml-lines ()
+      (interactive)
+      ;; TODO use looking-at etc. because replace-regexp is interactive
+      (replace-regexp "> *<" ">\n<"))
 
-  (require 'hideshow)
-  (require 'sgml-mode)
-  (require 'nxml-mode)
+    (require 'hideshow)
+    (require 'sgml-mode)
+    (require 'nxml-mode)
 
-  (add-to-list 'hs-special-modes-alist
-               '(nxml-mode
-                 "<!--\\|<[^/>]*[^/]>"
-                 "-->\\|</[^/>]*[^/]>"
+    (add-to-list 'hs-special-modes-alist
+                 '(nxml-mode
+                   "<!--\\|<[^/>]*[^/]>"
+                   "-->\\|</[^/>]*[^/]>"
 
-                 "<!--"
-                 sgml-skip-tag-forward
-                 nil))
+                   "<!--"
+                   sgml-skip-tag-forward
+                   nil))
 
-  (add-hook 'nxml-mode-hook 'hs-minor-mode)
+    (add-hook 'nxml-mode-hook 'hs-minor-mode)
 
-  (evil-leader/set-key-for-mode 'nxml-mode
-    "h" 'hs-toggle-hiding)
+    (evil-leader/set-key-for-mode 'nxml-mode
+      "h" 'hs-toggle-hiding))
 #+END_SRC
 
 ** PHP
 #+BEGIN_SRC emacs-lisp
-  (use-package php-mode :mode "\\.php\\'")
+  (defmodule php
+    "Init module for php. Uses html-mode for Cake templates."
+    (use-package php-mode :mode "\\.php\\'")
 
-  (add-to-list 'auto-mode-alist '("\\.ctp\\'" . 'html-mode))
+    (add-to-list 'auto-mode-alist '("\\.ctp\\'" . 'html-mode)))
 #+END_SRC
 
 ** SQL
 #+BEGIN_SRC emacs-lisp
-  (evil-leader/set-key
-    "q p" 'sql-postgres
-    "q s" 'sql-sqlite)
+  (defmodule sql
+    "Init module for SQL. Sets evil leader shortcuts for interpreters."
+    (evil-leader/set-key
+      "q p" 'sql-postgres
+      "q s" 'sql-sqlite))
 #+END_SRC
 
 ** Config languages
 #+BEGIN_SRC emacs-lisp
-  (use-package apache-mode)
-  (use-package nginx-mode)
+  (defmodule configs
+    "Init module for config languages (e.g. Apache, nginx configs)."
+    (use-package apache-mode)
+    (use-package nginx-mode)
 
-  (evil-leader/set-key
-    "mca" 'apache-mode
-    "mcn" 'nginx-mode)
+    (evil-leader/set-key
+      "mca" 'apache-mode
+      "mcn" 'nginx-mode))
 #+END_SRC
 
 * Org
@@ -872,38 +894,41 @@ Customize dired a bit.
 
 * VC
 ** Magit
-"Better at git than git"
+"Better at git than git" true, but apparently not better at compiling and running on multiple platforms...
 #+BEGIN_SRC emacs-lisp
-  ;; But apparently not better at compiling and running on multiple platforms...
-  ;; (use-package magit
-  ;;   :config
-  ;;   (progn
-  ;;     (global-set-key (kbd "C-x g") 'magit-status)
-  ;;     (evil-leader/set-key "g" 'magit-status)))
+  (defmodule magit
+    "Init module for Magit."
+    (use-package magit
+      :config
+      (progn
+        (global-set-key (kbd "C-x g") 'magit-status)
+        (evil-leader/set-key "g" 'magit-status)))
 
-  ;; (use-package evil-magit)
+    (use-package evil-magit))
 #+END_SRC
 
 ** VC mode
 The built-in =vc= is actually really good for simple tasks.
 #+BEGIN_SRC emacs-lisp
-  (evil-leader/set-key
-    "v d" 'vc-dir
-    "v v" 'vc-next-action
-    "v l" 'vc-print-log
-    "v L" 'vc-print-root-log
-    "v g" 'vc-annotate
-    "v m" 'vc-merge
-    "v u" 'vc-update
-    "v p" 'vc-pull
-    "v P" 'vc-push
-    "v =" 'vc-diff
-    "v D" 'vc-root-diff
-    "v t" 'vc-create-tag
-    "v i" 'vc-create-repo
-    "v c" 'vc-checkout
-    "v s" 'vc-git-stash
-    "v S" 'vc-git-stash-pop)
+  (defmodule vc
+    "Init module for VC. Sets evil leader bindings."
+    (evil-leader/set-key
+      "v d" 'vc-dir
+      "v v" 'vc-next-action
+      "v l" 'vc-print-log
+      "v L" 'vc-print-root-log
+      "v g" 'vc-annotate
+      "v m" 'vc-merge
+      "v u" 'vc-update
+      "v p" 'vc-pull
+      "v P" 'vc-push
+      "v =" 'vc-diff
+      "v D" 'vc-root-diff
+      "v t" 'vc-create-tag
+      "v i" 'vc-create-repo
+      "v c" 'vc-checkout
+      "v s" 'vc-git-stash
+      "v S" 'vc-git-stash-pop))
 #+END_SRC
 
 * OS-specific
