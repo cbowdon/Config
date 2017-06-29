@@ -2,8 +2,6 @@
 Get packages from ELPA, MELPA +and org+.
 #+BEGIN_SRC emacs-lisp
   (require 'package)
-  (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                           ("melpa" . "https://melpa.org/packages/")))
   (package-initialize)
 #+END_SRC
 
