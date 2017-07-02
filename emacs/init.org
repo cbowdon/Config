@@ -1,3 +1,119 @@
+* Literate init modules
+#+BEGIN_SRC emacs-lisp :tangle olim.el :padline no
+  ;; -*- lexical-binding: t -*-
+  (require 'seq)
+  (require 'org)
+
+  (defgroup org-literate-init-modules nil
+    "The org literate init file modules customization group.")
+
+  (defun olim-tangle (buffer)
+    "Define modules from BUFFER."
+    (with-current-buffer buffer
+      (thread-last (org-element-parse-buffer)
+        (olim--parse-org-elements))
+        (seq-do (lambda (x) (apply 'olim--parse-module-defs (cdr x))))))
+
+  (defun olim--parse-org-elements (ast)
+    "TODO doc"
+    (pcase ast
+      ;; Org data - whole document
+      (`(org-data . ,body)
+       (seq-map 'olim--parse-org-elements (cdr body)))
+      ;; Headline - extract module name and recurse into body
+      (`(headline . ,body)
+       (cons :module
+             (cons (olim--extract-module-name ast)
+                   (seq-map 'olim--parse-org-elements (cdr body)))))
+      ;; Section - recurse
+      (`(section . ,body)
+       (cons :contents
+             (olim--group-section (seq-map 'olim--parse-org-elements (cdr body)))))
+      ;; Paragraph - extract text
+      (`(paragraph . ,body)
+       (cons :doc
+             (olim--extract-module-doc ast)))
+      ;; Plain list - extract text
+      (`(plain-list . ,body)
+       (cons :doc
+             (olim--extract-module-doc ast)))
+      ;; Source - extract code
+      (`(src-block . ,body)
+       (cons :src
+             (olim--extract-module-src ast)))
+      ;; Something else - bitch about it
+      (_
+       (message "Unhandled org element type: %s" (car ast)))))
+
+  (defun olim--format-module-name (name)
+    (thread-last name
+      (downcase)
+      (replace-regexp-in-string "\\s-+" "-")))
+
+  (defun olim--extract-module-name (headline)
+    (thread-last headline
+      (org-element-property :raw-value)
+      (olim--format-module-name)))
+
+  (defun olim--extract-module-src (src-block)
+    (thread-last src-block
+      (org-element-property :value)
+      (format "(progn %s)") ;; todo just template?
+      (replace-regexp-in-string ")\n(" ")(")
+      (replace-regexp-in-string "\n)" ")")
+      (read-from-string)
+      (car)))
+
+  (defun olim--extract-module-doc (para)
+    (let ((begin (org-element-property :contents-begin para))
+          (end (org-element-property :contents-end para)))
+      (when (and begin end)
+        (buffer-substring-no-properties begin end))))
+
+  (defun olim--group-section (section)
+    "Group multiple :doc and :src parts of SECTION parse results."
+    (seq-map (lambda (group)
+               (cons (car group)
+                     (seq-map 'cdr (cdr group))))
+             (seq-group-by 'car section)))
+
+  (defun olim--load (name)
+    "Load the module NAME."
+    (let ((exec-module (get (quote name) 'module-def)))
+      (when exec-module
+        (eval exec-module))))
+
+  (defun olim--set (name value)
+    "Enable/disable the module NAME by setting boolean VALUE."
+    (set-default name value)
+    (when value
+      (message "%s set: evaluating" name)
+      (olim--load name)))
+
+  (defun olim--declare-module (name doc src)
+    "Create a boolean custom variable NAME described by DOC. When enabled, that variable will run SRC."
+    (let ((module-name (intern (format "init-module-%s" name))))
+      (when (not (boundp module-name))
+        (custom-declare-variable module-name nil
+                                 doc
+                                 :group 'org-literate-init-modules
+                                 :set 'olim--set
+                                 :tag name
+                                 :type '(boolean)))
+      (put module-name 'module-def src)
+      (when (eval module-name)
+        (message "Evaluating %s on first declaration" module-name)
+        (eval src t))))
+
+  (defun olim--parse-module-defs (name contents &rest submodules)
+    "TODO"
+    (let* ((alst (cdr contents))
+           (doc (car (alist-get :doc alst)))
+           (src (car (alist-get :src alst))))
+      (olim--declare-module (intern name) doc src))
+    (seq-do (lambda (x) (apply 'olim--parse-module-defs (cdr x)) submodules)))
+#+END_SRC
+
 * Package repositories
 Get packages from ELPA, MELPA +and org+.
 #+BEGIN_SRC emacs-lisp
@@ -55,7 +171,7 @@ I've hacked together a module system so that most of these sections are opt-in. 
     "Load the module NAME."
     (let ((exec-module (get (quote name) 'module-def)))
       (when exec-module
-        (funcall exec-module))))
+        (eval exec-module))))
 
   (defun init-module-set (name value)
     "Enable/disable the module NAME by setting boolean VALUE."
@@ -66,24 +182,8 @@ I've hacked together a module system so that most of these sections are opt-in. 
 
   (defmacro defmodule (name doc &rest body)
     "Define an init module called NAME that executes BODY when enabled."
-    (message "Defining module for %s" name)
-    (let ((module-name (intern (format "init-module-%s" name))))
-      ;; Declare var if not already
-      (when (not (boundp module-name))
-        (custom-declare-variable module-name nil
-                                 doc
-                                 :group 'init-modules
-                                 :set 'init-module-set
-                                 :tag (symbol-name name)
-                                 :type '(boolean)))
-      `(progn
-         ;; Stash the definition in the symbol's plist
-         (put (quote ,module-name) 'module-def
-              (lambda () ,@body))
-         ;; If set, evaluate it
-         (when ,module-name
-           (message "Evaluating %s on first def" (quote ,module-name))
-           ,@body))))
+;;; going going gone...
+    nil)
 #+END_SRC
 
 * Proxy
