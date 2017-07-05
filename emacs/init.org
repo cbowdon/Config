@@ -734,6 +734,16 @@ UTF-8 everywhere, but don't mess with line-endings.
     (prefer-coding-system 'utf-8-unix))
 #+END_SRC
 
+It's also handy to programmatically convert files, mainly when Windows has UTF-16'd something.
+#+BEGIN_SRC emacs-lisp
+  (defun convert-file-encoding (file coding-system)
+    "Convert FILE to CODING-SYSTEM without visiting it."
+    (with-temp-buffer
+      (insert-file-contents file)
+      (let ((coding-system-for-write coding-system))
+        (write-region nil nil file))))
+#+END_SRC
+
 * Eshell
 Fix an irritating warning about the pager program.
 #+BEGIN_SRC emacs-lisp
