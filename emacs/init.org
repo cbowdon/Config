@@ -11,8 +11,8 @@
     "Define modules from BUFFER."
     (with-current-buffer buffer
       (thread-last (org-element-parse-buffer)
-        (olim--parse-org-elements))
-        (seq-do (lambda (x) (apply 'olim--parse-module-defs (cdr x))))))
+        (olim--parse-org-elements)
+        (seq-do (lambda (x) (apply 'olim--parse-module-defs (cdr x)))))))
 
   (defun olim--parse-org-elements (ast)
     "TODO doc"
@@ -110,8 +110,16 @@
     (let* ((alst (cdr contents))
            (doc (car (alist-get :doc alst)))
            (src (car (alist-get :src alst))))
-      (olim--declare-module (intern name) doc src))
-    (seq-do (lambda (x) (apply 'olim--parse-module-defs (cdr x)) submodules)))
+      (olim--declare-module (intern name) doc src)))
+  ;; LEFT OFF HERE - not sure what's going on, error thrown
+                                          ;(seq-do (lambda (x) (apply 'olim--parse-module-defs (cdr x)) submodules)))
+
+  ;; Still need to:
+  - ensure modules created correctly
+  - write to file
+  - parse tags for opt-in/opt-out
+
+  (olim-tangle "init.org")
 #+END_SRC
 
 * Package repositories
