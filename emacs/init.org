@@ -137,7 +137,7 @@ Join the dark side.
     "b" 'buffer-menu
     "d" 'dired
     "p" 'proced
-    "w" 'toggle-truncate-lines
+    "W" 'toggle-truncate-lines
     "u" 'upcase-word
     "x" 'delete-trailing-whitespace)
 
@@ -691,6 +691,23 @@ Because everyone else uses GitHub-flavored markdown...
                       (t "*nix"))
                 (user-login-name)
                 (system-name)))
+#+END_SRC
+
+* Window management
+#+BEGIN_SRC emacs-lisp
+  (evil-leader/set-key
+    "wo" 'delete-other-windows
+    "wc" 'evil-window-delete
+    "wl" 'evil-window-right
+    "wh" 'evil-window-left
+    "wj" 'evil-window-down
+    "wk" 'evil-window-up
+    "wL" 'evil-window-move-far-right
+    "wH" 'evil-window-move-far-left
+    "wJ" 'evil-window-move-very-bottom
+    "wK" 'evil-window-move-very-top)
+
+  (use-package golden-ratio)
 #+END_SRC
 
 * Appearance
