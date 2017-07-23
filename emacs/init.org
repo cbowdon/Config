@@ -438,6 +438,15 @@ Elpy is currently the best Emacs Python setup I know, although I haven't tried a
                   (add-hook 'elpy-mode-hook 'flycheck-mode)))))
 #+END_SRC
 
+** React
+Though I remain suspicious of Facebook, React has brought a nice functional taste to JS.
+#+BEGIN_SRC emacs-lisp
+  (defmodule react
+    "Init module for React/JSX editing."
+    (use-package rjsx-mode
+      :mode "\\.jsx?$"))
+#+END_SRC
+
 ** TypeScript
 #+BEGIN_SRC emacs-lisp
   (defmodule typescript
@@ -453,7 +462,8 @@ Elpy is currently the best Emacs Python setup I know, although I haven't tried a
                   (flycheck-mode +1)
                   (setq flycheck-check-syntax-automatically '(save mode-enabled))
                   (eldoc-mode +1)
-                  (company-mode-on)))))
+                  (company-mode +1)
+                  (setq company-tooltip-align-annotations t)))))
 #+END_SRC
 
 ** Clojure
@@ -470,6 +480,7 @@ There are a few options for Java development in Emacs, but most rely on integrat
     "Init module for Java."
     (use-package maven-test-mode)
     (use-package meghanada)
+    (use-package javadoc-lookup)
 
     (add-hook 'java-mode-hook 'meghanada-mode))
 #+END_SRC
@@ -589,9 +600,12 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
     "Init module for config languages (e.g. Apache, nginx configs)."
     (use-package apache-mode)
     (use-package nginx-mode)
+    (use-package syslog-mode
+      :mode "\\.log$")
 
     (evil-leader/set-key
       "mca" 'apache-mode
+      "mcs" 'syslog-mode
       "mcn" 'nginx-mode))
 #+END_SRC
 
@@ -691,6 +705,7 @@ Because everyone else uses GitHub-flavored markdown...
   (use-package creamsody-theme)
   (use-package monokai-theme)
   (use-package darkokai-theme)
+  (use-package blackboard-theme)
 #+END_SRC
 
 ** Widgets
@@ -703,6 +718,11 @@ Because everyone else uses GitHub-flavored markdown...
 
   (setq inhibit-splash-screen t
         ring-bell-function 'ignore)
+#+END_SRC
+
+** Modeline
+#+BEGIN_SRC emacs-lisp
+  (use-package spaceline)
 #+END_SRC
 
 ** Dashboard
