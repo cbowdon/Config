@@ -739,7 +739,12 @@ Because everyone else uses GitHub-flavored markdown...
 
 ** Modeline
 #+BEGIN_SRC emacs-lisp
-  (use-package spaceline)
+  (use-package powerline)
+  (use-package powerline-evil
+    :config (powerline-evil-center-color-theme))
+
+  (require 'powerline)
+  (require 'powerline-evil)
 #+END_SRC
 
 ** Dashboard
