@@ -708,6 +708,8 @@ Because everyone else uses GitHub-flavored markdown...
     "wK" 'evil-window-move-very-top)
 
   (use-package golden-ratio)
+  (golden-ratio-mode)
+  (evil-leader/set-key "g" 'golden-ratio)
 #+END_SRC
 
 * Appearance
