@@ -704,22 +704,22 @@ Because everyone else uses GitHub-flavored markdown...
 
   (use-package golden-ratio)
   (golden-ratio-mode)
-  (evil-leader/set-key "g" 'golden-ratio)
+  (evil-leader/set-key "G" 'golden-ratio)
 #+END_SRC
 
 * Appearance
 ** Themes
 #+BEGIN_SRC emacs-lisp
-  (use-package material-theme)
-  (use-package gruvbox-theme)
-  (use-package ubuntu-theme)
-  (use-package gotham-theme)
-  (use-package django-theme)
-  (use-package color-theme-sanityinc-tomorrow)
-  (use-package creamsody-theme)
-  (use-package monokai-theme)
-  (use-package darkokai-theme)
-  (use-package blackboard-theme)
+  (use-package material-theme :defer t)
+  (use-package gruvbox-theme :defer t)
+  (use-package ubuntu-theme :defer t)
+  (use-package gotham-theme :defer t)
+  (use-package django-theme :defer t)
+  (use-package color-theme-sanityinc-tomorrow :defer t)
+  (use-package creamsody-theme :defer t)
+  (use-package monokai-theme :defer t)
+  (use-package darkokai-theme :defer t)
+  (use-package blackboard-theme :defer t)
 #+END_SRC
 
 ** Widgets
@@ -751,8 +751,16 @@ Another good idea lovingly ripped off from Spacemacs.
       (dashboard-setup-startup-hook)
       (setq dashboard-banner-logo-title "[ E M A C S ]"
             dashboard-startup-banner 'logo
-            dashboard-items '((recents  . 5)
+            dashboard-items '((recents  . 8)
                               (bookmarks . 5)))))
+#+END_SRC
+
+** Icons
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons)
+
+  (use-package all-the-icons-dired
+    :config (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC
 
 * Temporary files
