@@ -11,7 +11,7 @@ GPG is not necessarily installed on Windows.
     (setq package-check-signature nil))
 #+END_SRC
 
-From here-on out =use-package= loads packages. We almost always want to =:ensure= and =:defer= package loads.
+From here-on out =use-package= loads packages. We almost always want to =:ensure= packages are present.
 #+BEGIN_SRC emacs-lisp
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
@@ -19,8 +19,7 @@ From here-on out =use-package= loads packages. We almost always want to =:ensure
 
   (require 'use-package)
 
-  (setq use-package-always-ensure t
-        use-package-always-defer t)
+  (setq use-package-always-ensure t)
 #+END_SRC
 
 * Init file
@@ -119,15 +118,12 @@ Join the dark side.
   (use-package evil
     :demand
     :config (evil-mode 1))
-  (require 'evil)
 
   (use-package evil-leader
     :demand
     :config (progn
               (setq evil-leader/in-all-states t)
               (global-evil-leader-mode)))
-
-  (require 'evil-leader)
 
   (evil-leader/set-leader ",")
   (evil-leader/set-key
@@ -340,8 +336,9 @@ Emacs 25 brought some mod cons to the language that are worth shimming in older 
 
 Make ad-hoc lisping more comfortable by automatically requiring packages.
 #+BEGIN_SRC emacs-lisp
-(require 'seq)
-(require 'subr-x)
+(use-package seq)
+(use-package subr-x)
+(use-package cl-lib)
 
 (add-hook 'emacs-lisp-mode-hook #'(lambda () (prettify-symbols-mode)))
 #+END_SRC
@@ -349,8 +346,6 @@ Make ad-hoc lisping more comfortable by automatically requiring packages.
 *** REST
 It's nice to wrap the built-in =url= functions into a higher-level API.
 #+BEGIN_SRC emacs-lisp
-  (require 'cl-lib)
-
   (defvar rest--default-headers '("DNT" . "1")
     "The default headers include a DNT.")
 
@@ -744,9 +739,6 @@ Because everyone else uses GitHub-flavored markdown...
   (use-package powerline)
   (use-package powerline-evil
     :config (powerline-evil-center-color-theme))
-
-  (require 'powerline)
-  (require 'powerline-evil)
 #+END_SRC
 
 ** Dashboard
