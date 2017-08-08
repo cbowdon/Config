@@ -125,7 +125,7 @@ Join the dark side.
               (setq evil-leader/in-all-states t)
               (global-evil-leader-mode)))
 
-  (evil-leader/set-leader ",")
+  (evil-leader/set-leader "SPC")
   (evil-leader/set-key
     "/" 'comment-region
     "\\\\" 'uncomment-region
