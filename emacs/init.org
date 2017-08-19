@@ -169,18 +169,19 @@ For future reference, find =rules/base.lst= in the =xkb= directory to learn all 
 
 On some laptop keyboards (e.g. MBP) CTRL has been squashed into an unergonomic position by the FN key. =god-mode= and =evil-god-state= saves us from this RSI.
 #+BEGIN_SRC emacs-lisp
-  (use-package god-mode :demand)
-  (use-package evil-god-state :demand)
+  (use-package god-mode)
+  (use-package evil-god-state)
   ;; Not sure if prefer ";" or ",," as shortcut here
   (define-key evil-normal-state-map (kbd ";") 'evil-execute-in-god-state)
   (define-key evil-visual-state-map (kbd ";") 'evil-execute-in-god-state)
   (define-key global-map (kbd "C-<escape>") 'evil-normal-state)
+  (define-key global-map (kbd "C-~") 'evil-normal-state)
   (define-key global-map (kbd "M-<escape>") 'god-mode)
   (define-key global-map (kbd "C-M-<escape>") 'god-local-mode)
-  (evil-leader/set-key "," 'evil-execute-in-god-state)
+  (evil-leader/set-key "SPC" 'evil-execute-in-god-state)
 #+END_SRC
 
-I've bound =C-<escape>= in particular because in =term-mode= it's possible to get stuck in =evil-god-state= if you hit some combinations.
+I've bound =C-<escape>= and =C-~= in particular because in =term-mode= it's possible to get stuck in =evil-god-state= if you hit some combinations (I prefer =C-<escape>= but Windows intercepts this).
 
 [[https://github.com/chrisdone/god-mode][Basic =god-mode= usage:]]
 - =abc= → =C-a C-b C-c=
