@@ -682,15 +682,6 @@ Because everyone else uses GitHub-flavored markdown...
     (use-package ox-gfm)
 #+END_SRC
 
-* Neotree
-#+BEGIN_SRC emacs-lisp
-  (use-package neotree
-    :config (add-to-list 'evil-emacs-state-modes  'neotree-mode))
-
-  (evil-leader/set-key
-    "n" 'neotree)
-#+END_SRC
-
 * Frame
 #+BEGIN_SRC emacs-lisp
   (defun set-frame-transparency (fg-percent bg-percent)
@@ -948,13 +939,12 @@ You can't be a professional without a try-hard prompt.
 #+END_SRC
 
 * Directories
-Neotree is nice if ever I feel lost in a heirarchy.
+These days Treemacs is the coolest directory browser.
 #+BEGIN_SRC emacs-lisp
-  (use-package neotree)
+  (use-package treemacs
+    :config (add-to-list 'evil-emacs-state-modes  'treemacs-mode))
 
-  (evil-leader/set-key "n" 'neotree)
-
-  (add-to-list 'evil-emacs-state-modes 'neotree-mode)
+  (evil-leader/set-key "t" 'treemacs)
 #+END_SRC
 
 Customize dired a bit.
