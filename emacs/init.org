@@ -85,32 +85,6 @@ I've hacked together a module system so that most of these sections are opt-in. 
            ,@body))))
 #+END_SRC
 
-* Proxy
-Provide functions to set all the necessary proxy variables for =$day_job=, assuming that =proxy-host= and =proxy-port= are set in =custom-file=.
-#+BEGIN_SRC emacs-lisp
-  (defun proxy-make-url (host port &optional username password)
-    (concat
-     (when (or username password)
-       (format "%s:%s@"
-               (if (not username) "" username)
-               (if (not password) "" password)))
-     (format "%s:%s" host port)))
-
-  (defun proxy-set (http-proxy)
-    "Set proxy variables that Emacs uses from the provided HTTP-PROXY string."
-    (setenv "HTTP_PROXY" (format "https://%s" http-proxy))
-    (setq url-proxy-services (list (cons "http" http-proxy)
-                                   (cons "https" http-proxy))))
-
-  (defun proxy-set-with-user ()
-    "Set proxy using current user login name and asking for password."
-    (interactive)
-    (proxy-set (proxy-make-url proxy-host
-                               proxy-port
-                               (user-login-name)
-                               (read-passwd "Password: "))))
-#+END_SRC
-
 * Evil
 ** Packages
 Join the dark side.
@@ -1034,4 +1008,29 @@ PuTTY (and so =plink.exe=) is basically your only choice on Windows.
         (equal system-type "gnu/linux")
         (equal system-type "gnu/kfreebsd")
         (equal system-type "darwin")))
+#+END_SRC
+* Proxy
+Provide functions to set all the necessary proxy variables for =$day_job=, assuming that =proxy-host= and =proxy-port= are set in =custom-file=.
+#+BEGIN_SRC emacs-lisp
+  (defun proxy-make-url (host port &optional username password)
+    (concat
+     (when (or username password)
+       (format "%s:%s@"
+               (if (not username) "" username)
+               (if (not password) "" password)))
+     (format "%s:%s" host port)))
+
+  (defun proxy-set (http-proxy)
+    "Set proxy variables that Emacs uses from the provided HTTP-PROXY string."
+    (setenv "HTTP_PROXY" (format "https://%s" http-proxy))
+    (setq url-proxy-services (list (cons "http" http-proxy)
+                                   (cons "https" http-proxy))))
+
+  (defun proxy-set-with-user ()
+    "Set proxy using current user login name and asking for password."
+    (interactive)
+    (proxy-set (proxy-make-url proxy-host
+                               proxy-port
+                               (user-login-name)
+                               (read-passwd "Password: "))))
 #+END_SRC
