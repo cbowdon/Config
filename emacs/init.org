@@ -715,21 +715,11 @@ Because everyone else uses GitHub-flavored markdown...
 
 * Window management
 #+BEGIN_SRC emacs-lisp
-  (evil-leader/set-key
-    "wo" 'delete-other-windows
-    "wc" 'evil-window-delete
-    "wl" 'evil-window-right
-    "wh" 'evil-window-left
-    "wj" 'evil-window-down
-    "wk" 'evil-window-up
-    "wL" 'evil-window-move-far-right
-    "wH" 'evil-window-move-far-left
-    "wJ" 'evil-window-move-very-bottom
-    "wK" 'evil-window-move-very-top)
-
   (use-package golden-ratio)
   (golden-ratio-mode)
-  (evil-leader/set-key "G" 'golden-ratio)
+  (evil-leader/set-key
+    "w" 'evil-window-map
+    "wg" 'golden-ratio)
 #+END_SRC
 
 * Appearance
