@@ -543,7 +543,42 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
     (use-package flycheck  )
     (use-package flycheck-rust  ))
 #+END_SRC
-** XML
+** PHP
+#+BEGIN_SRC emacs-lisp
+  (defmodule php
+    "Init module for php. Uses html-mode for Cake templates."
+    (use-package php-mode :mode "\\.php\\'")
+
+    (add-to-list 'auto-mode-alist '("\\.ctp\\'" . 'html-mode)))
+#+END_SRC
+
+** SQL
+#+BEGIN_SRC emacs-lisp
+  (defmodule sql
+    "Init module for SQL. Sets evil leader shortcuts for interpreters."
+    (evil-leader/set-key
+      "q p" 'sql-postgres
+      "q s" 'sql-sqlite))
+#+END_SRC
+
+** Data languages
+*** JSON
+#+BEGIN_SRC emacs-lisp
+  (defmodule json
+    "Init module to support JSON syntax highlighting/navigation/formatting."
+    (use-package json-mode :mode "\\.json")
+    (use-package json-navigator)
+    (use-package json-reformat)
+
+    (evil-leader/set-key-for-mode 'json-mode
+      "jnp" 'json-navigator-navigate-after-point
+      "jnr" 'json-navigator-navigate-region
+      "jr" 'json-reformat-region
+      "jpr" 'json-pretty-print
+      "jpb" 'json-pretty-print-buffer))
+#+END_SRC
+
+*** XML
 #+BEGIN_SRC emacs-lisp
   (defmodule xml
     "Init module for XML. Adds helper functions and tag folding."
@@ -571,22 +606,11 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
       "h" 'hs-toggle-hiding))
 #+END_SRC
 
-** PHP
+*** YAML
 #+BEGIN_SRC emacs-lisp
-  (defmodule php
-    "Init module for php. Uses html-mode for Cake templates."
-    (use-package php-mode :mode "\\.php\\'")
-
-    (add-to-list 'auto-mode-alist '("\\.ctp\\'" . 'html-mode)))
-#+END_SRC
-
-** SQL
-#+BEGIN_SRC emacs-lisp
-  (defmodule sql
-    "Init module for SQL. Sets evil leader shortcuts for interpreters."
-    (evil-leader/set-key
-      "q p" 'sql-postgres
-      "q s" 'sql-sqlite))
+  (defmodule yaml
+    "Init module for YAML support."
+    (use-package yaml-mode :mode "\\.ya?ml"))
 #+END_SRC
 
 ** Config languages
