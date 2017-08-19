@@ -631,18 +631,18 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
 
 * Org
 ** Evilification
-Aside from setting leader keybindings for my most frequently used options, it's nice to disable evil indentation, which doesn't play nice.
+It's nice to disable evil indentation, which doesn't play nice. I set a few leader bindings but really it's just easier to use God mode here.
 #+BEGIN_SRC emacs-lisp
   (evil-leader/set-key-for-mode 'org-mode
-    "i" 'org-clock-in
-    "o" 'org-clock-out
-    ;;"r" 'org-clock-report ; conflicts with repls
-    "u" 'org-update-all-dblocks
-    "a" 'org-agenda
-    "t" 'org-todo
-    "T" 'org-set-tags
-    "e" 'org-set-effort
-    "c" 'org-edit-special)
+    "oi" 'org-clock-in
+    "oo" 'org-clock-out
+    "or" 'org-clock-report
+    "ou" 'org-update-all-dblocks
+    "oa" 'org-agenda
+    "ot" 'org-todo
+    "oT" 'org-set-tags
+    "oe" 'org-set-effort
+    "oc" 'org-edit-special)
 
   (evil-leader/set-key-for-mode 'org-mode
     "TAB" 'org-cycle)
