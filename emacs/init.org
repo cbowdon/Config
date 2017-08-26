@@ -908,6 +908,10 @@ You can't be a professional without a try-hard prompt.
 
   ;; TODO memoize those drawing functions
 
+  (defvar eshell-prompt-suffix
+    (if (eq system-type 'darwin) "🔥 " "$ ")
+    "String at end of prompt")
+
   (defun eshell-blocky-prompt ()
     (let ((bg (frame-parameter nil 'background-color))
           (fg (frame-parameter nil 'foreground-color)))
@@ -917,10 +921,10 @@ You can't be a professional without a try-hard prompt.
                    (list :foreground "white"
                          :background "#3d3d68"))
        (propertize " " 'display (curve-left-xpm "#3d3d68" bg))
-       "$ ")))
-       ;;(propertize "$ " 'invisible t))))
+       eshell-prompt-suffix)))
 
-  (defconst eshell-blocky-prompt-regexp "^[^#\n]* \$ ")
+  (defconst eshell-blocky-prompt-regexp
+    (string-join (list "^[^#\n]* " eshell-prompt-suffix)))
 
   (unless (frame-parameter nil 'tty)
     ;; TODO fancy prompt in terminal mode also
