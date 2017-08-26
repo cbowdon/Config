@@ -109,7 +109,7 @@ Join the dark side.
     "p" 'proced
     "W" 'toggle-truncate-lines
     "u" 'upcase-word
-    "x" 'delete-trailing-whitespace)
+    "X" 'delete-trailing-whitespace)
 
   (setq-default indent-tabs-mode nil)
 #+END_SRC
@@ -132,6 +132,21 @@ I prefer not to clobber the default bindings with evil bindings in some modes.
 #+END_SRC
 
 ** Keyboard mapping
+Map =C-x C-?= to =<leader> x ?= for =?= in =[a-z]=.
+
+#+BEGIN_SRC emacs-lisp
+  (let ((bindings-plist '()))
+   (map-char-table
+    (lambda (key value)
+      (when (and (>= key 1)   ;; C-a
+                 (<= key 26)) ;; C-z
+        (let ((new-key (format "x%s" (char-to-string (+ 96 key)))))
+          (add-to-list 'bindings-plist new-key t)
+          (add-to-list 'bindings-plist value t))))
+    (cadr ctl-x-map))
+   (apply 'evil-leader/set-key bindings-plist))
+#+END_SRC
+
 Set CAPSLOCK as another ESC. In GNOME 3 and MacOS use the system settings GUI. In X, use the function below. In Windows... screw around with the registry?
 #+BEGIN_SRC emacs-lisp
   (defun set-x-caps-escape ()
@@ -146,8 +161,8 @@ On some laptop keyboards (e.g. MBP) CTRL has been squashed into an unergonomic p
   (use-package god-mode)
   (use-package evil-god-state)
   ;; Not sure if prefer ";" or ",," as shortcut here
-  (define-key evil-normal-state-map (kbd ";") 'evil-execute-in-god-state)
-  (define-key evil-visual-state-map (kbd ";") 'evil-execute-in-god-state)
+  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
+  (define-key evil-visual-state-map (kbd ";") 'evil-ex)
   (define-key global-map (kbd "C-<escape>") 'evil-normal-state)
   (define-key global-map (kbd "C-~") 'evil-normal-state)
   (define-key global-map (kbd "M-<escape>") 'god-mode)
