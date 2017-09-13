@@ -148,14 +148,17 @@ Map =C-x ?= to =<leader> ?= for =?= in =0-z= and map =C-x C-?= to =<leader> x ?=
        (cadr ctl-x-map))
       (apply 'evil-leader/set-key bindings-plist)))
 
-  (evil-leader/remap-range ?\C-a
-                           ?\C-z
-                           (lambda (key) (format "x%s" (char-to-string (+ 96 key)))))
+  (mapcar
+   (lambda (prefix-key)
+     (evil-leader/remap-range ?\C-a
+                              ?\C-z
+                              (lambda (key) (format "%c%s" prefix-key (char-to-string (+ 96 key))))))
+   '(?f ?x))
 
   (evil-leader/remap-range ?0
                            ?z
                            (lambda (key) (char-to-string key))
-                           '(?m ?s ?r ?t))
+                           '(?f ?m ?r ?s ?t))
 #+END_SRC
 
 Set CAPSLOCK as another ESC. In GNOME 3 and MacOS use the system settings GUI. In X, use the function below. In Windows... screw around with the registry?
@@ -692,7 +695,7 @@ Because everyone else uses GitHub-flavored markdown...
   (set-frame-transparency 93 80)
 
   (evil-leader/set-key
-    "f" 'toggle-frame-fullscreen)
+    "F" 'toggle-frame-fullscreen)
 
   (setq frame-title-format
         (format "Emacs %s (%s) - %s@%s"
