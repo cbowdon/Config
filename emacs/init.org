@@ -484,6 +484,14 @@ There are a few options for Java development in Emacs, but most rely on integrat
     (add-hook 'java-mode-hook 'meghanada-mode))
 #+END_SRC
 
+** Scala
+Like there's any other choice but ENSIME?
+#+BEGIN_SRC emacs-lisp
+  (use-package ensime)
+  (setq ensime-startup-notification nil
+        ensime-startup-snapshot-notification nil)
+#+END_SRC
+
 ** Ansible
 Ansible is my configuration management solution of choice. The Emacs support isn't bad.
 #+BEGIN_SRC emacs-lisp
