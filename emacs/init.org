@@ -219,6 +219,7 @@ Sometimes the right mode isn't picked up by buffer name/shebang.
 #+BEGIN_SRC emacs-lisp
   (evil-leader/set-key
     "md" 'markdown-mode
+    "me" 'ensime ;; ensime is slow, don't like to autoload
     "mh" 'html-mode
     "mj" 'javascript-mode
     "mnc" 'column-number-mode
