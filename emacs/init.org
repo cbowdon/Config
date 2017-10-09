@@ -491,6 +491,7 @@ Like there's any other choice but ENSIME?
   (use-package ensime)
   (setq ensime-startup-notification nil
         ensime-startup-snapshot-notification nil)
+  (evil-leader/set-key "p" 'popup-imenu)
 #+END_SRC
 
 ** Ansible
