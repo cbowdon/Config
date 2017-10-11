@@ -252,6 +252,12 @@ Electric indent interferes with lots of modes' own indenting, so disable it.
   (setq electric-indent-inhibit t)
 #+END_SRC
 
+=popup-imenu= is a nice document-overview tool.
+#+BEGIN_SRC emacs-lisp
+  (use-package popup-imenu)
+  (evil-leader/set-key "p" 'popup-imenu)
+#+END_SRC
+
 ** Emacs Lisp
 Nobody likes dynamic binding by default.
 #+BEGIN_SRC emacs-lisp :padline no
@@ -491,7 +497,6 @@ Like there's any other choice but ENSIME?
   (use-package ensime)
   (setq ensime-startup-notification nil
         ensime-startup-snapshot-notification nil)
-  (evil-leader/set-key "p" 'popup-imenu)
 #+END_SRC
 
 ** Ansible
@@ -571,8 +576,8 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
   (defmodule sql
     "Init module for SQL. Sets evil leader shortcuts for interpreters."
     (evil-leader/set-key
-      "p p" 'sql-postgres
-      "p s" 'sql-sqlite))
+      "s q p" 'sql-postgres
+      "s q s" 'sql-sqlite))
 #+END_SRC
 
 ** Data languages
