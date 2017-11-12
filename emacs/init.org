@@ -22,6 +22,24 @@ From here-on out =use-package= loads packages. We almost always want to =:ensure
   (setq use-package-always-ensure t)
 #+END_SRC
 
+* Encoding
+UTF-8 everywhere, but don't mess with line-endings.
+#+BEGIN_SRC emacs-lisp
+  (if (eq system-type 'windows-nt)
+      (prefer-coding-system 'utf-8-dos)
+    (prefer-coding-system 'utf-8-unix))
+#+END_SRC
+
+It's also handy to programmatically convert files, mainly when Windows has UTF-16'd something.
+#+BEGIN_SRC emacs-lisp
+  (defun convert-file-encoding (file coding-system)
+    "Convert FILE to CODING-SYSTEM without visiting it."
+    (with-temp-buffer
+      (insert-file-contents file)
+      (let ((coding-system-for-write coding-system))
+        (write-region nil nil file))))
+#+END_SRC
+
 * Init file
 It's convenient to be able to get at this quickly.
 #+BEGIN_SRC emacs-lisp
@@ -793,24 +811,6 @@ Backups and lock files not required.
 #+BEGIN_SRC emacs-lisp
   (setq make-backup-files nil
         create-lockfiles nil)
-#+END_SRC
-
-* Encoding
-UTF-8 everywhere, but don't mess with line-endings.
-#+BEGIN_SRC emacs-lisp
-  (if (eq system-type 'windows-nt)
-      (prefer-coding-system 'utf-8-dos)
-    (prefer-coding-system 'utf-8-unix))
-#+END_SRC
-
-It's also handy to programmatically convert files, mainly when Windows has UTF-16'd something.
-#+BEGIN_SRC emacs-lisp
-  (defun convert-file-encoding (file coding-system)
-    "Convert FILE to CODING-SYSTEM without visiting it."
-    (with-temp-buffer
-      (insert-file-contents file)
-      (let ((coding-system-for-write coding-system))
-        (write-region nil nil file))))
 #+END_SRC
 
 * Eshell
