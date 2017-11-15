@@ -68,10 +68,16 @@ I've hacked together a module system so that most of these sections are opt-in. 
   (defgroup init-modules nil
     "The init modules customization group.")
 
+  (defvar init-modules-defs-plist nil
+    "The module definitions plist.")
+
   (defun init-module-load (name)
     "Load the module NAME."
-    (let ((exec-module (get (quote name) 'module-def)))
+    (let ((exec-module (plist-get init-modules-defs-plist
+                                  (quote name))))
+      (message "Init-module-load %s: %s" name exec-module)
       (when exec-module
+        (message "Found def for %s" name)
         (funcall exec-module))))
 
   (defun init-module-set (name value)
@@ -95,8 +101,13 @@ I've hacked together a module system so that most of these sections are opt-in. 
                                  :type '(boolean)))
       `(progn
          ;; Stash the definition in the symbol's plist
-         (put (quote ,module-name) 'module-def
-              (lambda () ,@body))
+         (setq init-modules-defs-plist
+               (plist-put init-modules-defs-plist
+                          (quote ,module-name)
+                          (lambda ()
+                            (progn
+                              (message "Evaluating definition of %s" ,module-name)
+                              ,@body))))
          ;; If set, evaluate it
          (when ,module-name
            (message "Evaluating %s on first def" (quote ,module-name))
