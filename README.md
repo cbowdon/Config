@@ -1,27 +1,41 @@
-# Configuration files
+Configuration files
+===================
 
 If it's important, version it!
 
-## Usage
-Clone this repo and run install_configs.sh, which will backup existing files and replace them with a sym link.
+Usage
+-----
+Use [GNU Stow](https://www.gnu.org/software/stow/) to install symlinks for a particular program, e.g. to install symlinks for =~/.emacs= and =~/init.org= (the files in [emacs](./emacs)):
 
-## Bash
-- .bashrc - Arch
-- .bash_profile - OSX
-TODO merge these two so I can install all-in-one
+    cd Config
+    stow -t ~ emacs
 
-# Powershell
-- profile.ps1
+Emacs
+-----
+Contains my [pinched-favourite-bits-from-Spacemacs](https://medium.com/@CBowdon/pinching-the-best-bits-from-spacemacs-869b8c793ad3) literate init file.
 
-## Screen
-- .screenrc
+Vim
+---
+I used to use Vim extensively, managing plugins with vundle.
 
-## Vim
 - .vimrc
 - slime.vim - from Jonathon Palardy https://github.com/jpalardy/vim-slime
 
-## Emacs
-- .emacs - God knows what's in this. Haven't used Emacs for years.
+CTags
+-----
+I developed some CTags defs for TypeScript so that I could work more effectively with it in Vim.
 
-### License
-GPL3 for my stuff, slime.vim is MIT
+GHC
+---
+Minor quality-of-life improvements for GHCi.
+
+Bash
+----
+Rather old, use with caution.
+
+- .bashrc - Arch
+- .bash_profile - OSX
+
+License
+-------
+GPL3 for my stuff, slime.vim which is copied here, is MIT
