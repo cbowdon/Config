@@ -63,6 +63,9 @@ It's convenient to be able to get at this quickly.
 I prefer not to clutter =.emacs= with customizations, so create an =init-custom.el=.
 #+BEGIN_SRC emacs-lisp
   (setq custom-file "~/init-custom.el")
+  (unless (file-exists-p custom-file)
+    (with-temp-buffer
+      (write-file custom-file)))
   (load-file custom-file)
 #+END_SRC
 
