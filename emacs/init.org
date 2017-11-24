@@ -1,7 +1,11 @@
 * Package repositories
-Get packages from ELPA, MELPA +and org+.
+Get packages from ELPA, MELPA +and org+ by default. This can be customized (e.g. to use a local checkout of =spacemacs-elpa-mirror= by customizing =package-archives=).
+
 #+BEGIN_SRC emacs-lisp
   (require 'package)
+  (setq package-archives
+        '(("gnu" . "https://elpa.gnu.org/packages/")
+          ("melpa" . "https://melpa.org/packages/")))
   (package-initialize)
 #+END_SRC
 
