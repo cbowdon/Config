@@ -170,7 +170,7 @@ Map =C-x ?= to =<leader> ?= for =?= in =0-z= and map =C-x C-?= to =<leader> x ?=
 #+BEGIN_SRC emacs-lisp
   (defun evil-leader/remap-range (begin-key end-key make-leader-binding &optional reserved)
     "Remap a range of keys from ctl-x-map, from BEGIN-KEY to END-KEY inclusive to an Evil leader binding.
-  Convert the key from the map to an Evil leader binding using MAKE-LEADER-BINDING. 
+  Convert the key from the map to an Evil leader binding using MAKE-LEADER-BINDING.
   RESERVED is a list of keys: if specified, do not create bindings for these."
     (let ((bindings-plist '()))
       (map-char-table
@@ -480,12 +480,28 @@ Elpy is currently the best Emacs Python setup I know, although I haven't tried a
 #+END_SRC
 
 ** React
-Though I remain suspicious of Facebook, React has brought a nice functional taste to JS.
+Though I remain suspicious of Facebook, React has brought a nice functional taste to JS. I've configured =rjsx-mode= for all JS and JSX files since in various contexts (e.g. React Native) JSX files are still given a =.js= extension. It's built on =js2-mode=, which is very good for general JS programming anyway.
+
+I also include =npm-mode= to save me opening a terminal every 2 minutes.
+
 #+BEGIN_SRC emacs-lisp
   (defmodule react
     "Init module for React/JSX editing."
-    (use-package rjsx-mode
-      :mode "\\.jsx?$"))
+    (use-package rjsx-mode :mode "\\.jsx?$")
+    (use-package npm-mode :mode "\\.jsx?$")
+
+    (defun npm-mode-npm-run-test ()
+      "Run the 'npm run test' command on a project script."
+      (interactive)
+      (npm-mode--exec-process "npm run test"))
+
+    (evil-leader/set-key
+      "nii" 'npm-mode-npm-install
+      "nis" 'npm-mode-npm-install-save
+      "nid" 'npm-mode-npm-install-save-dev
+      "nr" 'npm-mode-npm-run
+      "nt" 'npm-mode-npm-run-test
+      "nv" 'npm-mode-visit-project-file))
 #+END_SRC
 
 ** TypeScript
