@@ -811,10 +811,13 @@ Because everyone else uses GitHub-flavored markdown...
 #+END_SRC
 
 ** Modeline
+Telephone line is a sweet rewrite of Powerline.
 #+BEGIN_SRC emacs-lisp
-  (use-package powerline)
-  (use-package powerline-evil
-    :config (powerline-evil-center-color-theme))
+  (use-package telephone-line
+    :config (progn
+              (require 'telephone-line-config)
+              (telephone-line-evil-config)
+              (setq telephone-line-height 24)))
 #+END_SRC
 
 ** Dashboard
