@@ -278,8 +278,6 @@ By default every text editor should display line and column number, and not wrap
   (setq-default truncate-lines t)
   (add-hook 'prog-mode-hook 'column-number-mode)
   (add-hook 'prog-mode-hook 'linum-mode)
-  ;; linum still helpful in structured docs like org
-  (add-hook 'org-mode-hook 'linum-mode)
 #+END_SRC
 
 Electric indent interferes with lots of modes' own indenting, so disable it.
@@ -699,6 +697,16 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
 #+END_SRC
 
 * Org
+** Performance
+Line numbers are helpful in structured docs like org, but perform poorly (until the native line numbers in Emacs 26, anyway).
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (let ((lines (count-lines (point-min) (point-max))))
+                (when (< lines 500)
+                  (linum-mode)))))
+#+END_SRC
+
 ** Evilification
 It's nice to disable evil indentation, which doesn't play nice. I set a few leader bindings but really it's just easier to use God mode here.
 #+BEGIN_SRC emacs-lisp
@@ -711,6 +719,8 @@ It's nice to disable evil indentation, which doesn't play nice. I set a few lead
     "ot" 'org-todo
     "oT" 'org-set-tags
     "oe" 'org-set-effort
+    "ov" 'org-columns
+    "oq" 'org-columns-quit
     "oc" 'org-edit-special)
 
   (evil-leader/set-key-for-mode 'org-mode
