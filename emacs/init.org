@@ -482,11 +482,16 @@ Though I remain suspicious of Facebook, React has brought a nice functional tast
 
 I also include =npm-mode= to save me opening a terminal every 2 minutes.
 
+=prettier= (and any standardised formatting program, e.g. =yapf= for Python) should be mandatory. Not having to give a damn about formatting is a big weight off the mind.
+
 #+BEGIN_SRC emacs-lisp
   (defmodule react
     "Init module for React/JSX editing."
-    (use-package rjsx-mode :mode "\\.jsx?$")
-    (use-package npm-mode :mode "\\.jsx?$")
+    (use-package npm-mode)
+    (use-package prettier-js)
+    (use-package rjsx-mode
+      :mode "\\.jsx?$"
+      :config (npm-global-mode))
 
     (defun npm-mode-npm-run-test ()
       "Run the 'npm run test' command on a project script."
