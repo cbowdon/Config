@@ -619,10 +619,9 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
 ** PHP
 #+BEGIN_SRC emacs-lisp
   (defmodule php
-    "Init module for php. Uses html-mode for Cake templates."
+    "Init module for php. Uses web-mode for Cake templates."
     (use-package php-mode :mode "\\.php\\'")
-
-    (add-to-list 'auto-mode-alist '("\\.ctp\\'" . 'html-mode)))
+    (use-package web-mode :mode "\\.ctp\\"))
 #+END_SRC
 
 ** SQL
