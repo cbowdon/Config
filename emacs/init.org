@@ -624,6 +624,15 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
     (use-package web-mode :mode "\\.ctp\\"))
 #+END_SRC
 
+** Docker
+#+BEGIN_SRC emacs-lisp
+  (defmodule docker
+    "Init module for working with Docker and Compose."
+    (use-package docker)
+    (use-package docker-compose-mode)
+    (use-package dockerfile-mode :mode "Dockerfile'\\"))
+#+END_SRC
+
 ** SQL
 #+BEGIN_SRC emacs-lisp
   (defmodule sql
