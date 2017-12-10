@@ -630,7 +630,7 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
     "Init module for working with Docker and Compose."
     (use-package docker)
     (use-package docker-compose-mode)
-    (use-package dockerfile-mode :mode "Dockerfile'\\"))
+    (use-package dockerfile-mode :mode "Dockerfile$"))
 #+END_SRC
 
 ** SQL
