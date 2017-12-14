@@ -378,12 +378,8 @@ Emacs 25 brought some mod cons to the language that are worth shimming in older 
       `(internal--thread-argument nil ,@forms)))
 #+END_SRC
 
-Make ad-hoc lisping more comfortable by automatically requiring packages.
+Make ad-hoc lisping more comfortable.
 #+BEGIN_SRC emacs-lisp
-(use-package seq)
-(use-package subr-x)
-(use-package cl-lib)
-
 (add-hook 'emacs-lisp-mode-hook #'(lambda () (prettify-symbols-mode)))
 #+END_SRC
 
