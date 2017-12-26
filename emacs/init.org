@@ -1000,17 +1000,18 @@ You can't be a professional without a try-hard prompt.
   ;; TODO memoize those drawing functions
 
   (defvar eshell-prompt-suffix
-    (if (eq system-type 'darwin) "🔥 " "$ ")
+    (if (eq system-type 'darwin) "🔥 " "> ")
     "String at end of prompt")
 
-  (defvar eshell-prompt-bg-color "#3d3d68"
+  (defvar eshell-prompt-bg-color
+    (color-complement-hex (frame-parameter nil 'foreground-color))
     "Color of the prompt block background")
 
-  (defvar eshell-prompt-fg-color "#ffffff"
+  (defvar eshell-prompt-fg-color
+    (color-complement-hex (frame-parameter nil 'background-color))
     "Color of the prompt block foreground")
 
-  (defvar eshell-prompt--separators
-    (make-hash-table))
+  (defvar eshell-prompt--separators (make-hash-table))
 
   (defun eshell-prompt--lhs (fg-color bg-color)
     (let ((hash-key (concat "curve_right_" fg-color "_" bg-color)))
