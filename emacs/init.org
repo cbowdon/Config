@@ -1003,15 +1003,35 @@ You can't be a professional without a try-hard prompt.
     (if (eq system-type 'darwin) "🔥 " "$ ")
     "String at end of prompt")
 
+  (defvar eshell-prompt-bg-color "#3d3d68"
+    "Color of the prompt block background")
+
+  (defvar eshell-prompt-fg-color "#ffffff"
+    "Color of the prompt block foreground")
+
+  (defvar eshell-prompt--separators
+    (make-hash-table))
+
+  (defun eshell-prompt--lhs (fg-color bg-color)
+    (let ((hash-key (concat "curve_right_" fg-color "_" bg-color)))
+      (or (gethash hash-key eshell-prompt--separators))
+    (puthash hash-key (curve-right-xpm bg-color fg-color) eshell-prompt--separators)))
+
+  (defun eshell-prompt--rhs (fg-color bg-color)
+    (let ((hash-key (concat "curve_left_" fg-color "_" bg-color)))
+      (or (gethash hash-key eshell-prompt--separators))
+    (puthash hash-key (curve-left-xpm fg-color bg-color) eshell-prompt--separators)))
+
   (defun eshell-blocky-prompt ()
+    "Create a blocky eshell prompt"
     (let ((bg (frame-parameter nil 'background-color))
           (fg (frame-parameter nil 'foreground-color)))
       (concat
-       (propertize " " 'display (curve-right-xpm bg "#3d3d68"))
+       (propertize " " 'display (eshell-prompt--lhs eshell-prompt-bg-color bg))
        (propertize (eshell/pwd) 'face
-                   (list :foreground "white"
-                         :background "#3d3d68"))
-       (propertize " " 'display (curve-left-xpm "#3d3d68" bg))
+                   (list :foreground eshell-prompt-fg-color
+                         :background eshell-prompt-bg-color))
+       (propertize " " 'display (eshell-prompt--rhs eshell-prompt-bg-color bg))
        eshell-prompt-suffix)))
 
   (defconst eshell-blocky-prompt-regexp
