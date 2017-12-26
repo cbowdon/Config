@@ -321,7 +321,7 @@ A handy timer macro.
        result))
 #+END_SRC
 
-*** Seq, subr-x and threading macros
+*** Threading macros
 Emacs 25 brought some mod cons to the language that are worth shimming in older Emacsen.
 #+BEGIN_SRC emacs-lisp
   (defun emacs-version-less-than (major-number)
@@ -378,9 +378,12 @@ Emacs 25 brought some mod cons to the language that are worth shimming in older 
       `(internal--thread-argument nil ,@forms)))
 #+END_SRC
 
+*** Comfort
 Make ad-hoc lisping more comfortable.
 #+BEGIN_SRC emacs-lisp
-(add-hook 'emacs-lisp-mode-hook #'(lambda () (prettify-symbols-mode)))
+  (add-hook 'emacs-lisp-mode-hook #'(lambda () (prettify-symbols-mode)))
+
+  (use-package paredit :mode "\\.el$")
 #+END_SRC
 
 *** REST
