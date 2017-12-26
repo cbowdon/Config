@@ -48,16 +48,16 @@ It's also handy to programmatically convert files, mainly when Windows has UTF-1
 It's convenient to be able to get at this quickly.
 #+BEGIN_SRC emacs-lisp
   (defun init-file ()
-    "Return the full path to my init file. If it is a symlink, find the target."
+    "Return the path to my init file."
     (if (eq system-type 'windows-nt)
         "C:/Cygwin64/home/chris.bowdon/init.org"
-      (let* ((file-name (expand-file-name "~/init.org"))
-             (symlink-target (file-symlink-p file-name)))
-        (or symlink-target file-name))))
+      "~/init.org"))
 
   (defun find-init-file ()
     (interactive)
     (find-file (init-file)))
+
+  (global-set-key (kbd "C-x .") 'find-init-file)
 #+END_SRC
 
 I prefer not to clutter =.emacs= with customizations, so create an =init-custom.el=.
