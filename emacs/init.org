@@ -997,10 +997,68 @@ You can't be a professional without a try-hard prompt.
              (if color2 color2 "None"))
      'xpm t :ascent 'center))
 
-  ;; TODO memoize those drawing functions
+  (defun arrow-left-xpm (color1 color2)
+    "Return an XPM left arrow string representing."
+    (create-image
+     (format "/* XPM */
+  static char * curve_right[] = {
+  \"12 18 2 1\",
+  \". c %s\",
+  \"  c %s\",
+  \"         ...\",
+  \"        ....\",
+  \"       .....\",
+  \"      ......\",
+  \"     .......\",
+  \"    ........\",
+  \"   .........\",
+  \"  ..........\",
+  \" ...........\",
+  \" ...........\",
+  \"  ..........\",
+  \"   .........\",
+  \"    ........\",
+  \"     .......\",
+  \"      ......\",
+  \"       .....\",
+  \"        ....\",
+  \"         ...\"};"
+             (if color2 color2 "None")
+             (if color1 color1 "None"))
+     'xpm t :ascent 'center))
+
+  (defun arrow-right-xpm (color1 color2)
+    "Return an XPM right arrow string representing."
+    (create-image
+     (format "/* XPM */
+  static char * curve_left[] = {
+  \"12 18 2 1\",
+  \". c %s\",
+  \"  c %s\",
+  \"...         \",
+  \"....        \",
+  \".....       \",
+  \"......      \",
+  \".......     \",
+  \"........    \",
+  \".........   \",
+  \"..........  \",
+  \"........... \",
+  \"........... \",
+  \"..........  \",
+  \".........   \",
+  \"........    \",
+  \".......     \",
+  \"......      \",
+  \".....       \",
+  \"....        \",
+  \"...         \"};"
+             (if color1 color1 "None")
+             (if color2 color2 "None"))
+     'xpm t :ascent 'center))
 
   (defvar eshell-prompt-suffix
-    (if (eq system-type 'darwin) "🔥 " "> ")
+    (if (eq system-type 'darwin) "🔥 " " ")
     "String at end of prompt")
 
   (defvar eshell-prompt-bg-color
@@ -1014,14 +1072,14 @@ You can't be a professional without a try-hard prompt.
   (defvar eshell-prompt--separators (make-hash-table))
 
   (defun eshell-prompt--lhs (fg-color bg-color)
-    (let ((hash-key (concat "curve_right_" fg-color "_" bg-color)))
+    (let ((hash-key (concat "lhs_" fg-color "_" bg-color)))
       (or (gethash hash-key eshell-prompt--separators))
-    (puthash hash-key (curve-right-xpm bg-color fg-color) eshell-prompt--separators)))
+    (puthash hash-key (arrow-right-xpm bg-color fg-color) eshell-prompt--separators)))
 
   (defun eshell-prompt--rhs (fg-color bg-color)
-    (let ((hash-key (concat "curve_left_" fg-color "_" bg-color)))
+    (let ((hash-key (concat "rhs_" fg-color "_" bg-color)))
       (or (gethash hash-key eshell-prompt--separators))
-    (puthash hash-key (curve-left-xpm fg-color bg-color) eshell-prompt--separators)))
+    (puthash hash-key (arrow-right-xpm fg-color bg-color) eshell-prompt--separators)))
 
   (defun eshell-blocky-prompt ()
     "Create a blocky eshell prompt"
