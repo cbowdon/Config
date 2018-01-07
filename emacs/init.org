@@ -69,6 +69,26 @@ I prefer not to clutter =.emacs= with customizations, so create an =init-custom.
   (load-file custom-file)
 #+END_SRC
 
+It's also convenient to allow loading some custom scripts per host, e.g. for work or home-specific setup.
+
+#+BEGIN_SRC emacs-lisp
+  (defcustom init-file-extra-files nil
+    "Extra files to load with init.org"
+    :type '(repeat (file :must-match t)))
+
+  (defun init-file-load-extra-files ()
+    "Loads each .el or .org in init-file-extra-files"
+    (interactive)
+    (dolist (extra-file init-file-extra-files)
+      (message "Extra init file: %s (%s)" extra-file)
+      (pcase (file-name-extension extra-file)
+        ("el" (load-file extra-file))
+        ("org" (org-babel-load-file extra-file))
+        (_ (message "I have no idea what this is: %s" extra-file)))))
+
+  (init-file-load-extra-files)
+#+END_SRC
+
 * Modules
 I've hacked together a module system so that most of these sections are opt-in. At the moment there is a macro =defmodule= that defines this, but it would be nice if I can modify =org-babel-tangle= so that it turns each section into a module (and automatically turns the text into module documentation).
 #+BEGIN_SRC emacs-lisp
