@@ -480,20 +480,13 @@ Ensure there's a symlink to the F# bin dir!
 #+END_SRC
 
 ** Python
-Elpy is currently the best Emacs Python setup I know, although I haven't tried anaconda-mode yet.
+I used to like Elpy for this, but these days prefer anaconda-mode because it's more lightweight.
 #+BEGIN_SRC emacs-lisp
   (defmodule python3
-    "Init module for Python 3 development. Installs and configures Elpy."
-    (use-package flycheck)
-
-    (use-package elpy
-      :config (progn
-                (elpy-enable)
-                (setq elpy-rpc-python-command "python3"
-                      python-shell-interpreter "python3")
-                (when (require 'flycheck nil t)
-                  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-                  (add-hook 'elpy-mode-hook 'flycheck-mode)))))
+    "Init module for Python 3 development. Installs and configures anaconda-mode."
+    (use-package anaconda-mode
+      :config (add-hook 'python-mode-hook 'anaconda-mode))
+    (use-package company-anaconda))
 #+END_SRC
 
 ** React
