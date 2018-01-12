@@ -401,9 +401,10 @@ Emacs 25 brought some mod cons to the language that are worth shimming in older 
 *** Comfort
 Make ad-hoc lisping more comfortable.
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'emacs-lisp-mode-hook #'(lambda () (prettify-symbols-mode)))
+  (use-package paredit)
 
-  (use-package paredit :mode "\\.el$")
+  (add-hook 'emacs-lisp-mode-hook 'prettify-symbols-mode)
+  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
 #+END_SRC
 
 *** REST
