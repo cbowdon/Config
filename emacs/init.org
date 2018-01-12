@@ -80,7 +80,7 @@ It's also convenient to allow loading some custom scripts per host, e.g. for wor
     "Loads each .el or .org in init-file-extra-files"
     (interactive)
     (dolist (extra-file init-file-extra-files)
-      (message "Extra init file: %s (%s)" extra-file)
+      (message "Extra init file: %s" extra-file)
       (pcase (file-name-extension extra-file)
         ("el" (load-file extra-file))
         ("org" (org-babel-load-file extra-file))
