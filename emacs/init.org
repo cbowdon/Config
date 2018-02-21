@@ -172,6 +172,8 @@ I prefer not to clobber the default bindings with evil bindings in some modes.
   (add-to-list 'evil-emacs-state-modes 'term-mode)
   (add-to-list 'evil-emacs-state-modes 'diff-mode)
   (add-to-list 'evil-emacs-state-modes 'vc-mode)
+  (add-to-list 'evil-emacs-state-modes 'daemons-mode)
+  (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
 #+END_SRC
 
 ** Keyboard mapping
@@ -410,6 +412,13 @@ Make ad-hoc lisping more comfortable.
   (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
 
   (evil-leader/set-key "xE" 'eval-buffer)
+#+END_SRC
+
+*** Package development
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck-package)
+  (eval-after-load 'flycheck '(flycheck-package-setup))
+  (use-package package-lint)
 #+END_SRC
 
 *** REST
