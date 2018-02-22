@@ -670,6 +670,11 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
 #+END_SRC
 
 ** Data languages
+*** CSV
+#+BEGIN_SRC emacs-lisp
+  (use-package csv-mode)
+#+END_SRC
+
 *** JSON
 #+BEGIN_SRC emacs-lisp
   (defmodule json
