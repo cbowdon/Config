@@ -988,6 +988,7 @@ Thank you [[howardism.org]]. I no longer use this, but keep it around for refere
 
 ** Prompt
 You can't be a professional without a try-hard prompt.
+*** XPM shapes
 #+BEGIN_SRC emacs-lisp
   ;; pinched from powerline.el
   (defun curve-right-xpm (color1 color2)
@@ -1109,7 +1110,10 @@ You can't be a professional without a try-hard prompt.
              (if color1 color1 "None")
              (if color2 color2 "None"))
      'xpm t :ascent 'center))
+#+END_SRC
 
+*** Prompt functions
+#+BEGIN_SRC emacs-lisp
   (defvar eshell-prompt-suffix
     (if (eq system-type 'darwin) "🔥 " " ")
     "String at end of prompt")
