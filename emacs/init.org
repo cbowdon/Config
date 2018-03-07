@@ -172,8 +172,6 @@ I prefer not to clobber the default bindings with evil bindings in some modes.
   (add-to-list 'evil-emacs-state-modes 'term-mode)
   (add-to-list 'evil-emacs-state-modes 'diff-mode)
   (add-to-list 'evil-emacs-state-modes 'vc-mode)
-  (add-to-list 'evil-emacs-state-modes 'daemons-mode)
-  (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
 #+END_SRC
 
 ** Keyboard mapping
@@ -215,7 +213,7 @@ Map =C-x ?= to =<leader> ?= for =?= in =0-z= and map =C-x C-?= to =<leader> x ?=
   (evil-leader/remap-range ?0
                            ?z
                            (lambda (key) (char-to-string key))
-                           '(?f ?m ?r ?s ?t))
+                           '(?f ?m ?r ?s ?t ?d))
 #+END_SRC
 
 Set CAPSLOCK as another ESC. In GNOME 3 and MacOS use the system settings GUI. In X, use the function below. In Windows... screw around with the registry?
@@ -813,6 +811,24 @@ Because everyone else uses GitHub-flavored markdown...
     (use-package ox-gfm)
 #+END_SRC
 
+* System
+** Daemons
+Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services and customize it for evil.
+#+BEGIN_SRC emacs-lisp
+  (use-package daemons
+    :config
+    (progn
+      (add-to-list 'evil-emacs-state-modes 'daemons-mode)
+      (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
+      (evil-leader/set-key
+        "d d" 'daemons
+        "d RET" 'daemons-status
+        "d s" 'daemons-start
+        "d S" 'daemons-stop
+        "d r" 'daemons-reload
+        "d R" 'daemons-restart)))
+#+END_SRC
+
 * Frame
 #+BEGIN_SRC emacs-lisp
   (defun set-frame-transparency (fg-percent bg-percent)
@@ -1148,8 +1164,9 @@ These days Treemacs is the coolest directory browser.
   (evil-leader/set-key "t" 'treemacs)
 #+END_SRC
 
-Customize dired a bit.
+Customize dired a bit and give it a key.
 #+BEGIN_SRC emacs-lisp
+  (evil-leader/set-key "D" 'dired)
   (setq dired-listing-switches "-lh --group-directories-first")
 #+END_SRC
 
