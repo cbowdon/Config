@@ -36,6 +36,11 @@ Rather old, use with caution.
 - .bashrc - Arch
 - .bash_profile - OSX
 
+Conky
+-----
+
+[This config](https://www.gnome-look.org/content/show.php/conky_grey?content=137272) but adapted to openSUSE Tumbleweed.
+
 License
 -------
 GPL3 for my stuff, slime.vim which is copied here, is MIT
