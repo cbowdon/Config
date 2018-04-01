@@ -293,6 +293,14 @@ Company mode is my preferred auto-completion package because it seems to be best
     :config (add-hook 'prog-mode-hook #'(lambda () (company-mode))))
 #+END_SRC
 
+The Language Server Protocol (lsp) packages are rather good and worth setting up initially.
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode)
+  (use-package flycheck)  ;; used by lsp-ui for fancy displays
+  (use-package lsp-ui :config (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+  (use-package company-lsp :config (push 'company-lsp company-backends))
+#+END_SRC
+
 By default every text editor should display line and column number, and not wrap text.
 #+BEGIN_SRC emacs-lisp
   (setq-default truncate-lines t)
@@ -559,15 +567,15 @@ I also include =npm-mode= to save me opening a terminal every 2 minutes.
 #+END_SRC
 
 ** Java
-There are a few options for Java development in Emacs, but most rely on integration with an external IDE like Eclipse. In contact, =meghanada= is a nice, relatively minimal setup. =maven-test-mode= is a convenient way to run individual tests rather than passing detailed arguments to =mvn=.
+=lsp-java= is the best Java mode I've tried so far (beating =meghanada=, =eclim= and =ensime=). Make sure to download the [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][Eclipse JDT language server]] and put it in =~/.emacs.d/eclipse.jdt.ls/server/=.
+
+=maven-test-mode= is a convenient way to run individual tests rather than passing detailed arguments to =mvn=.
 #+BEGIN_SRC emacs-lisp
   (defmodule java
     "Init module for Java."
-    (use-package maven-test-mode)
-    (use-package meghanada)
-    (use-package javadoc-lookup)
+    (use-package lsp-java :config (add-hook 'java-mode-hook 'lsp-java-enable))
+    (use-package maven-test-mode))
 
-    (add-hook 'java-mode-hook 'meghanada-mode))
 #+END_SRC
 
 ** Scala
