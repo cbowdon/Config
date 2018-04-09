@@ -512,34 +512,23 @@ I used to like Elpy for this, but these days prefer anaconda-mode because it's m
     (use-package company-anaconda))
 #+END_SRC
 
-** React
+** JavaScript
 Though I remain suspicious of Facebook, React has brought a nice functional taste to JS. I've configured =rjsx-mode= for all JS and JSX files since in various contexts (e.g. React Native) JSX files are still given a =.js= extension. It's built on =js2-mode=, which is very good for general JS programming anyway.
-
-I also include =npm-mode= to save me opening a terminal every 2 minutes.
 
 =prettier= (and any standardised formatting program, e.g. =yapf= for Python) should be mandatory. Not having to give a damn about formatting is a big weight off the mind.
 
+I'm using =lsp-javascript= for completion/checking support, which requires installing the [[https://github.com/sourcegraph/javascript-typescript-langserver][javascript-typescript-langserver]], i.e. =yarn global add javascript-typescript-langserver=. Make sure =~/.yarn/bin= is on your path.
+
 #+BEGIN_SRC emacs-lisp
-  (defmodule react
-    "Init module for React/JSX editing."
-    (use-package npm-mode)
+  (defmodule javascript
+    "Init module for JavaScript (including React/JSX)."
     (use-package prettier-js)
-    (use-package rjsx-mode
-      :mode "\\.jsx?$"
-      :config (npm-global-mode))
+    (use-package rjsx-mode :mode "\\.jsx?$")
 
-    (defun npm-mode-npm-run-test ()
-      "Run the 'npm run test' command on a project script."
-      (interactive)
-      (npm-mode--exec-process "npm run test"))
-
-    (evil-leader/set-key
-      "nii" 'npm-mode-npm-install
-      "nis" 'npm-mode-npm-install-save
-      "nid" 'npm-mode-npm-install-save-dev
-      "nr" 'npm-mode-npm-run
-      "nt" 'npm-mode-npm-run-test
-      "nv" 'npm-mode-visit-project-file))
+    (use-package lsp-javascript-typescript
+      :config (progn
+                (add-hook 'js-mode-hook #'lsp-javascript-typescript-enable)
+                (add-hook 'rjsx-mode #'lsp-javascript-typescript-enable))))
 #+END_SRC
 
 ** TypeScript
