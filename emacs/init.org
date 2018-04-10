@@ -503,13 +503,12 @@ Ensure there's a symlink to the F# bin dir!
 #+END_SRC
 
 ** Python
-I used to like Elpy for this, but these days prefer anaconda-mode because it's more lightweight.
+I've become a big fan of =lsp-mode=. The Python support requires [[https://github.com/palantir/python-language-server][python-language-server]] from PIP. For minimal stress, just install '[all]'.
 #+BEGIN_SRC emacs-lisp
   (defmodule python3
-    "Init module for Python 3 development. Installs and configures anaconda-mode."
-    (use-package anaconda-mode
-      :config (add-hook 'python-mode-hook 'anaconda-mode))
-    (use-package company-anaconda))
+    "Init module for Python 3 development."
+    (use-package lsp-python
+      :config (add-hook 'python-mode-hook 'lsp-python-enable)))
 #+END_SRC
 
 ** JavaScript
