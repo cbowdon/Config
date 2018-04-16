@@ -553,7 +553,13 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
 #+BEGIN_SRC emacs-lisp
   (defmodule clojure
     "Init module for Clojure. A work in progress."
-    (setq cider-auto-jump-to-error nil))
+    (use-package clojure-mode)
+    (use-package cider
+      :config
+      (progn
+        (setq cider-auto-jump-to-error nil)
+        (add-to-list 'evil-emacs-state-modes 'cider-stacktrace-mode)))
+    (use-package clj-refactor))
 #+END_SRC
 
 ** Java
