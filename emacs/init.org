@@ -892,17 +892,28 @@ Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services
 * Appearance
 ** Themes
 #+BEGIN_SRC emacs-lisp
-  (use-package material-theme :defer t)
-  (use-package gruvbox-theme :defer t)
-  (use-package ubuntu-theme :defer t)
-  (use-package gotham-theme :defer t)
+  ;; strong color/dark themes
   (use-package django-theme :defer t)
-  (use-package color-theme-sanityinc-tomorrow :defer t)
-  (use-package creamsody-theme :defer t)
+  (use-package ubuntu-theme :defer t)
   (use-package monokai-theme :defer t)
   (use-package darkokai-theme :defer t)
+  (use-package badger-theme :defer t)
+
+  ;; gentler themes
+  (use-package color-theme-sanityinc-tomorrow :defer t)
+  (use-package color-theme-sanityinc-solarized :defer t)
+  (use-package creamsody-theme :defer t)
+  (use-package arjen-grey-theme :defer t)
+
+  ;; moody themes
+  (use-package gotham-theme :defer t)
   (use-package blackboard-theme :defer t)
   (use-package bubbleberry-theme :defer t)
+
+  ;; can't-remember-but-possibly-nice themes
+  (use-package material-theme :defer t)
+  (use-package gruvbox-theme :defer t)
+
 #+END_SRC
 
 ** Widgets
