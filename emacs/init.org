@@ -327,6 +327,7 @@ Nobody likes dynamic binding by default.
   (setq lexical-binding t)
 #+END_SRC
 
+*** Helper functions
 It's often handy to know if we're using *nix.
 #+BEGIN_SRC emacs-lisp
   (defun is-nix ()
@@ -420,6 +421,18 @@ Make ad-hoc lisping more comfortable.
   (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)
 
   (evil-leader/set-key "xE" 'eval-buffer)
+
+  ;; Create some vimmish bindings for paredit functions
+  (evil-define-key 'normal 'evil-normal-state-map
+    (kbd ",dd") 'paredit-kill
+    (kbd ",dw") 'paredit-forward-kill-word
+    (kbd ",dB") 'paredit-backward-kill-word
+    (kbd ",l") 'paredit-forward
+    (kbd ",h") 'paredit-backward
+    (kbd ",k") 'paredit-backward-up
+    (kbd ",j") 'paredit-forward-down
+    (kbd ",J") 'paredit-wrap-round
+    (kbd ",K") 'paredit-splice-sexp)
 #+END_SRC
 
 *** Package development
@@ -553,12 +566,22 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
 #+BEGIN_SRC emacs-lisp
   (defmodule clojure
     "Init module for Clojure. A work in progress."
-    (use-package clojure-mode)
+    (use-package clojure-mode
+      :config (add-hook 'clojure-mode-hook 'paredit-mode))
     (use-package cider
       :config
       (progn
         (setq cider-auto-jump-to-error nil)
-        (add-to-list 'evil-emacs-state-modes 'cider-stacktrace-mode)))
+        (add-to-list 'evil-emacs-state-modes 'cider-stacktrace-mode)
+        (add-to-list 'evil-emacs-state-modes 'cider-test-report-mode)
+        (evil-leader/set-key-for-mode 'clojure-mode
+          "cc" 'cider-eval-defun-at-point
+          "ce" 'cider-eval-last-sexp
+          "ctt" 'cider-test-run-test
+          "ctn" 'cider-test-run-ns-tests
+          "crn" 'cider-repl-set-ns
+          "cz" 'cider-switch-to-repl-buffer
+          "cj" 'cider-jack-in)))
     (use-package clj-refactor))
 #+END_SRC
 
