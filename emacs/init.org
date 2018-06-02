@@ -307,7 +307,13 @@ By default every text editor should display line and column number, and not wrap
 #+BEGIN_SRC emacs-lisp
   (setq-default truncate-lines t)
   (add-hook 'prog-mode-hook 'column-number-mode)
-  (add-hook 'prog-mode-hook 'linum-mode)
+
+  (defun enable-line-numbers ()
+    (setq display-line-numbers t))
+
+  (if (< emacs-major-version 26)
+      (add-hook 'prog-mode-hook 'linum-mode)
+    (add-hook 'prog-mode-hook 'enable-line-numbers))
 #+END_SRC
 
 Electric indent interferes with lots of modes' own indenting, so disable it.
