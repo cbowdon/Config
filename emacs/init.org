@@ -591,12 +591,11 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
         (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))))
 
     (defun cider-repl-require-helpers ()
-      (interactive)
       "Insert require expressions into a Clojure REPL to save some typing."
-      (cider-switch-to-repl-buffer)
-      (insert "(require '[clojure.repl :refer :all])")
-      (cider-repl-return)
-      (insert "(require '[clojure.pprint :refer [pp]])")
+      (interactive)
+      (when (eq major-mode 'clojure-mode)
+        (cider-switch-to-repl-buffer))
+      (insert "(require '[clojure.repl :refer :all] '[clojure.pprint :refer :all])")
       (cider-repl-return))
 
     (use-package cider
@@ -606,23 +605,24 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
         (add-to-list 'evil-emacs-state-modes 'cider-stacktrace-mode)
         (add-to-list 'evil-emacs-state-modes 'cider-test-report-mode)
         (add-hook 'cider-repl-mode-hook 'paredit-mode)
-        (evil-leader/set-key-for-mode 'clojure-mode
-          "cc" 'cider-eval-defun-at-point
-          "ce" 'cider-eval-last-sexp
-          "ck" 'cider-load-buffer
-          "cl" 'cider-load-file
-          "cL" 'cider-load-all-files
-          "cda" 'cider-apropos
-          "cdd" 'cider-doc
-          "cdj" 'cider-javadoc
-          "cdr" 'cider-grimoire
-          "ctt" 'cider-test-run-test
-          "ctn" 'cider-test-run-ns-tests
-          "ctp" 'cider-test-run-project-tests
-          "crn" 'cider-repl-set-ns
-          "crh" 'cider-repl-require-helpers
-          "cz" 'cider-switch-to-repl-buffer
-          "cj" 'cider-jack-in)))
+        (dolist (m '(clojure-mode cider-repl-mode))
+          (evil-leader/set-key-for-mode m
+            "cc" 'cider-eval-defun-at-point
+            "ce" 'cider-eval-last-sexp
+            "ck" 'cider-load-buffer
+            "cl" 'cider-load-file
+            "cL" 'cider-load-all-files
+            "cda" 'cider-apropos
+            "cdd" 'cider-doc
+            "cdj" 'cider-javadoc
+            "cdr" 'cider-grimoire
+            "ctt" 'cider-test-run-test
+            "ctn" 'cider-test-run-ns-tests
+            "ctp" 'cider-test-run-project-tests
+            "crn" 'cider-repl-set-ns
+            "crh" 'cider-repl-require-helpers
+            "cz" 'cider-switch-to-repl-buffer
+            "cj" 'cider-jack-in))))
 
     (use-package clj-refactor))
 #+END_SRC
