@@ -284,8 +284,7 @@ Sometimes the right mode isn't picked up by buffer name/shebang.
     "mx" 'nxml-mode)
 #+END_SRC
 
-* Programming
-** General
+* Completion
 Company mode is my preferred auto-completion package because it seems to be best supported by the languages I use.
 #+BEGIN_SRC emacs-lisp
   (use-package company
@@ -295,6 +294,13 @@ Company mode is my preferred auto-completion package because it seems to be best
               (setq company-show-numbers t)))
 #+END_SRC
 
+Trying out Ido for Emacs command completion. Good for buffers so far.
+#+BEGIN_SRC emacs-lisp
+  (ido-mode)
+#+END_SRC
+
+* Programming
+** General
 The Language Server Protocol (lsp) packages are rather good and worth setting up initially.
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode)
@@ -325,6 +331,11 @@ Electric indent interferes with lots of modes' own indenting, so disable it.
 #+BEGIN_SRC emacs-lisp
   (use-package popup-imenu)
   (evil-leader/set-key "p" 'popup-imenu)
+#+END_SRC
+
+I'm slowly warming up to Projectile.
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile)
 #+END_SRC
 
 ** Emacs Lisp
