@@ -602,8 +602,14 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
       :config
       (progn
         (setq cider-auto-jump-to-error nil)
-        (add-to-list 'evil-emacs-state-modes 'cider-stacktrace-mode)
-        (add-to-list 'evil-emacs-state-modes 'cider-test-report-mode)
+        (dolist (m '(cider-stacktrace-mode
+                     cider-test-report-mode
+                     cider-classpath-mode
+                     cider-browse-ns-mode
+                     cider-browse-spec-mode
+                     cider-browse-spec-example-mode
+                     cider-browse-spec-view-mode))
+          (add-to-list 'evil-emacs-state-modes m))
         (add-hook 'cider-repl-mode-hook 'paredit-mode)
         (dolist (m '(clojure-mode cider-repl-mode))
           (evil-leader/set-key-for-mode m
