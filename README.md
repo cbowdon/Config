@@ -43,4 +43,4 @@ Conky
 
 License
 -------
-GPL3 for my stuff, slime.vim which is copied here, is MIT
+GPL3 for my stuff, slime.vim which is copied here, is MIT and syslog-mode is GPL2.
