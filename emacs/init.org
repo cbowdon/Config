@@ -618,10 +618,16 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
             "ck" 'cider-load-buffer
             "cl" 'cider-load-file
             "cL" 'cider-load-all-files
+            "cfv" 'cider-find-var
+            "cfn" 'cider-find-ns
+            "cfk" 'cider-find-keyword
+            "cfp" 'cider-find-property
+            "cfr" 'cider-find-resource
             "cda" 'cider-apropos
             "cdd" 'cider-doc
             "cdj" 'cider-javadoc
             "cdr" 'cider-grimoire
+            "cD" 'cider-debug-defun-at-point
             "ctt" 'cider-test-run-test
             "ctn" 'cider-test-run-ns-tests
             "ctp" 'cider-test-run-project-tests
@@ -895,18 +901,20 @@ Because everyone else uses GitHub-flavored markdown...
 ** Daemons
 Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services and customize it for evil.
 #+BEGIN_SRC emacs-lisp
-  (use-package daemons
-    :config
-    (progn
       (add-to-list 'evil-emacs-state-modes 'daemons-mode)
       (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
-      (evil-leader/set-key
-        "d d" 'daemons
-        "d RET" 'daemons-status
-        "d s" 'daemons-start
-        "d S" 'daemons-stop
-        "d r" 'daemons-reload
-        "d R" 'daemons-restart)))
+  ;; (use-package daemons
+  ;;   :config
+  ;;   (progn
+  ;;     (add-to-list 'evil-emacs-state-modes 'daemons-mode)
+  ;;     (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
+  ;;     (evil-leader/set-key
+  ;;       "d d" 'daemons
+  ;;       "d RET" 'daemons-status
+  ;;       "d s" 'daemons-start
+  ;;       "d S" 'daemons-stop
+  ;;       "d r" 'daemons-reload
+  ;;       "d R" 'daemons-restart)))
 #+END_SRC
 
 * Frame
@@ -1280,6 +1288,14 @@ Customize dired a bit and give it a key.
 #+END_SRC
 
 * OS-specific
+** GNU/Linux
+*** Terminal colors
+#+BEGIN_SRC emacs-lisp
+  (when (eq system-type 'gnu/linux)
+    ;; (use-package eterm-256color :config (add-hook 'term-mode-hook #'eterm-256color-mode))
+    )
+#+END_SRC
+
 ** MacOS
 *** Terminal colors
 [[http://stackoverflow.com/questions/8918910/weird-character-zsh-in-emacs-terminal/8920373#8920373][It turns out =term= and =ansi-term= on MacOS needs a bit of setup.]]
