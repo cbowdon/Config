@@ -250,15 +250,6 @@ I've bound =C-<escape>= and =C-~= in particular because in =term-mode= it's poss
 - =gf..= → =M-f M-f M-f=
 - =uco= → =C-u C-c C-o=
 
-** Shell shortcuts
-#+BEGIN_SRC emacs-lisp
-  (evil-leader/set-key
-    "se" 'eshell
-    "st" 'term
-    "sc" 'shell-command
-    "sr" 'shell-command-on-region)
-#+END_SRC
-
 ** REPL shortcuts
 #+BEGIN_SRC emacs-lisp
   (evil-leader/set-key
@@ -1027,236 +1018,249 @@ Backups and lock files not required.
         create-lockfiles nil)
 #+END_SRC
 
-* Eshell
-Fix an irritating warning about the pager program.
+* Shells
+
+Being in the correct mode (line or char) is the cure for all evils in =term-mode=, but for some reason I couldn't get a key binding to work on =term-mode-hook= so just shove it here.
 #+BEGIN_SRC emacs-lisp
-  (setenv "PAGER" "/bin/cat") ;; fixes git terminal warning
-  (add-hook 'eshell-mode-hook #'(lambda () (setenv "PAGER" "/bin/cat")))
+  (evil-leader/set-key
+    "se" 'eshell
+    "st" 'term
+    "sc" 'shell-command
+    "sr" 'shell-command-on-region
+    "sl" 'term-line-mode
+    "sc" 'term-char-mode)
 #+END_SRC
 
-I often manually list after changing directory, so let's automate it.
-#+BEGIN_SRC emacs-lisp
-  (setq eshell-list-files-after-cd t)
-  (setq eshell-ls-initial-args "-lh")
-#+END_SRC
+** Eshell
+ Fix an irritating warning about the pager program.
+ #+BEGIN_SRC emacs-lisp
+   (setenv "PAGER" "/bin/cat") ;; fixes git terminal warning
+   (add-hook 'eshell-mode-hook #'(lambda () (setenv "PAGER" "/bin/cat")))
+ #+END_SRC
 
-Calling =vim= is deep in my muscle memory, so alias it to =find-file=.
-#+BEGIN_SRC emacs-lisp
-  (defun eshell/vim (file)
-    (find-file file))
+ I often manually list after changing directory, so let's automate it.
+ #+BEGIN_SRC emacs-lisp
+   (setq eshell-list-files-after-cd t)
+   (setq eshell-ls-initial-args "-lh")
+ #+END_SRC
 
-  (defun eshell/vimo (file)
-    (find-file-other-window file))
+ Calling =vim= is deep in my muscle memory, so alias it to =find-file=.
+ #+BEGIN_SRC emacs-lisp
+   (defun eshell/vim (file)
+     (find-file file))
 
-  (defun eshell/emacs (file)
-    (find-file-other-window file))
-#+END_SRC
+   (defun eshell/vimo (file)
+     (find-file-other-window file))
 
-** Pop-up shell
-Thank you [[howardism.org]]. I no longer use this, but keep it around for reference.
-#+BEGIN_SRC emacs-lisp
-  (defun eshell-here ()
-    "Opens up a new shell in the directory associated with the
-  current buffer's file. The eshell is renamed to match that
-  directory to make multiple eshell windows easier."
-    (interactive)
-    (let* ((parent (if (buffer-file-name)
-                       (file-name-directory (buffer-file-name))
-                     default-directory))
-           (height (/ (window-total-height) 3))
-           (name   (car (last (split-string parent "/" t)))))
-      (split-window-vertically (- height))
-      (other-window 1)
-      (eshell "new")
-      (rename-buffer (concat "*eshell: " name "*"))
+   (defun eshell/emacs (file)
+     (find-file-other-window file))
+ #+END_SRC
 
-      (insert (concat "ls"))
-      (eshell-send-input)))
+*** Pop-up shell
+ Thank you [[howardism.org]]. I no longer use this, but keep it around for reference.
+ #+BEGIN_SRC emacs-lisp
+   (defun eshell-here ()
+     "Opens up a new shell in the directory associated with the
+   current buffer's file. The eshell is renamed to match that
+   directory to make multiple eshell windows easier."
+     (interactive)
+     (let* ((parent (if (buffer-file-name)
+                        (file-name-directory (buffer-file-name))
+                      default-directory))
+            (height (/ (window-total-height) 3))
+            (name   (car (last (split-string parent "/" t)))))
+       (split-window-vertically (- height))
+       (other-window 1)
+       (eshell "new")
+       (rename-buffer (concat "*eshell: " name "*"))
 
-  (defun eshell/quit ()
-    (insert "exit")
-    (eshell-send-input)
-    (delete-window))
+       (insert (concat "ls"))
+       (eshell-send-input)))
 
-  (defun toggle-eshell ()
-    (interactive)
-    (if (string-match "^\\*eshell: " (buffer-name))
-        (eshell/quit)
-      (eshell-here)))
-#+END_SRC
+   (defun eshell/quit ()
+     (insert "exit")
+     (eshell-send-input)
+     (delete-window))
 
-** Prompt
-You can't be a professional without a try-hard prompt.
-*** XPM shapes
-#+BEGIN_SRC emacs-lisp
-  ;; pinched from powerline.el
-  (defun curve-right-xpm (color1 color2)
-    "Return an XPM right curve string representing."
-    (create-image
-     (format "/* XPM */
-  static char * curve_right[] = {
-  \"12 18 2 1\",
-  \". c %s\",
-  \"  c %s\",
-  \"           .\",
-  \"         ...\",
-  \"         ...\",
-  \"       .....\",
-  \"       .....\",
-  \"       .....\",
-  \"      ......\",
-  \"      ......\",
-  \"      ......\",
-  \"      ......\",
-  \"      ......\",
-  \"      ......\",
-  \"       .....\",
-  \"       .....\",
-  \"       .....\",
-  \"         ...\",
-  \"         ...\",
-  \"           .\"};"
-             (if color2 color2 "None")
-             (if color1 color1 "None"))
-     'xpm t :ascent 'center))
+   (defun toggle-eshell ()
+     (interactive)
+     (if (string-match "^\\*eshell: " (buffer-name))
+         (eshell/quit)
+       (eshell-here)))
+ #+END_SRC
 
-  (defun curve-left-xpm (color1 color2)
-    "Return an XPM left curve string representing."
-    (create-image
-     (format "/* XPM */
-  static char * curve_left[] = {
-  \"12 18 2 1\",
-  \". c %s\",
-  \"  c %s\",
-  \".           \",
-  \"...         \",
-  \"...         \",
-  \".....       \",
-  \".....       \",
-  \".....       \",
-  \"......      \",
-  \"......      \",
-  \"......      \",
-  \"......      \",
-  \"......      \",
-  \"......      \",
-  \".....       \",
-  \".....       \",
-  \".....       \",
-  \"...         \",
-  \"...         \",
-  \".           \"};"
-             (if color1 color1 "None")
-             (if color2 color2 "None"))
-     'xpm t :ascent 'center))
+*** Prompt
+ You can't be a professional without a try-hard prompt.
+**** XPM shapes
+ #+BEGIN_SRC emacs-lisp
+   ;; pinched from powerline.el
+   (defun curve-right-xpm (color1 color2)
+     "Return an XPM right curve string representing."
+     (create-image
+      (format "/* XPM */
+   static char * curve_right[] = {
+   \"12 18 2 1\",
+   \". c %s\",
+   \"  c %s\",
+   \"           .\",
+   \"         ...\",
+   \"         ...\",
+   \"       .....\",
+   \"       .....\",
+   \"       .....\",
+   \"      ......\",
+   \"      ......\",
+   \"      ......\",
+   \"      ......\",
+   \"      ......\",
+   \"      ......\",
+   \"       .....\",
+   \"       .....\",
+   \"       .....\",
+   \"         ...\",
+   \"         ...\",
+   \"           .\"};"
+              (if color2 color2 "None")
+              (if color1 color1 "None"))
+      'xpm t :ascent 'center))
 
-  (defun arrow-left-xpm (color1 color2)
-    "Return an XPM left arrow string representing."
-    (create-image
-     (format "/* XPM */
-  static char * curve_right[] = {
-  \"12 18 2 1\",
-  \". c %s\",
-  \"  c %s\",
-  \"         ...\",
-  \"        ....\",
-  \"       .....\",
-  \"      ......\",
-  \"     .......\",
-  \"    ........\",
-  \"   .........\",
-  \"  ..........\",
-  \" ...........\",
-  \" ...........\",
-  \"  ..........\",
-  \"   .........\",
-  \"    ........\",
-  \"     .......\",
-  \"      ......\",
-  \"       .....\",
-  \"        ....\",
-  \"         ...\"};"
-             (if color2 color2 "None")
-             (if color1 color1 "None"))
-     'xpm t :ascent 'center))
+   (defun curve-left-xpm (color1 color2)
+     "Return an XPM left curve string representing."
+     (create-image
+      (format "/* XPM */
+   static char * curve_left[] = {
+   \"12 18 2 1\",
+   \". c %s\",
+   \"  c %s\",
+   \".           \",
+   \"...         \",
+   \"...         \",
+   \".....       \",
+   \".....       \",
+   \".....       \",
+   \"......      \",
+   \"......      \",
+   \"......      \",
+   \"......      \",
+   \"......      \",
+   \"......      \",
+   \".....       \",
+   \".....       \",
+   \".....       \",
+   \"...         \",
+   \"...         \",
+   \".           \"};"
+              (if color1 color1 "None")
+              (if color2 color2 "None"))
+      'xpm t :ascent 'center))
 
-  (defun arrow-right-xpm (color1 color2)
-    "Return an XPM right arrow string representing."
-    (create-image
-     (format "/* XPM */
-  static char * curve_left[] = {
-  \"12 18 2 1\",
-  \". c %s\",
-  \"  c %s\",
-  \"...         \",
-  \"....        \",
-  \".....       \",
-  \"......      \",
-  \".......     \",
-  \"........    \",
-  \".........   \",
-  \"..........  \",
-  \"........... \",
-  \"........... \",
-  \"..........  \",
-  \".........   \",
-  \"........    \",
-  \".......     \",
-  \"......      \",
-  \".....       \",
-  \"....        \",
-  \"...         \"};"
-             (if color1 color1 "None")
-             (if color2 color2 "None"))
-     'xpm t :ascent 'center))
-#+END_SRC
+   (defun arrow-left-xpm (color1 color2)
+     "Return an XPM left arrow string representing."
+     (create-image
+      (format "/* XPM */
+   static char * curve_right[] = {
+   \"12 18 2 1\",
+   \". c %s\",
+   \"  c %s\",
+   \"         ...\",
+   \"        ....\",
+   \"       .....\",
+   \"      ......\",
+   \"     .......\",
+   \"    ........\",
+   \"   .........\",
+   \"  ..........\",
+   \" ...........\",
+   \" ...........\",
+   \"  ..........\",
+   \"   .........\",
+   \"    ........\",
+   \"     .......\",
+   \"      ......\",
+   \"       .....\",
+   \"        ....\",
+   \"         ...\"};"
+              (if color2 color2 "None")
+              (if color1 color1 "None"))
+      'xpm t :ascent 'center))
 
-*** Prompt functions
-#+BEGIN_SRC emacs-lisp
-  (defvar eshell-prompt-suffix
-    (if (eq system-type 'darwin) "🔥 " " ")
-    "String at end of prompt")
+   (defun arrow-right-xpm (color1 color2)
+     "Return an XPM right arrow string representing."
+     (create-image
+      (format "/* XPM */
+   static char * curve_left[] = {
+   \"12 18 2 1\",
+   \". c %s\",
+   \"  c %s\",
+   \"...         \",
+   \"....        \",
+   \".....       \",
+   \"......      \",
+   \".......     \",
+   \"........    \",
+   \".........   \",
+   \"..........  \",
+   \"........... \",
+   \"........... \",
+   \"..........  \",
+   \".........   \",
+   \"........    \",
+   \".......     \",
+   \"......      \",
+   \".....       \",
+   \"....        \",
+   \"...         \"};"
+              (if color1 color1 "None")
+              (if color2 color2 "None"))
+      'xpm t :ascent 'center))
+ #+END_SRC
 
-  (defvar eshell-prompt-bg-color
-    (color-complement-hex (frame-parameter nil 'foreground-color))
-    "Color of the prompt block background")
+**** Prompt functions
+ #+BEGIN_SRC emacs-lisp
+   (defvar eshell-prompt-suffix
+     (if (eq system-type 'darwin) "🔥 " " ")
+     "String at end of prompt")
 
-  (defvar eshell-prompt-fg-color
-    (color-complement-hex (frame-parameter nil 'background-color))
-    "Color of the prompt block foreground")
+   (defvar eshell-prompt-bg-color
+     (color-complement-hex (frame-parameter nil 'foreground-color))
+     "Color of the prompt block background")
 
-  (defvar eshell-prompt--separators (make-hash-table))
+   (defvar eshell-prompt-fg-color
+     (color-complement-hex (frame-parameter nil 'background-color))
+     "Color of the prompt block foreground")
 
-  (defun eshell-prompt--lhs (fg-color bg-color)
-    (let ((hash-key (concat "lhs_" fg-color "_" bg-color)))
-      (or (gethash hash-key eshell-prompt--separators))
-    (puthash hash-key (arrow-right-xpm bg-color fg-color) eshell-prompt--separators)))
+   (defvar eshell-prompt--separators (make-hash-table))
 
-  (defun eshell-prompt--rhs (fg-color bg-color)
-    (let ((hash-key (concat "rhs_" fg-color "_" bg-color)))
-      (or (gethash hash-key eshell-prompt--separators))
-    (puthash hash-key (arrow-right-xpm fg-color bg-color) eshell-prompt--separators)))
+   (defun eshell-prompt--lhs (fg-color bg-color)
+     (let ((hash-key (concat "lhs_" fg-color "_" bg-color)))
+       (or (gethash hash-key eshell-prompt--separators))
+     (puthash hash-key (arrow-right-xpm bg-color fg-color) eshell-prompt--separators)))
 
-  (defun eshell-blocky-prompt ()
-    "Create a blocky eshell prompt"
-    (let ((bg (frame-parameter nil 'background-color))
-          (fg (frame-parameter nil 'foreground-color)))
-      (concat
-       (propertize " " 'display (eshell-prompt--lhs eshell-prompt-bg-color bg))
-       (propertize (eshell/pwd) 'face
-                   (list :foreground eshell-prompt-fg-color
-                         :background eshell-prompt-bg-color))
-       (propertize " " 'display (eshell-prompt--rhs eshell-prompt-bg-color bg))
-       eshell-prompt-suffix)))
+   (defun eshell-prompt--rhs (fg-color bg-color)
+     (let ((hash-key (concat "rhs_" fg-color "_" bg-color)))
+       (or (gethash hash-key eshell-prompt--separators))
+     (puthash hash-key (arrow-right-xpm fg-color bg-color) eshell-prompt--separators)))
 
-  (defconst eshell-blocky-prompt-regexp
-    (string-join (list "^[^#\n]* " eshell-prompt-suffix)))
+   (defun eshell-blocky-prompt ()
+     "Create a blocky eshell prompt"
+     (let ((bg (frame-parameter nil 'background-color))
+           (fg (frame-parameter nil 'foreground-color)))
+       (concat
+        (propertize " " 'display (eshell-prompt--lhs eshell-prompt-bg-color bg))
+        (propertize (eshell/pwd) 'face
+                    (list :foreground eshell-prompt-fg-color
+                          :background eshell-prompt-bg-color))
+        (propertize " " 'display (eshell-prompt--rhs eshell-prompt-bg-color bg))
+        eshell-prompt-suffix)))
 
-  (unless (frame-parameter nil 'tty)
-    ;; TODO fancy prompt in terminal mode also
-    (setq eshell-prompt-function 'eshell-blocky-prompt
-          eshell-prompt-regexp eshell-blocky-prompt-regexp))
-#+END_SRC
+   (defconst eshell-blocky-prompt-regexp
+     (string-join (list "^[^#\n]* " eshell-prompt-suffix)))
+
+   (unless (frame-parameter nil 'tty)
+     ;; TODO fancy prompt in terminal mode also
+     (setq eshell-prompt-function 'eshell-blocky-prompt
+           eshell-prompt-regexp eshell-blocky-prompt-regexp))
+ #+END_SRC
 
 * Directories
 These days Treemacs is the coolest directory browser.
