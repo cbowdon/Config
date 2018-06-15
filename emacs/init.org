@@ -1370,3 +1370,17 @@ Provide functions to set all the necessary proxy variables for =$day_job=, assum
                                (user-login-name)
                                (read-passwd "Password: "))))
 #+END_SRC
+
+* Pass
+For working with [[https://password-store.org][pass]].
+#+BEGIN_SRC emacs-lisp
+  (use-package password-store
+    :config (evil-leader/set-key
+              "Pc" 'password-store-copy
+              "Pg" 'password-store-generate
+              "Pr" 'password-store-remove
+              "Pe" 'password-store-edit
+              "PR" 'password-store-rename
+              "Pi" 'password-store-insert
+              "Pu" 'password-store-url))
+#+END_SRC
