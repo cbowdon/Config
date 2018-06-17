@@ -892,20 +892,20 @@ Because everyone else uses GitHub-flavored markdown...
 ** Daemons
 Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services and customize it for evil.
 #+BEGIN_SRC emacs-lisp
+  (add-to-list 'evil-emacs-state-modes 'daemons-mode)
+  (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
+  (use-package daemons
+    :config
+    (progn
       (add-to-list 'evil-emacs-state-modes 'daemons-mode)
       (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
-  ;; (use-package daemons
-  ;;   :config
-  ;;   (progn
-  ;;     (add-to-list 'evil-emacs-state-modes 'daemons-mode)
-  ;;     (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
-  ;;     (evil-leader/set-key
-  ;;       "d d" 'daemons
-  ;;       "d RET" 'daemons-status
-  ;;       "d s" 'daemons-start
-  ;;       "d S" 'daemons-stop
-  ;;       "d r" 'daemons-reload
-  ;;       "d R" 'daemons-restart)))
+      (evil-leader/set-key
+        "d d" 'daemons
+        "d RET" 'daemons-status
+        "d s" 'daemons-start
+        "d S" 'daemons-stop
+        "d r" 'daemons-reload
+        "d R" 'daemons-restart)))
 #+END_SRC
 
 * Frame
