@@ -935,10 +935,10 @@ Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services
 * Window management
 #+BEGIN_SRC emacs-lisp
   (use-package golden-ratio)
-  (golden-ratio-mode)
   (evil-leader/set-key
     "w" 'evil-window-map
-    "wg" 'golden-ratio)
+    "wg" 'golden-ratio
+    "wG" 'golden-ratio-mode)
 #+END_SRC
 
 * Appearance
