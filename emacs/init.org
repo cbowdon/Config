@@ -649,9 +649,11 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
 ** Scala
 Like there's any other choice but ENSIME?
 #+BEGIN_SRC emacs-lisp
-  (use-package ensime)
-  (setq ensime-startup-notification nil
-        ensime-startup-snapshot-notification nil)
+  (defmodule scala
+    "Fucking Scala init module"
+    (use-package ensime)
+    (setq ensime-startup-notification nil
+          ensime-startup-snapshot-notification nil))
 #+END_SRC
 
 ** Ansible
