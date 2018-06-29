@@ -875,10 +875,12 @@ It's nice to disable evil indentation, which doesn't play nice. I set a few lead
 #+BEGIN_SRC emacs-lisp
   (setq org-confirm-babel-evaluate #'(lambda (lang body)
                                        (not (or (string= lang "emacs-lisp")
+                                                (string= lang "dot")
                                                 (string= lang "python")))))
 
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((emacs-lisp . t)
+                                 (dot . t)
                                  (python . t)
                                  (ditaa . t)))
 #+END_SRC
@@ -889,6 +891,17 @@ Because everyone else uses GitHub-flavored markdown...
     (use-package htmlize)
     (use-package ox-gfm)
 #+END_SRC
+
+** Diagrams (graphviz)
+I prefer graphviz to ditaa. The binding for (re)displaying inline images helps iterate quickly on diagrams.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package graphviz-dot-mode)
+  (evil-leader/set-key-for-mode 'org-mode
+    "oI" 'org-display-inline-images)
+#+END_SRC
+
+The dot language user guide is [[https://graphviz.gitlab.io/_pages/pdf/dotguide.pdf][here]].
 
 * System
 ** Daemons
