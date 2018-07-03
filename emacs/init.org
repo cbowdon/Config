@@ -5,7 +5,8 @@ Get packages from ELPA, MELPA +and org+ by default. This can be customized (e.g.
   (require 'package)
   (setq package-archives
         '(("gnu" . "https://elpa.gnu.org/packages/")
-          ("melpa" . "https://melpa.org/packages/")))
+          ("melpa" . "https://melpa.org/packages/")
+          ("melpa-stable" . "https://stable.melpa.org/packages/")))
   (package-initialize)
 #+END_SRC
 
@@ -575,11 +576,11 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
   (defmodule clojure
     "Init module for Clojure. A work in progress."
     (use-package clojure-mode
-      :config
-      (progn
-        (add-hook 'clojure-mode-hook 'paredit-mode)
-        (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
-        (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))))
+      :pin melpa-stable
+      :config (progn
+                (add-hook 'clojure-mode-hook 'paredit-mode)
+                (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
+                (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))))
 
     (defun cider-repl-require-helpers ()
       "Insert require expressions into a Clojure REPL to save some typing."
@@ -590,47 +591,43 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
       (cider-repl-return))
 
     (use-package cider
-      :config
-      (progn
-        (setq cider-auto-jump-to-error nil)
-        (dolist (m '(cider-stacktrace-mode
-                     cider-test-report-mode
-                     cider-classpath-mode
-                     cider-browse-ns-mode
-                     cider-browse-spec-mode
-                     cider-browse-spec-example-mode
-                     cider-browse-spec-view-mode))
-          (add-to-list 'evil-emacs-state-modes m))
-        (add-hook 'cider-repl-mode-hook 'paredit-mode)
-        (dolist (m '(clojure-mode cider-repl-mode))
-          (evil-leader/set-key-for-mode m
-            "cc" 'cider-eval-defun-at-point
-            "ce" 'cider-eval-last-sexp
-            "ck" 'cider-load-buffer
-            "cl" 'cider-load-file
-            "cL" 'cider-load-all-files
-            "cfv" 'cider-find-var
-            "cfn" 'cider-find-ns
-            "cfk" 'cider-find-keyword
-            "cfp" 'cider-find-property
-            "cfr" 'cider-find-resource
-            "cda" 'cider-apropos
-            "cdd" 'cider-doc
-            "cdj" 'cider-javadoc
-            "cdr" 'cider-grimoire
-            "cD" 'cider-debug-defun-at-point
-            "ctt" 'cider-test-run-test
-            "ctn" 'cider-test-run-ns-tests
-            "ctp" 'cider-test-run-project-tests
-            "crn" 'cider-repl-set-ns
-            "crh" 'cider-repl-require-helpers
-            "cz" 'cider-switch-to-repl-buffer
-            "cj" 'cider-jack-in))))
-
-    (use-package clj-refactor))
+      :pin melpa-stable
+      :config (progn
+                (setq cider-auto-jump-to-error nil)
+                (dolist (m '(cider-stacktrace-mode
+                             cider-test-report-mode
+                             cider-classpath-mode
+                             cider-browse-ns-mode
+                             cider-browse-spec-mode
+                             cider-browse-spec-example-mode
+                             cider-browse-spec-view-mode))
+                  (add-to-list 'evil-emacs-state-modes m))
+                (add-hook 'cider-repl-mode-hook 'paredit-mode)
+                (dolist (m '(clojure-mode cider-repl-mode))
+                  (evil-leader/set-key-for-mode m
+                    "cc" 'cider-eval-defun-at-point
+                    "ce" 'cider-eval-last-sexp
+                    "ck" 'cider-load-buffer
+                    "cl" 'cider-load-file
+                    "cL" 'cider-load-all-files
+                    "cfv" 'cider-find-var
+                    "cfn" 'cider-find-ns
+                    "cfk" 'cider-find-keyword
+                    "cfp" 'cider-find-property
+                    "cfr" 'cider-find-resource
+                    "cda" 'cider-apropos
+                    "cdd" 'cider-doc
+                    "cdj" 'cider-javadoc
+                    "cdr" 'cider-grimoire
+                    "cD" 'cider-debug-defun-at-point
+                    "ctt" 'cider-test-run-test
+                    "ctn" 'cider-test-run-ns-tests
+                    "ctp" 'cider-test-run-project-tests
+                    "crn" 'cider-repl-set-ns
+                    "crh" 'cider-repl-require-helpers
+                    "cz" 'cider-switch-to-repl-buffer
+                    "cj" 'cider-jack-in)))))
 #+END_SRC
-
-#+RESULTS:
 
 ** Java
 =lsp-java= is the best Java mode I've tried so far (beating =meghanada=, =eclim= and =ensime=). Make sure to download the [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][Eclipse JDT language server]] and put it in =~/.emacs.d/eclipse.jdt.ls/server/=.
