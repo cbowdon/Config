@@ -14,6 +14,8 @@ Emacs
 -----
 Contains my [pinched-favourite-bits-from-Spacemacs](https://medium.com/@CBowdon/pinching-the-best-bits-from-spacemacs-869b8c793ad3) literate init file.
 
+Copy `syslog.el` manually to `~/.emacs.d`.
+
 Vim
 ---
 I used to use Vim extensively, managing plugins with vundle.
