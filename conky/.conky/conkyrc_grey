@@ -18,6 +18,11 @@ double_buffer yes
 no_buffers yes
 text_buffer_size 2048
 
+# For plasma 5...
+own_window_class = 'conky'
+own_window_transparent = true,
+own_window_type = 'dock'
+
 gap_x 50
 gap_y 50
 minimum_size 190 450
