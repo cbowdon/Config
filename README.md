@@ -43,6 +43,11 @@ Conky
 
 [This config](https://www.gnome-look.org/content/show.php/conky_grey?content=137272) but adapted to openSUSE Tumbleweed.
 
+Autostart Scripts
+-----------------
+
+    stow -t ~/.config/autostart-scripts autostart-scripts
+
 License
 -------
 GPL3 for my stuff, slime.vim which is copied here, is MIT and syslog-mode is GPL2.
