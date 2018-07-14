@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-conky -c ~/.conky/conky_grey.lua
+conky -c ~/.conky/conkyrc_grey
