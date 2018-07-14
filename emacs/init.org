@@ -529,6 +529,7 @@ I've become a big fan of =lsp-mode=. The Python support requires [[https://githu
 #+BEGIN_SRC emacs-lisp
   (defmodule python3
     "Init module for Python 3 development."
+    (use-package pyvenv)
     (use-package lsp-python
       :config (add-hook 'python-mode-hook 'lsp-python-enable)))
 #+END_SRC
