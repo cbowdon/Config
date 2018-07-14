@@ -893,6 +893,7 @@ Because everyone else uses GitHub-flavored markdown...
 I prefer graphviz to ditaa. The binding for (re)displaying inline images helps iterate quickly on diagrams.
 
 #+BEGIN_SRC emacs-lisp
+  (setq default-tab-width tab-width)
   (use-package graphviz-dot-mode)
   (evil-leader/set-key-for-mode 'org-mode
     "oI" 'org-display-inline-images)
