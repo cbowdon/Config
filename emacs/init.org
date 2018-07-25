@@ -604,6 +604,7 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
                              cider-browse-spec-view-mode))
                   (add-to-list 'evil-emacs-state-modes m))
                 (add-hook 'cider-repl-mode-hook 'paredit-mode)
+                (add-hook 'cider-repl-mode-hook 'company-mode)
                 (dolist (m '(clojure-mode cider-repl-mode))
                   (evil-leader/set-key-for-mode m
                     "cc" 'cider-eval-defun-at-point
