@@ -217,6 +217,16 @@ Map =C-x ?= to =<leader> ?= for =?= in =0-z= and map =C-x C-?= to =<leader> x ?=
                            '(?f ?m ?r ?s ?t ?d))
 #+END_SRC
 
+Map =C-c= to =<leader> c= (although not a complete solution because =C-c C-c= only becomes =<leader> c C-c= not =<leader> c c= - a work in progress).
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'after-init-hook (define-key key-translation-map (kbd "SPC c") (kbd "C-c")))
+
+  ;; (dolist (char (number-sequence ?a ?z))
+  ;;   (define-key key-translation-map
+  ;;     (kbd (format "SPC c %s" (char-to-string char)))
+  ;;     (kbd (format "C-c C-%s" (char-to-string char)))))
+#+END_SRC
+
 Set CAPSLOCK as another ESC. In GNOME 3 and MacOS use the system settings GUI. In X, use the function below. In Windows... screw around with the registry?
 #+BEGIN_SRC emacs-lisp
   (defun set-x-caps-escape ()
