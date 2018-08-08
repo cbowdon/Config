@@ -452,6 +452,23 @@ Make ad-hoc lisping more comfortable.
     (kbd ",j") 'paredit-forward-down
     (kbd ",J") 'paredit-wrap-round
     (kbd ",K") 'paredit-splice-sexp)
+
+  (defun change-brackets (type)
+    "Change |(..) to |[..]. | is point position."
+    (cond ((eq type 'square) (paredit-open-square 1))
+          ((eq type 'curly) (paredit-open-curly 1))
+          ((eq type 'angled) (paredit-open-angled 1))
+          ((eq type 'round) (paredit-open-round 1))
+          ((eq type 'bracket) (paredit-open-bracket 1))
+          ((eq type 'parenthesis (paredit-open-parenthesis 1))))
+    (right-char 1)
+    (paredit-splice-sexp)
+    (left-char 1))
+
+  (evil-define-key 'normal 'evil-normal-state-map
+    (kbd ",[") #'(lambda () (interactive) (change-brackets 'square))
+    (kbd ",(") #'(lambda () (interactive) (change-brackets 'round))
+    (kbd ",{") #'(lambda () (interactive) (change-brackets 'curly)))
 #+END_SRC
 
 *** Package development
