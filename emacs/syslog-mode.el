@@ -11,11 +11,10 @@
 ;; URL: https://github.com/vapniks/syslog-mode
 ;; Keywords: unix
 ;; Compatibility: GNU Emacs 24.3.1
-;; Package-Requires:  ((hide-lines "20130623"))
 ;;
 ;; Features that might be required by this library:
 ;;
-;; hide-lines cl ido
+;; cl ido
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -45,7 +44,6 @@
 ;; "C-down" : syslog-boot-start
 ;; "R"      : revert-buffer
 ;; "/"      : syslog-filter-lines
-;; "g"      : hide-lines-show-all
 ;; "h r"    : highlight-regexp
 ;; "h p"    : highlight-phrase
 ;; "h l"    : highlight-lines-matching-regexp
@@ -154,7 +152,6 @@
 
 
 ;;; Require
-(require 'hide-lines)
 (eval-when-compile (require 'cl))
 (require 'ido)
 
@@ -182,7 +179,6 @@
     (define-key map [C-down] 'syslog-boot-start)
     (define-key map "R" 'revert-buffer)
     (define-key map "/" 'syslog-filter-lines)
-    (define-key map "g" 'hide-lines-show-all)
     (define-prefix-command 'syslog-highlight-map)
     (define-key map "h" 'syslog-highlight-map)
     (define-key map (kbd "h r") 'highlight-regexp)
@@ -272,19 +268,6 @@ one if ARG is non-nil."
 This just calls `syslog-previous-file' with non-nil argument, so we can bind it to a key."
   (interactive)
   (syslog-previous-file t))
-
-;;;###autoload
-(defun syslog-filter-lines (&optional arg)
-  "Restrict buffer to lines matching regexp.
-With prefix arg: remove lines matching regexp."
-  (interactive "p")
-  (if (> arg 1)
-      (let ((regex (read-regexp "Regexp matching lines to remove")))
-        (unless (string= regex "")
-          (hide-lines-matching regex)))
-    (let ((regex (read-regexp "Regexp matching lines to keep")))
-        (unless (string= regex "")
-          (hide-lines-not-matching regex)))))
 
 ;;;###autoload
 (defcustom syslog-datetime-regexp "^[a-z]\\{3\\} [0-9]\\{1,2\\} \\([0-9]\\{2\\}:\\)\\{2\\}[0-9]\\{2\\} "
