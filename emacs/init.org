@@ -572,31 +572,12 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
   (defmodule javascript
     "Init module for JavaScript (including React/JSX)."
     (use-package prettier-js)
-    (use-package rjsx-mode :mode "\\.jsx?$")
+    (use-package rjsx-mode :mode "\\.[jt]sx?$")
 
     (use-package lsp-javascript-typescript
       :config (progn
                 (add-hook 'js-mode-hook #'lsp-javascript-typescript-enable)
                 (add-hook 'rjsx-mode #'lsp-javascript-typescript-enable))))
-#+END_SRC
-
-** TypeScript
-#+BEGIN_SRC emacs-lisp
-  (defmodule typescript
-    "Init module for TypeScript development. Installs and configures TIDE."
-    (use-package tide)
-
-    (use-package typescript-mode
-      :mode "\\.tsx?$"
-      :config
-      (add-hook 'typescript-mode-hook
-                (lambda ()
-                  (tide-setup)
-                  (flycheck-mode +1)
-                  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-                  (eldoc-mode +1)
-                  (company-mode +1)
-                  (setq company-tooltip-align-annotations t)))))
 #+END_SRC
 
 ** Clojure
