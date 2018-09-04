@@ -147,7 +147,10 @@ Join the dark side.
 #+BEGIN_SRC emacs-lisp
   (use-package evil
     :demand
-    :config (evil-mode 1))
+    :config (progn
+              (evil-mode 1)
+              (define-key evil-normal-state-map (kbd ";") 'evil-ex)
+              (define-key evil-visual-state-map (kbd ";") 'evil-ex)))
 
   (use-package evil-leader
     :demand
@@ -158,10 +161,42 @@ Join the dark side.
   (setq-default indent-tabs-mode nil)
 #+END_SRC
 
-When defining a ton of shortcuts, it's nice to have a guide.
+AND BECOME A GOD!
+#+BEGIN_SRC emacs-lisp
+  (use-package god-mode :demand)
+  (use-package evil-god-state :demand)
+
+  ;; Try to remove C-w
+  (global-unset-key (kbd "C-w"))
+  (define-key global-map (kbd "C-w") nil)
+
+  (define-key global-map (kbd "C-<escape>") 'evil-normal-state)
+  (define-key global-map (kbd "C-~") 'evil-normal-state)
+  (define-key global-map (kbd "M-<escape>") 'god-mode)
+  (define-key global-map (kbd "C-M-<escape>") 'god-local-mode)
+  (define-key evil-normal-state-map (kbd "SPC") 'evil-execute-in-god-state)
+  (define-key evil-visual-state-map (kbd "SPC") 'evil-execute-in-god-state)
+#+END_SRC
+
+This evil/god combination should be the most ergonomic possible without manually remapping most bindings.
+
+I've bound =C-<escape>= and =C-~= in particular because in =term-mode= it's possible to get stuck in =evil-god-state= if you hit some combinations (I prefer =C-<escape>= but Windows intercepts this).
+
+[[https://github.com/chrisdone/god-mode][Basic =god-mode= usage:]]
+- =abc= → =C-a C-b C-c=
+- =ab c= → =C-a C-b c=
+- =gf= → =M-f=
+- =Gf= → =C-M-f=
+- =12f= → =M-12 C-f=
+- =gf..= → =M-f M-f M-f=
+- =uco= → =C-u C-c C-o=
+
+It's nice to have a guide...
+
 #+BEGIN_SRC emacs-lisp
   (use-package which-key :demand)
   (which-key-mode)
+  (which-key-enable-god-mode-support)
 #+END_SRC
 
 ** State modes
@@ -176,55 +211,15 @@ I prefer not to clobber the default bindings with evil bindings in some modes.
 #+END_SRC
 
 ** Keyboard mapping
-Use =SPC= for leader key.
+Use tilde for leader key until I'm sure it's no longer necessary.
 #+BEGIN_SRC emacs-lisp
-  (evil-leader/set-leader "SPC")
+  (evil-leader/set-leader "`")
   (evil-leader/set-key
     "/" 'comment-region
     "\\\\" 'uncomment-region
     "." 'find-init-file
     "W" 'toggle-truncate-lines
     "X" 'delete-trailing-whitespace)
-#+END_SRC
-
-Map =C-x ?= to =<leader> ?= for =?= in =0-z= and map =C-x C-?= to =<leader> x ?= for =?= in =a-z=.
-#+BEGIN_SRC emacs-lisp
-  (defun evil-leader/remap-range (begin-key end-key make-leader-binding &optional reserved)
-    "Remap a range of keys from ctl-x-map, from BEGIN-KEY to END-KEY inclusive to an Evil leader binding.
-  Convert the key from the map to an Evil leader binding using MAKE-LEADER-BINDING.
-  RESERVED is a list of keys: if specified, do not create bindings for these."
-    (let ((bindings-plist '()))
-      (map-char-table
-       (lambda (key value)
-         (when (and (>= key begin-key)
-                    (<= key end-key)
-                    (not (member key reserved)))
-           (add-to-list 'bindings-plist (funcall make-leader-binding key) t)
-           (add-to-list 'bindings-plist value t)))
-       (cadr ctl-x-map))
-      (apply 'evil-leader/set-key bindings-plist)))
-
-  (mapcar
-   (lambda (prefix-key)
-     (evil-leader/remap-range ?\C-a
-                              ?\C-z
-                              (lambda (key) (format "%c%s" prefix-key (char-to-string (+ 96 key))))))
-   '(?f ?x))
-
-  (evil-leader/remap-range ?0
-                           ?z
-                           (lambda (key) (char-to-string key))
-                           '(?f ?m ?r ?s ?t ?d))
-#+END_SRC
-
-Map =C-c= to =<leader> c= (although not a complete solution because =C-c C-c= only becomes =<leader> c C-c= not =<leader> c c= - a work in progress).
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'after-init-hook (define-key key-translation-map (kbd "SPC c") (kbd "C-c")))
-
-  ;; (dolist (char (number-sequence ?a ?z))
-  ;;   (define-key key-translation-map
-  ;;     (kbd (format "SPC c %s" (char-to-string char)))
-  ;;     (kbd (format "C-c C-%s" (char-to-string char)))))
 #+END_SRC
 
 Set CAPSLOCK as another ESC. In GNOME 3 and MacOS use the system settings GUI. In X, use the function below. In Windows... screw around with the registry?
@@ -234,32 +229,32 @@ Set CAPSLOCK as another ESC. In GNOME 3 and MacOS use the system settings GUI. I
     (interactive)
     (shell-command "setxkbmap -option caps:escape"))
 #+END_SRC
+
 For future reference, find =rules/base.lst= in the =xkb= directory to learn all the options. (See the [[elisp:(man "setxkbmap")][man page]].)
 
-On some laptop keyboards (e.g. MBP) CTRL has been squashed into an unergonomic position by the FN key. =god-mode= and =evil-god-state= saves us from this RSI.
 #+BEGIN_SRC emacs-lisp
-  (use-package god-mode)
-  (use-package evil-god-state)
-  ;; Not sure if prefer ";" or ",," as shortcut here
-  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
-  (define-key evil-visual-state-map (kbd ";") 'evil-ex)
-  (define-key global-map (kbd "C-<escape>") 'evil-normal-state)
-  (define-key global-map (kbd "C-~") 'evil-normal-state)
-  (define-key global-map (kbd "M-<escape>") 'god-mode)
-  (define-key global-map (kbd "C-M-<escape>") 'god-local-mode)
-  (evil-leader/set-key "SPC" 'evil-execute-in-god-state)
+  (global-unset-key (kbd "C-f"))
+  (global-unset-key (kbd "C-b"))
+
+  (define-key evil-normal-state-map (kbd "C-f") nil)
+  (define-key evil-visual-state-map (kbd "C-f") nil)
+  (define-key evil-normal-state-map (kbd "C-b") nil)
+  (define-key evil-visual-state-map (kbd "C-b") nil)
+
+  (define-key global-map (kbd "C-f C-s") 'save-buffer)
+  (define-key global-map (kbd "C-b") 'switch-to-buffer)
+
+  (define-key evil-normal-state-map (kbd "C-k") 'kill-buffer)
+  (define-key evil-visual-state-map (kbd "C-k") 'kill-buffer)
+  (define-key evil-god-state-map (kbd "C-k") 'kill-buffer)
+
+  (define-key evil-normal-state-map (kbd "C-w") 'evil-window-map)
+  (define-key evil-visual-state-map (kbd "C-w") 'evil-window-map)
+  (define-key evil-god-state-map (kbd "C-w") 'evil-window-map)
+
+  (define-key global-map (kbd "C-S-X") 'delete-trailing-whitespace)
+  (define-key global-map (kbd "C-S-W") 'toggle-truncate-lines)
 #+END_SRC
-
-I've bound =C-<escape>= and =C-~= in particular because in =term-mode= it's possible to get stuck in =evil-god-state= if you hit some combinations (I prefer =C-<escape>= but Windows intercepts this).
-
-[[https://github.com/chrisdone/god-mode][Basic =god-mode= usage:]]
-- =abc= → =C-a C-b C-c=
-- =ab c= → =C-a C-b c=
-- =gf= → =M-f=
-- =Gf= → =C-M-f=
-- =12f= → =M-12 C-f=
-- =gf..= → =M-f M-f M-f=
-- =uco= → =C-u C-c C-o=
 
 ** REPL shortcuts
 #+BEGIN_SRC emacs-lisp
@@ -333,6 +328,11 @@ Electric indent interferes with lots of modes' own indenting, so disable it.
 #+BEGIN_SRC emacs-lisp
   (use-package popup-imenu)
   (evil-leader/set-key "p" 'popup-imenu)
+
+  (global-unset-key (kbd "C-p"))
+  (define-key evil-normal-state-map (kbd "C-p") nil)
+  (define-key evil-visual-state-map (kbd "C-p") nil)
+  (define-key global-map (kbd "C-p") 'popup-imenu)
 #+END_SRC
 
 I'm slowly warming up to Projectile.
@@ -577,6 +577,7 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
     (use-package lsp-javascript-typescript
       :config (progn
                 (add-hook 'js-mode-hook #'lsp-javascript-typescript-enable)
+                (add-hook 'typescript-mode-hook #'lsp-javascript-typescript-enable)
                 (add-hook 'rjsx-mode #'lsp-javascript-typescript-enable))))
 #+END_SRC
 
@@ -943,6 +944,8 @@ Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services
   (evil-leader/set-key
     "F" 'toggle-frame-fullscreen)
 
+  (define-key global-map (kbd "C-S-F") 'toggle-frame-fullscreen)
+
   (setq frame-title-format
         (format "Emacs %s (%s) - %s@%s"
                 emacs-version
@@ -960,6 +963,11 @@ Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services
     "w" 'evil-window-map
     "wg" 'golden-ratio
     "wG" 'golden-ratio-mode)
+
+  (define-key evil-window-map (kbd "C-l") 'evil-window-right)
+  (define-key evil-window-map (kbd "C-h") 'evil-window-left)
+  (define-key evil-window-map (kbd "C-k") 'evil-window-up)
+  (define-key evil-window-map (kbd "C-j") 'evil-window-down)
 #+END_SRC
 
 * Appearance
