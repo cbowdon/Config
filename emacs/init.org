@@ -329,10 +329,12 @@ Electric indent interferes with lots of modes' own indenting, so disable it.
   (use-package popup-imenu)
   (evil-leader/set-key "p" 'popup-imenu)
 
-  (global-unset-key (kbd "C-p"))
   (define-key evil-normal-state-map (kbd "C-p") nil)
   (define-key evil-visual-state-map (kbd "C-p") nil)
-  (define-key global-map (kbd "C-p") 'popup-imenu)
+  (define-key evil-god-state-map (kbd "C-p") nil)
+  (define-key evil-normal-state-map (kbd "C-p") 'popup-imenu)
+  (define-key evil-visual-state-map (kbd "C-p") 'popup-imenu)
+  (define-key evil-god-state-map (kbd "C-p") 'popup-imenu)
 #+END_SRC
 
 I'm slowly warming up to Projectile.
