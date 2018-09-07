@@ -258,12 +258,31 @@ For future reference, find =rules/base.lst= in the =xkb= directory to learn all 
 
 ** REPL shortcuts
 #+BEGIN_SRC emacs-lisp
+  (defvar repl-map (make-sparse-keymap))
+
+  (define-key repl-map (kbd "C-c") 'cider-jack-in)
+  (define-key repl-map (kbd "C-d") 'run-dig)
+  (define-key repl-map (kbd "C-e") 'eshell)
+  (define-key repl-map (kbd "C-i") 'run-ielm)
+  (define-key repl-map (kbd "C-p") 'run-python)
+  (define-key repl-map (kbd "C-s C-m") 'sql-mysql)
+  (define-key repl-map (kbd "C-s C-p") 'sql-postgres)
+  (define-key repl-map (kbd "C-s C-s") 'sql-sqlite)
+  (define-key repl-map (kbd "C-t") 'term)
+
   (evil-leader/set-key
     "rd" 'run-dig ;; not exactly a REPL, but fits nonetheless
     "rf" 'run-fsharp
     "ri" 'ielm
     "rp" 'run-python
-    "rr" 'run-ruby)
+    "rr" 'run-ruby
+    "R" 'repl-map)
+
+  (global-unset-key (kbd "C-r"))
+  (define-key global-map (kbd "C-r") nil)
+
+  (define-key global-map (kbd "C-r") repl-map)
+  (define-key evil-god-state-map (kbd "C-r") repl-map)
 #+END_SRC
 
 ** Mode shortcuts
