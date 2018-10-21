@@ -1286,46 +1286,55 @@ Being in the correct mode (line or char) is the cure for all evils in =term-mode
 **** Prompt functions
  #+BEGIN_SRC emacs-lisp
    (defvar eshell-prompt-suffix
-     (if (eq system-type 'darwin) "🔥 " " ")
-     "String at end of prompt")
-
-   (defvar eshell-prompt-bg-color
-     (color-complement-hex (frame-parameter nil 'foreground-color))
-     "Color of the prompt block background")
-
-   (defvar eshell-prompt-fg-color
-     (color-complement-hex (frame-parameter nil 'background-color))
-     "Color of the prompt block foreground")
-
-   (defvar eshell-prompt--separators (make-hash-table))
-
-   (defun eshell-prompt--lhs (fg-color bg-color)
-     (let ((hash-key (concat "lhs_" fg-color "_" bg-color)))
-       (or (gethash hash-key eshell-prompt--separators))
-     (puthash hash-key (arrow-right-xpm bg-color fg-color) eshell-prompt--separators)))
-
-   (defun eshell-prompt--rhs (fg-color bg-color)
-     (let ((hash-key (concat "rhs_" fg-color "_" bg-color)))
-       (or (gethash hash-key eshell-prompt--separators))
-     (puthash hash-key (arrow-right-xpm fg-color bg-color) eshell-prompt--separators)))
-
-   (defun eshell-blocky-prompt ()
-     "Create a blocky eshell prompt"
-     (let ((bg (frame-parameter nil 'background-color))
-           (fg (frame-parameter nil 'foreground-color)))
-       (concat
-        (propertize " " 'display (eshell-prompt--lhs eshell-prompt-bg-color bg))
-        (propertize (eshell/pwd) 'face
-                    (list :foreground eshell-prompt-fg-color
-                          :background eshell-prompt-bg-color))
-        (propertize " " 'display (eshell-prompt--rhs eshell-prompt-bg-color bg))
-        eshell-prompt-suffix)))
-
-   (defconst eshell-blocky-prompt-regexp
-     (string-join (list "^[^#\n]* " eshell-prompt-suffix)))
+     (if (or (eq system-type 'gnu/linux)
+             (eq system-type 'darwin)) "🔥 " " ")
+     "String at end of prompt.")
 
    (unless (frame-parameter nil 'tty)
      ;; TODO fancy prompt in terminal mode also
+     (defvar eshell-fg-color
+       (let ((fg-color (frame-parameter nil 'foreground-color)))
+         (if (equal "unspecified-fg" fg-color) "#ffffff" fg-color)))
+
+     (defvar eshell-bg-color
+       (let ((bg-color (frame-parameter nil 'background-color)))
+         (if (equal "unspecified-bg" bg-color) "#ffffff" bg-color)))
+
+     (defvar eshell-prompt-bg-color
+       (color-complement-hex (if (equal "unspecified-fg" eshell-fg-color) "#ffffff" eshell-fg-color))
+       "Color of the prompt block background.")
+
+     (defvar eshell-prompt-fg-color
+       (color-complement-hex (if (equal "unspecified-bg" eshell-bg-color) "#000000" eshell-bg-color))
+       "Color of the prompt block foreground.")
+
+     (defvar eshell-prompt--separators (make-hash-table))
+
+     (defun eshell-prompt--lhs (fg-color bg-color)
+       (let ((hash-key (concat "lhs_" fg-color "_" bg-color)))
+         (or (gethash hash-key eshell-prompt--separators))
+         (puthash hash-key (arrow-right-xpm bg-color fg-color) eshell-prompt--separators)))
+
+     (defun eshell-prompt--rhs (fg-color bg-color)
+       (let ((hash-key (concat "rhs_" fg-color "_" bg-color)))
+         (or (gethash hash-key eshell-prompt--separators))
+         (puthash hash-key (arrow-right-xpm fg-color bg-color) eshell-prompt--separators)))
+
+     (defun eshell-blocky-prompt ()
+       "Create a blocky eshell prompt."
+       (let ((bg eshell-bg-color)
+             (fg eshell-fg-color))
+         (concat
+          (propertize " " 'display (eshell-prompt--lhs eshell-prompt-bg-color bg))
+          (propertize (eshell/pwd) 'face
+                      (list :foreground eshell-prompt-fg-color
+                            :background eshell-prompt-bg-color))
+          (propertize " " 'display (eshell-prompt--rhs eshell-prompt-bg-color bg))
+          eshell-prompt-suffix)))
+
+     (defconst eshell-blocky-prompt-regexp
+       (string-join (list "^[^#\n]* " eshell-prompt-suffix)))
+
      (setq eshell-prompt-function 'eshell-blocky-prompt
            eshell-prompt-regexp eshell-blocky-prompt-regexp))
  #+END_SRC
