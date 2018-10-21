@@ -48,7 +48,7 @@ conky.config = {
 
 	override_utf8_locale = true,
 	use_xft = true,
-	font = 'Ubuntu:size=7',
+	font = 'Courier:size=9',
 	xftalpha = 0.5,
 	uppercase = false,
 
@@ -62,8 +62,8 @@ conky.config = {
 	lua_draw_hook_post = 'main',
 
 --${voffset 0}
---${goto 95}${color3}${font ubuntu:size=32}${time %e}${color1}${voffset 0}${offset -90}${font ubuntu:size=10}${time %A}
---${goto 85}${color2}${voffset -2}${font ubuntu:size=9}${time %b}${voffset -2} ${color3}${font ubuntu:size=12}${time %Y}${font}
+--${goto 95}${color3}${font Courier:size=34}${time %e}${color1}${voffset 0}${offset -90}${font Courier:size=12}${time %A}
+--${goto 85}${color2}${voffset -2}${font Courier:size=11}${time %b}${voffset -2} ${color3}${font Courier:size=14}${time %Y}${font}
 
 --${voffset 0}
 
@@ -72,126 +72,127 @@ conky.config = {
 
 conky.text = [[
 ${voffset 60}
-${goto 133}${color4}${font ubuntu:size=18}${time %e}
-${goto 118}${color2}${voffset -6}${font ubuntu:size=9}${time %b}${voffset -1} ${color3}${font ubuntu:size=10}${time %Y}
-${goto 133}${color1}${voffset -2}${font ubuntu:size=10}${time %a}
+${goto 133}${color4}${font Courier:size=20}${time %e}
+${goto 118}${color2}${voffset -6}${font Courier:size=11}${time %b}${voffset -1} ${color3}${font Courier:size=12}${time %Y}
+${goto 133}${color1}${voffset -2}${font Courier:size=12}${time %a}
 ${font}
 
 ${voffset 30}
-${goto 110}${font Ubuntu:bold:size=7}${color}CPU %
-${goto 110}${font Ubuntu:normal:size=7}${color1}${top name 1}${alignr}${top cpu 1}%
-${goto 110}${font Ubuntu:normal:size=7}${color2}${top name 2}${alignr}${top cpu 2}%
-${goto 110}${font Ubuntu:normal:size=7}${color3}${top name 3}${alignr}${top cpu 3}%
-${goto 110}${font Ubuntu:normal:size=7}${color3}${top name 2}${alignr}${top cpu 4}%
-${goto 110}${font Ubuntu:normal:size=7}${color3}${top name 3}${alignr}${top cpu 5}%
+${goto 110}${font Courier:normal:size=11}${color}CPU %
+${goto 110}${font Courier:normal:size=9}${color1}${top name 1}${alignr}${top cpu 1}%
+${goto 110}${font Courier:normal:size=9}${color2}${top name 2}${alignr}${top cpu 2}%
+${goto 110}${font Courier:normal:size=9}${color3}${top name 3}${alignr}${top cpu 3}%
+${goto 110}${font Courier:normal:size=9}${color3}${top name 2}${alignr}${top cpu 4}%
+${goto 110}${font Courier:normal:size=9}${color3}${top name 3}${alignr}${top cpu 5}%
 ${goto 110}${voffset -4}${cpugraph 35,200 666666 666666}
-${goto 110}${voffset -8}${font Ubuntu:normal:size=7}${color}${threads} process 
+${goto 110}${voffset -8}${font Courier:normal:size=9}${color}${threads} processes/threads
 
 ${voffset 8}
-${goto 110}${font Ubuntu:bold:size=7}${color}MEM % / 16 GB
-${goto 110}${font Ubuntu:normal:size=7}${color1}${top_mem name 1}${alignr}${top_mem mem 1}%
-${goto 110}${font Ubuntu:normal:size=7}${color2}${top_mem name 2}${alignr}${top_mem mem 2}%
-${goto 110}${font Ubuntu:normal:size=7}${color3}${top_mem name 3}${alignr}${top_mem mem 3}%
-${goto 110}${font Ubuntu:normal:size=7}${color3}${top_mem name 2}${alignr}${top_mem mem 4}%
-${goto 110}${font Ubuntu:normal:size=7}${color3}${top_mem name 3}${alignr}${top_mem mem 5}%
+${goto 110}${font Courier:normal:size=11}${color}MEM % / 16 GB
+${goto 110}${font Courier:normal:size=9}${color1}${top_mem name 1}${alignr}${top_mem mem 1}%
+${goto 110}${font Courier:normal:size=9}${color2}${top_mem name 2}${alignr}${top_mem mem 2}%
+${goto 110}${font Courier:normal:size=9}${color3}${top_mem name 3}${alignr}${top_mem mem 3}%
+${goto 110}${font Courier:normal:size=10}${color3}${top_mem name 2}${alignr}${top_mem mem 4}%
+${goto 110}${font Courier:normal:size=10}${color3}${top_mem name 3}${alignr}${top_mem mem 5}%
 
 ${voffset 12}
-${goto 110}${font Ubuntu:bold:size=7}${color}DISK
-${goto 110}${font Ubuntu:bold:size=7}${color}/ ${font Ubuntu:normal:size=7}${color1}${fs_used /}
-${goto 110}${font Ubuntu:bold:size=7}${color}/home ${font Ubuntu:normal:size=7}${color1}${fs_used /home}
+${goto 110}${font Courier:normal:size=11}${color}DISK
+${goto 110}${font Courier:normal:size=10}${color}/ ${font Courier:normal:size=10}${color1}${fs_used /}
+${goto 110}${font Courier:normal:size=10}${color}/home ${font Courier:normal:size=10}${color1}${fs_used /home}
 
 ${goto 110}${diskiograph 30,200 666666 666666}${voffset -30}
 
 # added by me for temps
-#${voffset 20}${goto 95}${font Ubuntu:bold:size=7}${color2}${voffset -2}${font Ubuntu:bold:size=7}${color3}${offset 0}Disk Issue ?${voffset 10}${font Ubuntu:bold:size=7}${color4}${execi 30 udisks --show-info /dev/sda | tail -14 | grep -viE 'good|n/a' | cut -c2-19,41-49,52-57}${font}
-${voffset 5}${goto 95}${font Ubuntu:bold:size=7}${color2}${voffset -2}${font Ubuntu:bold:size=7}${color3}${offset 0}CPU-1 Temperature${goto 95}${font Ubuntu:bold:size=7}${alignr}${color4} ${exec sensors | grep 'Core 0' | cut -c17-19 | grep -Po '\d+'}${color3}°C${font}
-${voffset 5}${goto 95}${font Ubuntu:bold:size=7}${color2}${voffset -2}${font Ubuntu:bold:size=7}${color3}${offset 0}CPU-2 Temperature${goto 95}${font Ubuntu:bold:size=7}${alignr}${color4} ${exec sensors | grep 'Core 1' | cut -c17-19 | grep -Po '\d+'}${color3}°C${font}
-${voffset 5}${goto 95}${font Ubuntu:bold:size=7}${color2}${voffset -2}${font Ubuntu:bold:size=7}${color3}${offset 0}CPU-3 Temperature${goto 95}${font Ubuntu:bold:size=7}${alignr}${color4} ${exec sensors | grep 'Core 2' | cut -c17-19 | grep -Po '\d+'}${color3}°C${font}
-${voffset 5}${goto 95}${font Ubuntu:bold:size=7}${color2}${voffset -2}${font Ubuntu:bold:size=7}${color3}${offset 0}CPU-4 Temperature${goto 95}${font Ubuntu:bold:size=7}${alignr}${color4} ${exec sensors | grep 'Core 3' | cut -c17-19 | grep -Po '\d+'}${color3}°C${font}
-# ${voffset 5}${goto 95}${font Ubuntu:bold:size=7}${color2}${voffset -2}${font Ubuntu:bold:size=7}${color3}${offset 0}HDD Temperature${goto 95}${font Ubuntu:bold:size=7}${alignr}${color4}${execi 30 udisks --show-info /dev/sda | grep -i 'temperature\-celsius' | grep -Eo '....F'| grep -Po '\d+\.*\d*'}${color3}°F / 212°F${font}
+${goto 110}${font Courier:normal:size=11}${color}TEMP
+#${voffset 20}${goto 95}${font Courier:normal:size=10}${color2}${voffset -2}${font Courier:bold:size=10}${color3}${offset 0}Disk Issue ?${voffset 10}${font Courier:bold:size=10}${color4}${execi 30 udisks --show-info /dev/sda | tail -14 | grep -viE 'good|n/a' | cut -c2-19,41-49,52-57}${font}
+${voffset 5}${goto 95}${font Courier:normal:size=10}${color2}${voffset -2}${font Courier:normal:size=10}${color3}${offset 0}CPU-1 Temperature${goto 95}${font Courier:bold:size=10}${alignr}${color4} ${exec sensors | grep 'Core 0' | cut -c17-19 | grep -Po '\d+'}${color3}°C${font}
+${voffset 5}${goto 95}${font Courier:normal:size=10}${color2}${voffset -2}${font Courier:normal:size=10}${color3}${offset 0}CPU-2 Temperature${goto 95}${font Courier:bold:size=10}${alignr}${color4} ${exec sensors | grep 'Core 1' | cut -c17-19 | grep -Po '\d+'}${color3}°C${font}
+${voffset 5}${goto 95}${font Courier:normal:size=10}${color2}${voffset -2}${font Courier:normal:size=10}${color3}${offset 0}CPU-3 Temperature${goto 95}${font Courier:bold:size=10}${alignr}${color4} ${exec sensors | grep 'Core 2' | cut -c17-19 | grep -Po '\d+'}${color3}°C${font}
+${voffset 5}${goto 95}${font Courier:normal:size=10}${color2}${voffset -2}${font Courier:normal:size=10}${color3}${offset 0}CPU-4 Temperature${goto 95}${font Courier:bold:size=10}${alignr}${color4} ${exec sensors | grep 'Core 3' | cut -c17-19 | grep -Po '\d+'}${color3}°C${font}
+# ${voffset 5}${goto 95}${font Courier:normal:size=10}${color2}${voffset -2}${font Courier:normal:size=10}${color3}${offset 0}HDD Temperature${goto 95}${font Courier:bold:size=10}${alignr}${color4}${execi 30 udisks --show-info /dev/sda | grep -i 'temperature\-celsius' | grep -Eo '....F'| grep -Po '\d+\.*\d*'}${color3}°F / 212°F${font}
 
 ${voffset -10}
-${goto 95}${font Ubuntu:bold:size=7}${color}Network Status ${alignr}${color3}${addr wlp2s0}
+${goto 95}${font Courier:normal:size=10}${color}Network Status ${alignr}${color3}${addr wlp2s0}
 ${goto 95}${color3}Down: $color${downspeed wlp2s0} ${color3}/s ${alignr}Up: $color4${upspeed wlp2s0} ${color3}/s
 ${goto 95}${color3}${downspeedgraph wlp2s0 30,60 ${color2} 676f9d} ${goto 235}${color4}${upspeedgraph wlp2s0 30,60 ${color4} 676f9d}$color
 #${color}Total: ${totaldown wlp2s0} ${alignr}Total: ${totalup wlp2s0}
 
 ${voffset -25}
-${goto 95}${font Ubuntu:normal:size=7}${color3}ping time to Yahoo:${alignr} ${font Ubuntu:normal:size=7}${color}${exec ping -c 1 -W 1 98.138.253.109 | grep -Eo "time .+"  | cut -c6-14}
+${goto 95}${font Courier:normal:size=10}${color3}ping time to Yahoo:${alignr} ${font Courier:normal:size=10}${color}${exec ping -c 1 -W 1 98.138.253.109 | grep -Eo "time .+"  | cut -c6-14}
 
 ${voffset -20}
-${goto 80}${font Ubuntu:bold:size=18}${color3}NET${alignr}${color3}${font Ubuntu:bold:size=7}${color3}${alignr}${if_up eth1}eth ${addr eth1}${endif}${if_up wlan0}wifi ${addr wlan0}${endif}
-${goto 90}${font Ubuntu:bold:size=7}${color}open ports: ${alignr}${color4}${tcp_portmon 1 65535 count}
-${goto 90}${font Ubuntu:bold:size=7}${color}${offset 10}IP${alignr}DPORT
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  0}${alignr 1}${tcp_portmon 1 65535 rport  0}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  1}${alignr 1}${tcp_portmon 1 65535 rport  1}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  2}${alignr 1}${tcp_portmon 1 65535 rport  2}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  3}${alignr 1}${tcp_portmon 1 65535 rport  3}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  4}${alignr 1}${tcp_portmon 1 65535 rport  4}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  5}${alignr 1}${tcp_portmon 1 65535 rport  5}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  6}${alignr 1}${tcp_portmon 1 65535 rport  6}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  7}${alignr 1}${tcp_portmon 1 65535 rport  7}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  8}${alignr 1}${tcp_portmon 1 65535 rport  8}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip  9}${alignr 1}${tcp_portmon 1 65535 rport  9}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 10}${alignr 1}${tcp_portmon 1 65535 rport 10}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 11}${alignr 1}${tcp_portmon 1 65535 rport 11}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 12}${alignr 1}${tcp_portmon 1 65535 rport 12}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 13}${alignr 1}${tcp_portmon 1 65535 rport 13}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 14}${alignr 1}${tcp_portmon 1 65535 rport 14}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 15}${alignr 1}${tcp_portmon 1 65535 rport 15}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 16}${alignr 1}${tcp_portmon 1 65535 rport 16}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 17}${alignr 1}${tcp_portmon 1 65535 rport 17}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 18}${alignr 1}${tcp_portmon 1 65535 rport 18}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 19}${alignr 1}${tcp_portmon 1 65535 rport 19}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 20}${alignr 1}${tcp_portmon 1 65535 rport 20}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 21}${alignr 1}${tcp_portmon 1 65535 rport 21}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 22}${alignr 1}${tcp_portmon 1 65535 rport 22}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 23}${alignr 1}${tcp_portmon 1 65535 rport 23}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 24}${alignr 1}${tcp_portmon 1 65535 rport 24}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 25}${alignr 1}${tcp_portmon 1 65535 rport 25}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 26}${alignr 1}${tcp_portmon 1 65535 rport 26}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 27}${alignr 1}${tcp_portmon 1 65535 rport 27}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 28}${alignr 1}${tcp_portmon 1 65535 rport 28}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 29}${alignr 1}${tcp_portmon 1 65535 rport 29}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 30}${alignr 1}${tcp_portmon 1 65535 rport 30}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 31}${alignr 1}${tcp_portmon 1 65535 rport 31}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 32}${alignr 1}${tcp_portmon 1 65535 rport 32}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 33}${alignr 1}${tcp_portmon 1 65535 rport 33}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 34}${alignr 1}${tcp_portmon 1 65535 rport 34}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 35}${alignr 1}${tcp_portmon 1 65535 rport 35}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 36}${alignr 1}${tcp_portmon 1 65535 rport 36}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 37}${alignr 1}${tcp_portmon 1 65535 rport 37}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 38}${alignr 1}${tcp_portmon 1 65535 rport 38}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 39}${alignr 1}${tcp_portmon 1 65535 rport 39}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 40}${alignr 1}${tcp_portmon 1 65535 rport 40}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 41}${alignr 1}${tcp_portmon 1 65535 rport 41}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 42}${alignr 1}${tcp_portmon 1 65535 rport 42}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 43}${alignr 1}${tcp_portmon 1 65535 rport 43}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 44}${alignr 1}${tcp_portmon 1 65535 rport 44}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 45}${alignr 1}${tcp_portmon 1 65535 rport 45}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 46}${alignr 1}${tcp_portmon 1 65535 rport 46}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 47}${alignr 1}${tcp_portmon 1 65535 rport 47}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 48}${alignr 1}${tcp_portmon 1 65535 rport 48}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 49}${alignr 1}${tcp_portmon 1 65535 rport 49}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 50}${alignr 1}${tcp_portmon 1 65535 rport 50}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 51}${alignr 1}${tcp_portmon 1 65535 rport 51}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 52}${alignr 1}${tcp_portmon 1 65535 rport 52}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 53}${alignr 1}${tcp_portmon 1 65535 rport 53}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 54}${alignr 1}${tcp_portmon 1 65535 rport 54}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 55}${alignr 1}${tcp_portmon 1 65535 rport 55}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 56}${alignr 1}${tcp_portmon 1 65535 rport 56}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 57}${alignr 1}${tcp_portmon 1 65535 rport 57}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 58}${alignr 1}${tcp_portmon 1 65535 rport 58}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 59}${alignr 1}${tcp_portmon 1 65535 rport 59}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 60}${alignr 1}${tcp_portmon 1 65535 rport 60}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 61}${alignr 1}${tcp_portmon 1 65535 rport 61}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 62}${alignr 1}${tcp_portmon 1 65535 rport 62}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 63}${alignr 1}${tcp_portmon 1 65535 rport 63}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 64}${alignr 1}${tcp_portmon 1 65535 rport 64}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 65}${alignr 1}${tcp_portmon 1 65535 rport 65}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 66}${alignr 1}${tcp_portmon 1 65535 rport 66}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 67}${alignr 1}${tcp_portmon 1 65535 rport 67}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 68}${alignr 1}${tcp_portmon 1 65535 rport 68}
-${goto 90}${font Ubuntu:normal:size=7}${color1}${tcp_portmon 1 65535 rip 69}${alignr 1}${tcp_portmon 1 65535 rport 69}
-${goto 90}${font Ubuntu:normal:size=7}${color4}____
+${goto 80}${font Courier:bold:size=21}${color3}NET${alignr}${color3}${font Courier:bold:size=10}${color3}${alignr}${if_up eth1}eth ${addr eth1}${endif}${if_up wlan0}wifi ${addr wlan0}${endif}
+${goto 90}${font Courier:normal:size=11}${color}open ports: ${alignr}${color4}${tcp_portmon 1 65535 count}
+${goto 90}${font Courier:normal:size=11}${color}${offset 10}IP${alignr}DPORT
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  0}${alignr 1}${tcp_portmon 1 65535 rport  0}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  1}${alignr 1}${tcp_portmon 1 65535 rport  1}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  2}${alignr 1}${tcp_portmon 1 65535 rport  2}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  3}${alignr 1}${tcp_portmon 1 65535 rport  3}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  4}${alignr 1}${tcp_portmon 1 65535 rport  4}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  5}${alignr 1}${tcp_portmon 1 65535 rport  5}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  6}${alignr 1}${tcp_portmon 1 65535 rport  6}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  7}${alignr 1}${tcp_portmon 1 65535 rport  7}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  8}${alignr 1}${tcp_portmon 1 65535 rport  8}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip  9}${alignr 1}${tcp_portmon 1 65535 rport  9}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 10}${alignr 1}${tcp_portmon 1 65535 rport 10}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 11}${alignr 1}${tcp_portmon 1 65535 rport 11}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 12}${alignr 1}${tcp_portmon 1 65535 rport 12}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 13}${alignr 1}${tcp_portmon 1 65535 rport 13}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 14}${alignr 1}${tcp_portmon 1 65535 rport 14}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 15}${alignr 1}${tcp_portmon 1 65535 rport 15}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 16}${alignr 1}${tcp_portmon 1 65535 rport 16}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 17}${alignr 1}${tcp_portmon 1 65535 rport 17}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 18}${alignr 1}${tcp_portmon 1 65535 rport 18}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 19}${alignr 1}${tcp_portmon 1 65535 rport 19}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 20}${alignr 1}${tcp_portmon 1 65535 rport 20}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 21}${alignr 1}${tcp_portmon 1 65535 rport 21}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 22}${alignr 1}${tcp_portmon 1 65535 rport 22}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 23}${alignr 1}${tcp_portmon 1 65535 rport 23}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 24}${alignr 1}${tcp_portmon 1 65535 rport 24}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 25}${alignr 1}${tcp_portmon 1 65535 rport 25}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 26}${alignr 1}${tcp_portmon 1 65535 rport 26}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 27}${alignr 1}${tcp_portmon 1 65535 rport 27}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 28}${alignr 1}${tcp_portmon 1 65535 rport 28}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 29}${alignr 1}${tcp_portmon 1 65535 rport 29}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 30}${alignr 1}${tcp_portmon 1 65535 rport 30}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 31}${alignr 1}${tcp_portmon 1 65535 rport 31}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 32}${alignr 1}${tcp_portmon 1 65535 rport 32}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 33}${alignr 1}${tcp_portmon 1 65535 rport 33}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 34}${alignr 1}${tcp_portmon 1 65535 rport 34}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 35}${alignr 1}${tcp_portmon 1 65535 rport 35}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 36}${alignr 1}${tcp_portmon 1 65535 rport 36}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 37}${alignr 1}${tcp_portmon 1 65535 rport 37}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 38}${alignr 1}${tcp_portmon 1 65535 rport 38}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 39}${alignr 1}${tcp_portmon 1 65535 rport 39}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 40}${alignr 1}${tcp_portmon 1 65535 rport 40}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 41}${alignr 1}${tcp_portmon 1 65535 rport 41}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 42}${alignr 1}${tcp_portmon 1 65535 rport 42}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 43}${alignr 1}${tcp_portmon 1 65535 rport 43}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 44}${alignr 1}${tcp_portmon 1 65535 rport 44}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 45}${alignr 1}${tcp_portmon 1 65535 rport 45}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 46}${alignr 1}${tcp_portmon 1 65535 rport 46}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 47}${alignr 1}${tcp_portmon 1 65535 rport 47}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 48}${alignr 1}${tcp_portmon 1 65535 rport 48}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 49}${alignr 1}${tcp_portmon 1 65535 rport 49}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 50}${alignr 1}${tcp_portmon 1 65535 rport 50}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 51}${alignr 1}${tcp_portmon 1 65535 rport 51}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 52}${alignr 1}${tcp_portmon 1 65535 rport 52}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 53}${alignr 1}${tcp_portmon 1 65535 rport 53}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 54}${alignr 1}${tcp_portmon 1 65535 rport 54}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 55}${alignr 1}${tcp_portmon 1 65535 rport 55}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 56}${alignr 1}${tcp_portmon 1 65535 rport 56}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 57}${alignr 1}${tcp_portmon 1 65535 rport 57}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 58}${alignr 1}${tcp_portmon 1 65535 rport 58}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 59}${alignr 1}${tcp_portmon 1 65535 rport 59}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 60}${alignr 1}${tcp_portmon 1 65535 rport 60}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 61}${alignr 1}${tcp_portmon 1 65535 rport 61}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 62}${alignr 1}${tcp_portmon 1 65535 rport 62}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 63}${alignr 1}${tcp_portmon 1 65535 rport 63}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 64}${alignr 1}${tcp_portmon 1 65535 rport 64}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 65}${alignr 1}${tcp_portmon 1 65535 rport 65}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 66}${alignr 1}${tcp_portmon 1 65535 rport 66}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 67}${alignr 1}${tcp_portmon 1 65535 rport 67}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 68}${alignr 1}${tcp_portmon 1 65535 rport 68}
+${goto 90}${font Courier:normal:size=10}${color1}${tcp_portmon 1 65535 rip 69}${alignr 1}${tcp_portmon 1 65535 rport 69}
+${goto 90}${font Courier:normal:size=10}${color4}____
 ]];
