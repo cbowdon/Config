@@ -837,6 +837,16 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
     (use-package yaml-mode :mode "\\.ya?ml"))
 #+END_SRC
 
+*** GraphQL
+#+BEGIN_SRC emacs-lisp
+  (use-package graphql-mode :mode "\\.sdl$|\\.graphql$")
+#+END_SRC
+
+*** ElasticSearch
+#+BEGIN_EXAMPLE emacs-lisp
+  (use-package es-mode :mode "\\.es$")
+#+END_EXAMPLE
+
 ** Config languages
 #+BEGIN_SRC emacs-lisp
   (defmodule configs
