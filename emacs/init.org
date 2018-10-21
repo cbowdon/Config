@@ -265,7 +265,7 @@ For future reference, find =rules/base.lst= in the =xkb= directory to learn all 
   (define-key repl-map (kbd "C-c") 'cider-jack-in)
   (define-key repl-map (kbd "C-d") 'run-dig)
   (define-key repl-map (kbd "C-e") 'eshell)
-  (define-key repl-map (kbd "C-i") 'run-ielm)
+  (define-key repl-map (kbd "C-i") 'ielm)
   (define-key repl-map (kbd "C-p") 'run-python)
   (define-key repl-map (kbd "C-s C-m") 'sql-mysql)
   (define-key repl-map (kbd "C-s C-p") 'sql-postgres)
@@ -360,7 +360,9 @@ Electric indent interferes with lots of modes' own indenting, so disable it.
 
 I'm slowly warming up to Projectile.
 #+BEGIN_SRC emacs-lisp
-  (use-package projectile)
+  (use-package projectile
+    :config (define-key global-map (kbd "C-x C-p") 'projectile-command-map))
+  (projectile-mode)
 #+END_SRC
 
 ** Emacs Lisp
@@ -637,6 +639,8 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
                   (add-to-list 'evil-emacs-state-modes m))
                 (add-hook 'cider-repl-mode-hook 'paredit-mode)
                 (add-hook 'cider-repl-mode-hook 'company-mode)
+                (dolist (m (list cider-mode-map cider-repl-mode-map))
+                  (define-key m (kbd "C-c C-n") 'cider-repl-set-ns))
                 (dolist (m '(clojure-mode cider-repl-mode))
                   (evil-leader/set-key-for-mode m
                     "cc" 'cider-eval-defun-at-point
