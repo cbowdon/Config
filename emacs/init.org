@@ -1007,7 +1007,13 @@ Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services
   (define-key evil-window-map (kbd "C-j") 'evil-window-down)
 #+END_SRC
 
-* Appearance
+* Display and appearance
+** Performance
+Attempt to improve long line performance.
+#+BEGIN_SRC emacs-lisp
+  (setq-default bidi-display-reordering nil)
+#+END_SRC
+
 ** Themes
 #+BEGIN_SRC emacs-lisp
   ;; strong color/dark themes
