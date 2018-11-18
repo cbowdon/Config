@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-conky -c ~/.conky/conkyrc_orange_4k
+conky -c ~/.conky/conky_carelli.conf
