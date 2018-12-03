@@ -632,6 +632,7 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
                 (dolist (m '(cider-stacktrace-mode
                              cider-test-report-mode
                              cider-classpath-mode
+                             cider-inspector-mode
                              cider-browse-ns-mode
                              cider-browse-spec-mode
                              cider-browse-spec-example-mode
@@ -640,7 +641,9 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
                 (add-hook 'cider-repl-mode-hook 'paredit-mode)
                 (add-hook 'cider-repl-mode-hook 'company-mode)
                 (dolist (m (list cider-mode-map cider-repl-mode-map))
-                  (define-key m (kbd "C-c C-n") 'cider-repl-set-ns))
+                  (define-key m (kbd "C-c C-n") 'cider-repl-set-ns)
+                  (define-key m (kbd "C-c C-i") 'cider-inspect)
+                  (define-key m (kbd "C-c C-f") 'cider-find-var))
                 (dolist (m '(clojure-mode cider-repl-mode))
                   (evil-leader/set-key-for-mode m
                     "cc" 'cider-eval-defun-at-point
