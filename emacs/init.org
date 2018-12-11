@@ -1397,7 +1397,7 @@ Being in the correct mode (line or char) is the cure for all evils in =term-mode
  #+BEGIN_SRC emacs-lisp
    (defvar eshell-prompt-suffix
      (if (or (eq system-type 'gnu/linux)
-             (eq system-type 'darwin)) "🔥 " " ")
+             (eq system-type 'darwin)) "λ " " ")
      "String at end of prompt.")
 
    (unless (frame-parameter nil 'tty)
