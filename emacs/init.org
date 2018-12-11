@@ -670,6 +670,107 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
                     "cj" 'cider-jack-in)))))
 #+END_SRC
 
+** Clojure sans CIDER
+CIDER is amazing, but you can get 80% of the benefits with 1% of the code, so I'm trying out this setup from [[https://martintrojer.github.io/clojure/2014/10/02/clojure-and-emacs-without-cider][Martin Trojer]].
+#+BEGIN_SRC emacs-lisp
+  (defmodule clojure-sans-cider
+    "Init module for Clojure without CIDER. Even more a work in progress."
+
+    (use-package clojure-mode
+      :pin melpa-stable
+      :config (progn
+                (add-hook 'clojure-mode-hook 'paredit-mode)
+                (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
+                (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))))
+
+
+    (setq-default inferior-lisp-program "clojure -A:dev:test")
+    (define-key clojure-mode-map (kbd "C-c C-i") 'run-lisp)
+    (define-key clojure-mode-map (kbd "C-c C-c") 'lisp-eval-defun)
+    (define-key clojure-mode-map (kbd "C-c C-e") 'lisp-eval-last-sexp)
+
+    (use-package clj-refactor
+      :config (add-hook 'clojure-mode-hook
+                        (lambda ()
+                          (clj-refactor-mode 1)
+                          (cljr-add-keybindings-with-prefix "C-c C-o"))))
+
+    (use-package align-cljlet
+      :config (global-set-key (kbd "C-c C-a") 'align-cljlet))
+
+    (use-package paredit
+      :config (add-hook 'clojure-mode-hook 'paredit-mode))
+
+    (use-package company
+      :config (progn
+                (add-hook 'after-init-hook 'global-company-mode)
+                (add-to-list 'company-backends 'company-infclj)))
+
+    (use-package company-etags
+      :config (add-to-list 'company-etags-modes 'clojure-mode))
+
+    (defun get-clj-completions (prefix)
+      (let* ((proc (inferior-lisp-proc))
+             (comint-filt (process-filter proc))
+             (kept ""))
+        (set-process-filter proc (lambda (proc string) (setq kept (concat kept string))))
+        (process-send-string proc (format "(complete.core/completions \"%s\")\n"
+                                          (substring-no-properties prefix)))
+        (while (accept-process-output proc 0.1))
+        (setq completions (read kept))
+        (set-process-filter proc comint-filt)
+        completions))
+
+    (defun company-infclj (command &optional arg &rest ignored)
+      (interactive (list 'interactive))
+
+      (cl-case command
+        (interactive (company-begin-backend 'company-infclj))
+        (prefix (and (eq major-mode 'inferior-lisp-mode)
+                     (company-grab-symbol)))
+        (candidates (get-clj-completions arg))))
+
+    (use-package yasnippet
+      :config (progn
+                (yas-global-mode 1)
+                (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+                (yas-load-directory "~/.emacs.d/snippets")))
+
+    (use-package clojure-snippets)
+
+    (global-set-key (kbd "C-c C-s") 'clojure-toggle-keyword-string)
+
+    (defun reload-current-clj-ns ()
+      (interactive)
+      (let ((current-point (point)))
+        (goto-char (point-min))
+        (let ((ns-idx (re-search-forward clojure-namespace-name-regex nil t)))
+          (when ns-idx
+            (goto-char ns-idx)
+            (let ((sym (symbol-at-point)))
+              (message (format "Loading %s ..." sym))
+              (lisp-eval-string (format "(require '%s :reload)" sym))
+              (lisp-eval-string (format "(in-ns '%s)" sym)))))
+        (goto-char current-point)))
+
+    (defun find-tag-without-ns (next-p)
+      (interactive "P")
+      (find-tag (first (last (split-string (symbol-name (symbol-at-point)) "/")))
+                next-p))
+
+    (defun erase-inf-buffer ()
+      (interactive)
+      (erase-buffer)
+      (lisp-eval-string ""))
+
+    (add-hook 'clojure-mode-hook
+              '(lambda ()
+                 (define-key clojure-mode-map "\C-c\C-k" 'reload-current-clj-ns)
+                 (define-key clojure-mode-map "\M-." 'find-tag-without-ns)))
+    (add-hook 'inferior-lisp-mode-hook
+              '(lambda ()
+                 (define-key inferior-lisp-mode-map "\C-cl" 'erase-inf-buffer))))
+#+END_SRC
 ** Java
 =lsp-java= is the best Java mode I've tried so far (beating =meghanada=, =eclim= and =ensime=). Make sure to download the [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][Eclipse JDT language server]] and put it in =~/.emacs.d/eclipse.jdt.ls/server/=.
 
