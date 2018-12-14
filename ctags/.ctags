@@ -15,3 +15,5 @@
 --regex-typescript=/(public |private ) *([a-zA-Z0-9_]+)/\2/p,membervars/
 --regex-typescript=/^ *(public |private ) *([a-zA-Z0-9_]+)/\2/m,methods/
 --regex-typescript=/^ *(export)? *enum +([a-zA-Z0-9_]+)/\2/e,enums/
+
+--langmap=Lisp:+.clj.cljs

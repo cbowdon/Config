@@ -671,7 +671,16 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
 #+END_SRC
 
 ** Clojure sans CIDER
-CIDER is amazing, but you can get 80% of the benefits with 1% of the code, so I'm trying out this setup from [[https://martintrojer.github.io/clojure/2014/10/02/clojure-and-emacs-without-cider][Martin Trojer]].
+CIDER is amazing, but you can get 80% of the benefits with 1% of the code, so I'm trying out this setup from [[https://martintrojer.github.io/clojure/2014/10/02/clojure-and-emacs-without-cider][Martin Trojer]]. I've made some minor changes from his blog post:
+
+- =use-package= everywhere
+- =company-etags= is now built in to =company-mode=
+- I've already got =projectile= elsewhere
+- my preferred REPL is simply =clojure= with the /dev/ and /test/ aliases since most projects use those
+- for some reason the `lisp-eval-*` functions aren't bound in my config so I've added these again
+
+It's not quite perfect yet - completion isn't working, or finding tags. But it doesn't seem to interfere with CIDER. Since all the bindings go into =clojure-mode-map=, CIDER will shadow the keybindings if jacked in. This makes it possible to "upgrade" to a proper CIDER experience.
+
 #+BEGIN_SRC emacs-lisp
   (defmodule clojure-sans-cider
     "Init module for Clojure without CIDER. Even more a work in progress."
@@ -688,6 +697,7 @@ CIDER is amazing, but you can get 80% of the benefits with 1% of the code, so I'
     (define-key clojure-mode-map (kbd "C-c C-i") 'run-lisp)
     (define-key clojure-mode-map (kbd "C-c C-c") 'lisp-eval-defun)
     (define-key clojure-mode-map (kbd "C-c C-e") 'lisp-eval-last-sexp)
+    (define-key clojure-mode-map (kbd "C-c C-k") 'lisp-eval-buffer)
 
     (use-package clj-refactor
       :config (add-hook 'clojure-mode-hook
@@ -701,34 +711,35 @@ CIDER is amazing, but you can get 80% of the benefits with 1% of the code, so I'
     (use-package paredit
       :config (add-hook 'clojure-mode-hook 'paredit-mode))
 
-    (use-package company
-      :config (progn
-                (add-hook 'after-init-hook 'global-company-mode)
-                (add-to-list 'company-backends 'company-infclj)))
+    ;; TODO Not quite sure why completion doesn't work - disabled for now to avoid interfering with CIDER
+    ;; might be that `clojure-complete' or `swank-clojure' is required in .clojure/deps.edn
+    ;; 
+    ;; (use-package company
+    ;;   :config (progn
+    ;;             (add-hook 'after-init-hook 'global-company-mode)
+    ;;             (add-to-list 'company-backends 'company-infclj)
+    ;;             (add-to-list 'company-etags-modes 'clojure-mode)))
 
-    (use-package company-etags
-      :config (add-to-list 'company-etags-modes 'clojure-mode))
+    ;; (defun get-clj-completions (prefix)
+    ;;   (let* ((proc (inferior-lisp-proc))
+    ;;          (comint-filt (process-filter proc))
+    ;;          (kept ""))
+    ;;     (set-process-filter proc (lambda (proc string) (setq kept (concat kept string))))
+    ;;     (process-send-string proc (format "(complete.core/completions \"%s\")\n"
+    ;;                                       (substring-no-properties prefix)))
+    ;;     (while (accept-process-output proc 0.1))
+    ;;     (setq completions (read kept))
+    ;;     (set-process-filter proc comint-filt)
+    ;;     completions))
 
-    (defun get-clj-completions (prefix)
-      (let* ((proc (inferior-lisp-proc))
-             (comint-filt (process-filter proc))
-             (kept ""))
-        (set-process-filter proc (lambda (proc string) (setq kept (concat kept string))))
-        (process-send-string proc (format "(complete.core/completions \"%s\")\n"
-                                          (substring-no-properties prefix)))
-        (while (accept-process-output proc 0.1))
-        (setq completions (read kept))
-        (set-process-filter proc comint-filt)
-        completions))
+    ;; (defun company-infclj (command &optional arg &rest ignored)
+    ;;   (interactive (list 'interactive))
 
-    (defun company-infclj (command &optional arg &rest ignored)
-      (interactive (list 'interactive))
-
-      (cl-case command
-        (interactive (company-begin-backend 'company-infclj))
-        (prefix (and (eq major-mode 'inferior-lisp-mode)
-                     (company-grab-symbol)))
-        (candidates (get-clj-completions arg))))
+    ;;   (cl-case command
+    ;;     (interactive (company-begin-backend 'company-infclj))
+    ;;     (prefix (and (eq major-mode 'inferior-lisp-mode)
+    ;;                  (company-grab-symbol)))
+    ;;     (candidates (get-clj-completions arg))))
 
     (use-package yasnippet
       :config (progn
@@ -738,20 +749,23 @@ CIDER is amazing, but you can get 80% of the benefits with 1% of the code, so I'
 
     (use-package clojure-snippets)
 
-    (global-set-key (kbd "C-c C-s") 'clojure-toggle-keyword-string)
+    ;; don't want this, at least not in global
+    ;; (global-set-key (kbd "C-c C-s") 'clojure-toggle-keyword-string)
 
-    (defun reload-current-clj-ns ()
-      (interactive)
-      (let ((current-point (point)))
-        (goto-char (point-min))
-        (let ((ns-idx (re-search-forward clojure-namespace-name-regex nil t)))
-          (when ns-idx
-            (goto-char ns-idx)
-            (let ((sym (symbol-at-point)))
-              (message (format "Loading %s ..." sym))
-              (lisp-eval-string (format "(require '%s :reload)" sym))
-              (lisp-eval-string (format "(in-ns '%s)" sym)))))
-        (goto-char current-point)))
+    ;; TODO this errors, should figure out why
+    ;; have replaced with `lisp-eval-buffer' in the meantime
+    ;; (defun reload-current-clj-ns ()
+    ;;   (interactive)
+    ;;   (let ((current-point (point)))
+    ;;     (goto-char (point-min))
+    ;;     (let ((ns-idx (re-search-forward clojure-namespace-name-regex nil t)))
+    ;;       (when ns-idx
+    ;;         (goto-char ns-idx)
+    ;;         (let ((sym (symbol-at-point)))
+    ;;           (message (format "Loading %s ..." sym))
+    ;;           (lisp-eval-string (format "(require '%s :reload)" sym))
+    ;;           (lisp-eval-string (format "(in-ns '%s)" sym)))))
+    ;;     (goto-char current-point)))
 
     (defun find-tag-without-ns (next-p)
       (interactive "P")
@@ -763,9 +777,13 @@ CIDER is amazing, but you can get 80% of the benefits with 1% of the code, so I'
       (erase-buffer)
       (lisp-eval-string ""))
 
+    (defun lisp-eval-buffer ()
+      (interactive)
+      (save-excursion ;; necessary? not sure
+        (lisp-eval-region (point-min) (point-max))))
+
     (add-hook 'clojure-mode-hook
               '(lambda ()
-                 (define-key clojure-mode-map "\C-c\C-k" 'reload-current-clj-ns)
                  (define-key clojure-mode-map "\M-." 'find-tag-without-ns)))
     (add-hook 'inferior-lisp-mode-hook
               '(lambda ()
