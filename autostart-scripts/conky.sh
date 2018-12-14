@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
-conky -c ~/.conky/conky_carelli.conf
+
+if [ -z "$conky" ]; then
+    conky -c ~/.conky/conky_carelli.conf
+fi
