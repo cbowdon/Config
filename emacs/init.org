@@ -1080,6 +1080,14 @@ Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services
   (use-package daemons
     :config
     (progn
+      (define-prefix-command 'daemons-prefix-map)
+      (define-key daemons-prefix-map (kbd "d") 'daemons)
+      (define-key daemons-prefix-map (kbd "RET") 'daemons-status)
+      (define-key daemons-prefix-map (kbd "s") 'daemons-start)
+      (define-key daemons-prefix-map (kbd "S") 'daemons-stop)
+      (define-key daemons-prefix-map (kbd "r") 'daemons-reload)
+      (define-key daemons-prefix-map (kbd "R") 'daemons-restart)
+      (define-key global-map (kbd "C-x C-y") 'daemons-prefix-map)
       (add-to-list 'evil-emacs-state-modes 'daemons-mode)
       (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
       (evil-leader/set-key
