@@ -1147,6 +1147,7 @@ Attempt to improve long line performance.
 ** Themes
 #+BEGIN_SRC emacs-lisp
   ;; strong color/dark themes
+  (use-package doom-themes :defer t)
   (use-package django-theme :defer t)
   (use-package ubuntu-theme :defer t)
   (use-package monokai-theme :defer t)
@@ -1156,17 +1157,9 @@ Attempt to improve long line performance.
   ;; gentler themes
   (use-package color-theme-sanityinc-tomorrow :defer t)
   (use-package color-theme-sanityinc-solarized :defer t)
-  (use-package creamsody-theme :defer t)
-  (use-package arjen-grey-theme :defer t)
 
   ;; moody themes
   (use-package gotham-theme :defer t)
-  (use-package blackboard-theme :defer t)
-  (use-package bubbleberry-theme :defer t)
-
-  ;; can't-remember-but-possibly-nice themes
-  (use-package material-theme :defer t)
-  (use-package gruvbox-theme :defer t)
 
 #+END_SRC
 
@@ -1183,13 +1176,15 @@ Attempt to improve long line performance.
 #+END_SRC
 
 ** Modeline
-Telephone line is a sweet rewrite of Powerline.
+Joining the rest of the Emacs universe with the DOOM modeline. Gave up on Telephone-Line because it spat errors into =*Messages*= too frequently.
+
+Remember to =M-x all-the-icons-install-fonts.=
+
 #+BEGIN_SRC emacs-lisp
-  (use-package telephone-line
-    :config (progn
-              (require 'telephone-line-config)
-              (telephone-line-evil-config)
-              (setq telephone-line-height 24)))
+  (use-package doom-modeline
+    :ensure t
+    :defer t
+    :hook (after-init . doom-modeline-init))
 #+END_SRC
 
 ** Dashboard
