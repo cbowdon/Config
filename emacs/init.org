@@ -319,14 +319,6 @@ Trying out Ido for Emacs command completion. Good for buffers so far.
 
 * Programming
 ** General
-The Language Server Protocol (lsp) packages are rather good and worth setting up initially.
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode)
-  (use-package flycheck :config (add-hook 'prog-mode-hook 'flycheck-mode)) ;; used by lsp-ui for fancy displays
-  (use-package lsp-ui :config (add-hook 'lsp-mode-hook 'lsp-ui-mode))
-  (use-package company-lsp :config (push 'company-lsp company-backends))
-#+END_SRC
-
 By default every text editor should display line and column number, and not wrap text.
 #+BEGIN_SRC emacs-lisp
   (setq-default truncate-lines t)
@@ -581,9 +573,7 @@ I've become a big fan of =lsp-mode=. The Python support requires [[https://githu
 #+BEGIN_SRC emacs-lisp
   (defmodule python3
     "Init module for Python 3 development."
-    (use-package pyvenv)
-    (use-package lsp-python
-      :config (add-hook 'python-mode-hook 'lsp-python-enable)))
+    (use-package pyvenv))
 #+END_SRC
 
 ** JavaScript
@@ -597,13 +587,7 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
   (defmodule javascript
     "Init module for JavaScript (including React/JSX)."
     (use-package prettier-js)
-    (use-package rjsx-mode :mode "\\.[jt]sx?$")
-
-    (use-package lsp-javascript-typescript
-      :config (progn
-                (add-hook 'js-mode-hook #'lsp-javascript-typescript-enable)
-                (add-hook 'typescript-mode-hook #'lsp-javascript-typescript-enable)
-                (add-hook 'rjsx-mode #'lsp-javascript-typescript-enable))))
+    (use-package rjsx-mode :mode "\\.[jt]sx?$"))
 #+END_SRC
 
 ** Clojure
@@ -804,10 +788,6 @@ It's not quite perfect yet - completion isn't working, or finding tags. But it d
 #+BEGIN_SRC emacs-lisp
   (defmodule java
     "Init module for Java."
-    (use-package lsp-java
-      :config (progn
-                (add-hook 'java-mode-hook (lambda () (add-to-list 'lsp-java--workspace-folders (lsp-java--get-root))))
-                (add-hook 'java-mode-hook 'lsp-java-enable)))
     (use-package maven-test-mode))
 #+END_SRC
 
