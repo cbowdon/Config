@@ -977,7 +977,9 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
    The ubiquitous, but not actually-that-pleasant, Markdown. I've looked at a couple of real-time preview modes and they're nice, but all have external dependencies requiring Go or Ruby, which I'm not interested in installing. (I run a lean system. 😉)
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
-    :mode "\\.md$")
+    :mode "\\.md$"
+    :config (progn
+              (define-key markdown-mode-map (kbd "C-c C-TAB") 'markdown-table-align)))
 #+END_SRC
 
 * Org
