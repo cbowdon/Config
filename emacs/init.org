@@ -692,12 +692,20 @@ It's not quite perfect yet - completion isn't working, or finding tags. But it d
                 (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
                 (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))))
 
+    (use-package inf-clojure
+      :pin melpa-stable)
 
-    (setq-default inferior-lisp-program "clojure -A:dev:test")
-    (define-key clojure-mode-map (kbd "C-c C-i") 'run-lisp)
-    (define-key clojure-mode-map (kbd "C-c C-c") 'lisp-eval-defun)
-    (define-key clojure-mode-map (kbd "C-c C-e") 'lisp-eval-last-sexp)
-    (define-key clojure-mode-map (kbd "C-c C-k") 'lisp-eval-buffer)
+    (defun inf-clojure-enable ()
+      (interactive)
+      (add-hook 'clojure-mode-hook #'inf-clojure-minor-mode)
+      (add-hook 'clojure-mode-hook #'eldoc-mode)
+      (add-hook 'inf-clojure-mode-hook #'eldoc-mode))
+
+    (defun inf-clojure-disable ()
+      (interactive)
+      (remove-hook 'clojure-mode-hook #'inf-clojure-minor-mode)
+      (remove-hook 'clojure-mode-hook #'eldoc-mode)
+      (remove-hook 'inf-clojure-mode-hook #'eldoc-mode))
 
     (use-package clj-refactor
       :config (add-hook 'clojure-mode-hook
