@@ -627,7 +627,9 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
                 (dolist (m (list cider-mode-map cider-repl-mode-map))
                   (define-key m (kbd "C-c C-n") 'cider-repl-set-ns)
                   (define-key m (kbd "C-c C-i") 'cider-inspect)
-                  (define-key m (kbd "C-c C-f") 'cider-find-var))
+                  (define-key m (kbd "C-c C-f") 'cider-find-var)
+                  (define-key m (kbd "C-c C-w") 'cider-ns-refresh))
+                ;; don't really use these anymore, just for posterity
                 (dolist (m '(clojure-mode cider-repl-mode))
                   (evil-leader/set-key-for-mode m
                     "cc" 'cider-eval-defun-at-point
@@ -654,20 +656,12 @@ I'm using =lsp-javascript= for completion/checking support, which requires insta
                     "cj" 'cider-jack-in)))))
 #+END_SRC
 
-** Clojure sans CIDER
-CIDER is amazing, but you can get 80% of the benefits with 1% of the code, so I'm trying out this setup from [[https://martintrojer.github.io/clojure/2014/10/02/clojure-and-emacs-without-cider][Martin Trojer]]. I've made some minor changes from his blog post:
-
-- =use-package= everywhere
-- =company-etags= is now built in to =company-mode=
-- I've already got =projectile= elsewhere
-- my preferred REPL is simply =clojure= with the /dev/ and /test/ aliases since most projects use those
-- for some reason the `lisp-eval-*` functions aren't bound in my config so I've added these again
-
-It's not quite perfect yet - completion isn't working, or finding tags. But it doesn't seem to interfere with CIDER. Since all the bindings go into =clojure-mode-map=, CIDER will shadow the keybindings if jacked in. This makes it possible to "upgrade" to a proper CIDER experience.
+** Clojure (inf-clojure)
+CIDER is amazing, but =inf-clojure= is more lightweight and can use socket REPLs, which is very handy.
 
 #+BEGIN_SRC emacs-lisp
-  (defmodule clojure-sans-cider
-    "Init module for Clojure without CIDER. Even more a work in progress."
+  (defmodule clojure-inf
+    "Init module for Clojure based on inf-clojure. Even more a work in progress."
 
     (use-package clojure-mode
       :pin melpa-stable
@@ -1173,7 +1167,6 @@ Remember to =M-x all-the-icons-install-fonts.=
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
     :ensure t
-    :defer t
     :hook (after-init . doom-modeline-init))
 #+END_SRC
 
