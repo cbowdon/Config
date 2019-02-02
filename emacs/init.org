@@ -662,7 +662,9 @@ I'm using =eglot= for completion/checking support, which requires installing the
 #+END_SRC
 
 ** Clojure (inf-clojure)
-CIDER is amazing, but =inf-clojure= is more lightweight and can use socket REPLs, which is very handy.
+CIDER is amazing, but =inf-clojure= is more lightweight and can use socket REPLs, which is very handy. This module doesn't interfere with CIDER's keybindings unless =inf-clojure-enable= is called.
+
+The below setup includes autocompletion with =compliment= and namespace refreshing with =tools.namespace=, both of which need setting up as aliases in =~/.clojure/deps.edn=.
 
 #+BEGIN_SRC emacs-lisp
   (defmodule clojure-inf
@@ -676,19 +678,55 @@ CIDER is amazing, but =inf-clojure= is more lightweight and can use socket REPLs
                 (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))))
 
     (use-package inf-clojure
-      :pin melpa-stable)
+      :pin melpa-stable
+      :config (progn
+                ;; Compliment is an active and seemingly pretty good completions library
+                (setq-default inf-clojure-completion-form "(compliment.core/completions \"%s\")")
+                ;; Make sure we use compliment, clojure.tools.namespace, and start a socket
+                ;; - these aliases are defined in my ~/.clojure/deps.edn as
+                ;; {:socket {:jvm-opts ["-Dclojure.server.repl={:port,50505,:accept,clojure.core.server/repl}"]}
+                ;;  :compliment {:extra-deps {compliment {:mvn/version "RELEASE"}}}
+                ;;  :tools.namespace {:extra-deps {org.clojure/tools.namespace {:mvn/version "RELEASE"}}}}
+                ;; Make sure the REPL is able to use compliment and tools.namespace
+                (add-hook 'inf-clojure-mode-hook #'inf-clojure-load-tooling)
+                (add-hook 'inf-clojure-mode-hook #'eldoc-mode)
+                (define-key inf-clojure-mode-map (kbd "C-c C-t") 'inf-clojure-load-tooling)
+                (define-key inf-clojure-minor-mode-map (kbd "C-c C-d") 'inf-clojure-show-var-documentation)
+                (define-key inf-clojure-minor-mode-map (kbd "C-c C-w") 'inf-clojure-ns-refresh)
+                (define-key inf-clojure-minor-mode-map (kbd "C-c C-k") 'inf-clojure-eval-buffer)
+                (define-key inf-clojure-minor-mode-map (kbd "C-c C-?") 'inf-clojure-apropos)
+                (define-key inf-clojure-minor-mode-map (kbd "C-c C-l") 'inf-clojure-clear-repl-buffer)
+                (define-key inf-clojure-minor-mode-map (kbd "C-c C-n") 'inf-clojure-set-ns)))
+
+    (defun run-clojure-socket-repl ()
+      (interactive)
+      (async-shell-command "clojure -A:compliment:tools.namespace:socket"))
+
+    (global-set-key (kbd "C-x C-!") 'inf-clojure-connect)
+    (global-set-key (kbd "C-x C-@") 'run-clojure-socket-repl)
+
+    (defun inf-clojure-load-tooling ()
+      (interactive)
+      (message "Loading Clojure tooling (compliment, tools.namespace)")
+      (inf-clojure-eval-string "(require '[compliment.core] '[clojure.tools.namespace.repl])"))
 
     (defun inf-clojure-enable ()
+      "Must be called before working with inf-clojure."
       (interactive)
       (add-hook 'clojure-mode-hook #'inf-clojure-minor-mode)
       (add-hook 'clojure-mode-hook #'eldoc-mode)
+      ;; Make sure the REPL is able to use compliment and tools.namespace
+      (add-hook 'inf-clojure-mode-hook #'inf-clojure-load-tooling)
       (add-hook 'inf-clojure-mode-hook #'eldoc-mode))
 
     (defun inf-clojure-disable ()
       (interactive)
       (remove-hook 'clojure-mode-hook #'inf-clojure-minor-mode)
-      (remove-hook 'clojure-mode-hook #'eldoc-mode)
-      (remove-hook 'inf-clojure-mode-hook #'eldoc-mode))
+      (remove-hook 'clojure-mode-hook #'eldoc-mode))
+
+    (defun inf-clojure-ns-refresh ()
+      (interactive)
+      (inf-clojure-eval-string "(clojure.tools.namespace.repl/refresh)"))
 
     (use-package clj-refactor
       :config (add-hook 'clojure-mode-hook
@@ -697,40 +735,11 @@ CIDER is amazing, but =inf-clojure= is more lightweight and can use socket REPLs
                           (cljr-add-keybindings-with-prefix "C-c C-o"))))
 
     (use-package align-cljlet
-      :config (global-set-key (kbd "C-c C-a") 'align-cljlet))
+              ;; Stick in clojure-mode-map because it's handy even for CIDER
+      :config (define-key clojure-mode-map (kbd "C-c C-a") 'align-cljlet))
 
     (use-package paredit
       :config (add-hook 'clojure-mode-hook 'paredit-mode))
-
-    ;; TODO Not quite sure why completion doesn't work - disabled for now to avoid interfering with CIDER
-    ;; might be that `clojure-complete' or `swank-clojure' is required in .clojure/deps.edn
-    ;; 
-    ;; (use-package company
-    ;;   :config (progn
-    ;;             (add-hook 'after-init-hook 'global-company-mode)
-    ;;             (add-to-list 'company-backends 'company-infclj)
-    ;;             (add-to-list 'company-etags-modes 'clojure-mode)))
-
-    ;; (defun get-clj-completions (prefix)
-    ;;   (let* ((proc (inferior-lisp-proc))
-    ;;          (comint-filt (process-filter proc))
-    ;;          (kept ""))
-    ;;     (set-process-filter proc (lambda (proc string) (setq kept (concat kept string))))
-    ;;     (process-send-string proc (format "(complete.core/completions \"%s\")\n"
-    ;;                                       (substring-no-properties prefix)))
-    ;;     (while (accept-process-output proc 0.1))
-    ;;     (setq completions (read kept))
-    ;;     (set-process-filter proc comint-filt)
-    ;;     completions))
-
-    ;; (defun company-infclj (command &optional arg &rest ignored)
-    ;;   (interactive (list 'interactive))
-
-    ;;   (cl-case command
-    ;;     (interactive (company-begin-backend 'company-infclj))
-    ;;     (prefix (and (eq major-mode 'inferior-lisp-mode)
-    ;;                  (company-grab-symbol)))
-    ;;     (candidates (get-clj-completions arg))))
 
     (use-package yasnippet
       :config (progn
@@ -738,50 +747,10 @@ CIDER is amazing, but =inf-clojure= is more lightweight and can use socket REPLs
                 (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
                 (yas-load-directory "~/.emacs.d/snippets")))
 
-    (use-package clojure-snippets)
-
-    ;; don't want this, at least not in global
-    ;; (global-set-key (kbd "C-c C-s") 'clojure-toggle-keyword-string)
-
-    ;; TODO this errors, should figure out why
-    ;; have replaced with `lisp-eval-buffer' in the meantime
-    ;; (defun reload-current-clj-ns ()
-    ;;   (interactive)
-    ;;   (let ((current-point (point)))
-    ;;     (goto-char (point-min))
-    ;;     (let ((ns-idx (re-search-forward clojure-namespace-name-regex nil t)))
-    ;;       (when ns-idx
-    ;;         (goto-char ns-idx)
-    ;;         (let ((sym (symbol-at-point)))
-    ;;           (message (format "Loading %s ..." sym))
-    ;;           (lisp-eval-string (format "(require '%s :reload)" sym))
-    ;;           (lisp-eval-string (format "(in-ns '%s)" sym)))))
-    ;;     (goto-char current-point)))
-
-    (defun find-tag-without-ns (next-p)
-      (interactive "P")
-      (find-tag (first (last (split-string (symbol-name (symbol-at-point)) "/")))
-                next-p))
-
-    (defun erase-inf-buffer ()
-      (interactive)
-      (erase-buffer)
-      (lisp-eval-string ""))
-
-    (defun lisp-eval-buffer ()
-      (interactive)
-      (save-excursion ;; necessary? not sure
-        (lisp-eval-region (point-min) (point-max))))
-
-    (add-hook 'clojure-mode-hook
-              '(lambda ()
-                 (define-key clojure-mode-map "\M-." 'find-tag-without-ns)))
-    (add-hook 'inferior-lisp-mode-hook
-              '(lambda ()
-                 (define-key inferior-lisp-mode-map "\C-cl" 'erase-inf-buffer))))
+    (use-package clojure-snippets))
 #+END_SRC
 ** Java
-=lsp-java= is the best Java mode I've tried so far (beating =meghanada=, =eclim= and =ensime=). Make sure to download the [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][Eclipse JDT language server]] and put it in =~/.emacs.d/eclipse.jdt.ls/server/=.
+=eglot= is the best Java mode I've tried so far (beating =meghanada=, =eclim=, =ensime= and =lsp-java=). Make sure to download the [[http://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz][Eclipse JDT language server]] and put it in =~/.emacs.d/eclipse.jdt.ls/server/=.
 
 =maven-test-mode= is a convenient way to run individual tests rather than passing detailed arguments to =mvn=.
 #+BEGIN_SRC emacs-lisp
