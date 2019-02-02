@@ -357,6 +357,11 @@ I'm slowly warming up to Projectile.
   (projectile-mode)
 #+END_SRC
 
+So far =eglot= is pretty good.
+#+BEGIN_SRC emacs-lisp
+  (use-package eglot :demand)
+#+END_SRC
+
 ** Emacs Lisp
 Nobody likes dynamic binding by default.
 #+BEGIN_SRC emacs-lisp :padline no
@@ -569,7 +574,7 @@ Ensure there's a symlink to the F# bin dir!
 #+END_SRC
 
 ** Python
-I've become a big fan of =lsp-mode=. The Python support requires [[https://github.com/palantir/python-language-server][python-language-server]] from PIP. For minimal stress, just install '[all]'.
+Using =eglot= (see above) for interacting with an LSP backend. The Python support requires [[https://github.com/palantir/python-language-server][python-language-server]] from PIP. For minimal stress, just install '[all]'.
 #+BEGIN_SRC emacs-lisp
   (defmodule python3
     "Init module for Python 3 development."
@@ -581,7 +586,7 @@ Though I remain suspicious of Facebook, React has brought a nice functional tast
 
 =prettier= (and any standardised formatting program, e.g. =yapf= for Python) should be mandatory. Not having to give a damn about formatting is a big weight off the mind.
 
-I'm using =lsp-javascript= for completion/checking support, which requires installing the [[https://github.com/sourcegraph/javascript-typescript-langserver][javascript-typescript-langserver]], i.e. =yarn global add javascript-typescript-langserver=. Make sure =~/.yarn/bin= is on your path.
+I'm using =eglot= for completion/checking support, which requires installing the [[https://github.com/sourcegraph/javascript-typescript-langserver][javascript-typescript-langserver]], i.e. =yarn global add javascript-typescript-langserver=. Make sure =~/.yarn/bin= is on your path.
 
 #+BEGIN_SRC emacs-lisp
   (defmodule javascript
