@@ -633,38 +633,13 @@ I'm using =eglot= for completion/checking support, which requires installing the
                   (define-key m (kbd "C-c C-n") 'cider-repl-set-ns)
                   (define-key m (kbd "C-c C-i") 'cider-inspect)
                   (define-key m (kbd "C-c C-f") 'cider-find-var)
-                  (define-key m (kbd "C-c C-w") 'cider-ns-refresh))
-                ;; don't really use these anymore, just for posterity
-                (dolist (m '(clojure-mode cider-repl-mode))
-                  (evil-leader/set-key-for-mode m
-                    "cc" 'cider-eval-defun-at-point
-                    "ce" 'cider-eval-last-sexp
-                    "ck" 'cider-load-buffer
-                    "cl" 'cider-load-file
-                    "cL" 'cider-load-all-files
-                    "cfv" 'cider-find-var
-                    "cfn" 'cider-find-ns
-                    "cfk" 'cider-find-keyword
-                    "cfp" 'cider-find-property
-                    "cfr" 'cider-find-resource
-                    "cda" 'cider-apropos
-                    "cdd" 'cider-doc
-                    "cdj" 'cider-javadoc
-                    "cdr" 'cider-grimoire
-                    "cD" 'cider-debug-defun-at-point
-                    "ctt" 'cider-test-run-test
-                    "ctn" 'cider-test-run-ns-tests
-                    "ctp" 'cider-test-run-project-tests
-                    "crn" 'cider-repl-set-ns
-                    "crh" 'cider-repl-require-helpers
-                    "cz" 'cider-switch-to-repl-buffer
-                    "cj" 'cider-jack-in)))))
+                  (define-key m (kbd "C-c C-w") 'cider-ns-refresh)))))
 #+END_SRC
 
 ** Clojure (inf-clojure)
 CIDER is amazing, but =inf-clojure= is more lightweight and can use socket REPLs, which is very handy. This module doesn't interfere with CIDER's keybindings unless =inf-clojure-enable= is called.
 
-The below setup includes autocompletion with =compliment= and namespace refreshing with =tools.namespace=, both of which need setting up as aliases in =~/.clojure/deps.edn=.
+The below setup includes autocompletion with =compliment= and namespace refreshing with =tools.namespace=.
 
 #+BEGIN_SRC emacs-lisp
   (defmodule clojure-inf
@@ -672,57 +647,61 @@ The below setup includes autocompletion with =compliment= and namespace refreshi
 
     (use-package clojure-mode
       :pin melpa-stable
+      :interpreter "clojure"
       :config (progn
                 (add-hook 'clojure-mode-hook 'paredit-mode)
                 (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
-                (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))))
+                (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))
+                (define-key clojure-mode-map (kbd "C-c C-!") 'inf-clojure-socket-repl)
+                (define-key clojure-mode-map (kbd "C-c C-@") 'inf-clojure-connect-socket-repl)
+                (define-key clojure-mode-map (kbd "C-c C-#") 'inf-clojure-connect)))
 
     (use-package inf-clojure
       :pin melpa-stable
       :config (progn
                 ;; Compliment is an active and seemingly pretty good completions library
                 (setq-default inf-clojure-completion-form "(compliment.core/completions \"%s\")")
-                ;; Make sure we use compliment, clojure.tools.namespace, and start a socket
-                ;; - these aliases are defined in my ~/.clojure/deps.edn as
-                ;; {:socket {:jvm-opts ["-Dclojure.server.repl={:port,50505,:accept,clojure.core.server/repl}"]}
-                ;;  :compliment {:extra-deps {compliment {:mvn/version "RELEASE"}}}
-                ;;  :tools.namespace {:extra-deps {org.clojure/tools.namespace {:mvn/version "RELEASE"}}}}
-                ;; Make sure the REPL is able to use compliment and tools.namespace
-                (add-hook 'inf-clojure-mode-hook #'inf-clojure-load-tooling)
                 (add-hook 'inf-clojure-mode-hook #'eldoc-mode)
+                ;; TODO completions tend to make the prompt show up all the time - missing input?
+                (add-hook 'inf-clojure-mode-hook #'company-mode)
                 (define-key inf-clojure-mode-map (kbd "C-c C-t") 'inf-clojure-load-tooling)
                 (define-key inf-clojure-minor-mode-map (kbd "C-c C-d") 'inf-clojure-show-var-documentation)
+                (define-key inf-clojure-minor-mode-map (kbd "C-c C-e") 'inf-clojure-eval-last-sexp)
                 (define-key inf-clojure-minor-mode-map (kbd "C-c C-w") 'inf-clojure-ns-refresh)
                 (define-key inf-clojure-minor-mode-map (kbd "C-c C-k") 'inf-clojure-eval-buffer)
                 (define-key inf-clojure-minor-mode-map (kbd "C-c C-?") 'inf-clojure-apropos)
                 (define-key inf-clojure-minor-mode-map (kbd "C-c C-l") 'inf-clojure-clear-repl-buffer)
                 (define-key inf-clojure-minor-mode-map (kbd "C-c C-n") 'inf-clojure-set-ns)))
 
-    (defun run-clojure-socket-repl ()
-      (interactive)
-      (async-shell-command "clojure -A:compliment:tools.namespace:socket"))
-
-    (global-set-key (kbd "C-x C-!") 'inf-clojure-connect)
-    (global-set-key (kbd "C-x C-@") 'run-clojure-socket-repl)
-
-    (defun inf-clojure-load-tooling ()
-      (interactive)
-      (message "Loading Clojure tooling (compliment, tools.namespace)")
-      (inf-clojure-eval-string "(require '[compliment.core] '[clojure.tools.namespace.repl])"))
-
     (defun inf-clojure-enable ()
       "Must be called before working with inf-clojure."
       (interactive)
       (add-hook 'clojure-mode-hook #'inf-clojure-minor-mode)
       (add-hook 'clojure-mode-hook #'eldoc-mode)
-      ;; Make sure the REPL is able to use compliment and tools.namespace
-      (add-hook 'inf-clojure-mode-hook #'inf-clojure-load-tooling)
       (add-hook 'inf-clojure-mode-hook #'eldoc-mode))
 
     (defun inf-clojure-disable ()
       (interactive)
       (remove-hook 'clojure-mode-hook #'inf-clojure-minor-mode)
       (remove-hook 'clojure-mode-hook #'eldoc-mode))
+
+    (defun inf-clojure-socket-repl ()
+      (interactive)
+      (inf-clojure-enable)
+      (let* ((deps "{:deps {compliment {:mvn/version \"RELEASE\"} org.clojure/tools.namespace {:mvn/version \"RELEASE\"}}}")
+             (reqs "(require '[compliment.core] '[clojure.tools.namespace.repl])")
+             (opts "-Dclojure.server.repl={:port,50505,:accept,clojure.core.server/repl}")
+             (cmd (format "clojure -J'%s' -Sdeps '%s' --eval \"%s\" --repl" opts deps reqs)))
+        (message "Starting REPL: %s" cmd)
+        (start-process-shell-command "Clojure socket REPL" nil cmd)))
+
+    (defun inf-clojure-connect-socket-repl ()
+      (interactive)
+      (inf-clojure-connect "localhost" 50505))
+
+    (defun inf-clojure-kill-process ()
+      (interactive)
+      (kill-process "Clojure socket REPL"))
 
     (defun inf-clojure-ns-refresh ()
       (interactive)
