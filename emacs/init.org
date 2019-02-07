@@ -663,8 +663,7 @@ The below setup includes autocompletion with =compliment= and namespace refreshi
                 (setq-default inf-clojure-completion-form "(compliment.core/completions \"%s\")")
                 (add-hook 'inf-clojure-mode-hook #'eldoc-mode)
                 ;; TODO completions tend to make the prompt show up all the time - missing input?
-                (add-hook 'inf-clojure-mode-hook #'company-mode)
-                (define-key inf-clojure-mode-map (kbd "C-c C-t") 'inf-clojure-load-tooling)
+                (add-hook 'inf-clojure-mode-hook #'eldoc-mode)
                 (define-key inf-clojure-minor-mode-map (kbd "C-c C-d") 'inf-clojure-show-var-documentation)
                 (define-key inf-clojure-minor-mode-map (kbd "C-c C-e") 'inf-clojure-eval-last-sexp)
                 (define-key inf-clojure-minor-mode-map (kbd "C-c C-w") 'inf-clojure-ns-refresh)
@@ -677,23 +676,25 @@ The below setup includes autocompletion with =compliment= and namespace refreshi
       "Must be called before working with inf-clojure."
       (interactive)
       (add-hook 'clojure-mode-hook #'inf-clojure-minor-mode)
-      (add-hook 'clojure-mode-hook #'eldoc-mode)
-      (add-hook 'inf-clojure-mode-hook #'eldoc-mode))
+      (add-hook 'clojure-mode-hook #'company-mode))
 
     (defun inf-clojure-disable ()
       (interactive)
-      (remove-hook 'clojure-mode-hook #'inf-clojure-minor-mode)
-      (remove-hook 'clojure-mode-hook #'eldoc-mode))
+      (remove-hook 'clojure-mode-hook #'inf-clojure-minor-mode))
 
     (defun inf-clojure-socket-repl ()
       (interactive)
       (inf-clojure-enable)
-      (let* ((deps "{:deps {compliment {:mvn/version \"RELEASE\"} org.clojure/tools.namespace {:mvn/version \"RELEASE\"}}}")
-             (reqs "(require '[compliment.core] '[clojure.tools.namespace.repl])")
+      (let* ((deps "{:deps {compliment {:mvn/version \"RELEASE\"} cider/orchard {:mvn/version \"RELEASE\"}}}")
+             (reqs "(require '[compliment.core] '[clojure.tools.namespace.repl] '[orchard.info])")
              (opts "-Dclojure.server.repl={:port,50505,:accept,clojure.core.server/repl}")
-             (cmd (format "clojure -J'%s' -Sdeps '%s' --eval \"%s\" --repl" opts deps reqs)))
-        (message "Starting REPL: %s" cmd)
-        (start-process-shell-command "Clojure socket REPL" nil cmd)))
+             (cmd (format "clojure -J'%s' -Sdeps '%s' --eval \"%s\" --repl" opts deps reqs))
+             (dir (inf-clojure-project-root))
+             (buf (get-buffer-create "*Clojure socket REPL*")))
+        (message "Starting REPL in %s:\n%s" dir cmd)
+        (with-current-buffer buf
+          (setq-local default-directory dir)
+          (start-process-shell-command "Clojure socket REPL" buf cmd))))
 
     (defun inf-clojure-connect-socket-repl ()
       (interactive)
@@ -706,6 +707,16 @@ The below setup includes autocompletion with =compliment= and namespace refreshi
     (defun inf-clojure-ns-refresh ()
       (interactive)
       (inf-clojure-eval-string "(clojure.tools.namespace.repl/refresh)"))
+
+    (defun inf-clojure-find-var ()
+      (interactive)
+      (let* ((form (format "(orchard.info/info (ns-name *ns*) (quote %s))" (symbol-at-point)))
+             (info (inf-clojure-eval-string form)))
+        ;; parse the info to get file and line, column
+        ;; find-file and cursor to line and column
+        ))
+
+    (inf-clojure--read-or-nil)
 
     (use-package clj-refactor
       :config (add-hook 'clojure-mode-hook
