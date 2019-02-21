@@ -1160,8 +1160,8 @@ Another good idea lovingly ripped off from Spacemacs.
       (dashboard-setup-startup-hook)
       (setq dashboard-banner-logo-title "[ E M A C S ]"
             dashboard-startup-banner 'logo
-            dashboard-items '((recents  . 8)
-                              (bookmarks . 5)))))
+            dashboard-items '((recents  . 12)
+                              (bookmarks . 8)))))
 #+END_SRC
 
 ** Icons
