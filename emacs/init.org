@@ -607,6 +607,12 @@ I'm using =eglot= for completion/checking support, which requires installing the
                 (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
                 (add-to-list 'magic-mode-alist '(".* boot" . clojure-mode))))
 
+    (use-package company
+      :demand
+      :config (progn
+                (add-hook 'clojure-mode-hook #'company-mode)
+                (setq-default company-show-numbers t)))
+
     (defun cider-repl-require-helpers ()
       "Insert require expressions into a Clojure REPL to save some typing."
       (interactive)
@@ -656,6 +662,12 @@ The below setup includes autocompletion with =compliment= and namespace refreshi
                 (define-key clojure-mode-map (kbd "C-c C-!") 'inf-clojure-socket-repl)
                 (define-key clojure-mode-map (kbd "C-c C-@") 'inf-clojure-connect-socket-repl)
                 (define-key clojure-mode-map (kbd "C-c C-#") 'inf-clojure-connect)))
+
+    (use-package company
+      :demand
+      :config (progn
+                (add-hook 'clojure-mode-hook #'company-mode)
+                (setq-default company-show-numbers t)))
 
     (use-package inf-clojure
       :pin melpa-stable
@@ -716,8 +728,6 @@ The below setup includes autocompletion with =compliment= and namespace refreshi
         ;; parse the info to get file and line, column
         ;; find-file and cursor to line and column
         ))
-
-    (inf-clojure--read-or-nil)
 
     (use-package clj-refactor
       :config (add-hook 'clojure-mode-hook
