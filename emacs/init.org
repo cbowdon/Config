@@ -1251,6 +1251,19 @@ Being in the correct mode (line or char) is the cure for all evils in =term-mode
        (eshell-here)))
  #+END_SRC
 
+*** Pop-down shell
+Trying out [[https://gitlab.com/emacsomancer/equake][equake]].
+#+BEGIN_SRC emacs-lisp
+  (use-package equake
+      :ensure t
+      :config  ; some examples of optional settings follow:
+      (global-set-key (kbd "C-x C-c") 'equake-check-if-in-equake-frame-before-closing) ; prevent accidental frame-closure
+      (global-set-key (kbd "C-`") 'equake-invoke)
+      (setq equake-size-width 0.99) ; set width a bit less than full-screen (prevent 'overflow' on multi-monitor)
+      ;; set distinct face for Equake: white foreground with dark blue background, and different font
+      (set-face-attribute 'equake-buffer-face 'nil :inherit 'default :family "Iosevka Term Regular" :background "#000022" :foreground "white"))
+#+END_SRC
+
 *** Prompt
  You can't be a professional without a try-hard prompt.
 **** XPM shapes
