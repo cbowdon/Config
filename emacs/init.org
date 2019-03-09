@@ -588,7 +588,7 @@ Using =eglot= (see above) for interacting with an LSP backend. The Python suppor
       (message (format "Activated venv: python is now %s"
                        (shell-command-to-string "which python"))))
 
-    (define-key python-mode-map (kbd "C-c C-v") 'venv))
+    (add-hook 'python-mode-hook #'(lambda () (define-key python-mode-map (kbd "C-c C-v") 'venv))))
 #+END_SRC
 
 ** JavaScript
