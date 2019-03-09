@@ -579,7 +579,16 @@ Using =eglot= (see above) for interacting with an LSP backend. The Python suppor
 #+BEGIN_SRC emacs-lisp
   (defmodule python3
     "Init module for Python 3 development."
-    (use-package pyvenv))
+    (use-package eglot)
+    (use-package pyvenv)
+
+    (defun venv ()
+      (interactive)
+      (pyvenv-activate "./venv")
+      (message (format "Activated venv: python is now %s"
+                       (shell-command-to-string "which python"))))
+
+    (define-key python-mode-map (kbd "C-c C-v") 'venv))
 #+END_SRC
 
 ** JavaScript
