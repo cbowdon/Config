@@ -1531,13 +1531,7 @@ PuTTY (and so =plink.exe=) is basically your only choice on Windows.
 #+END_SRC
 
 ** Helpers
-#+BEGIN_SRC emacs-lisp
-  (defun is-nix ()
-    (or (equal system-type "gnu")
-        (equal system-type "gnu/linux")
-        (equal system-type "gnu/kfreebsd")
-        (equal system-type "darwin")))
-#+END_SRC
+
 * Proxy
 Provide functions to set all the necessary proxy variables for =$day_job=, assuming that =proxy-host= and =proxy-port= are set in =custom-file=.
 #+BEGIN_SRC emacs-lisp
