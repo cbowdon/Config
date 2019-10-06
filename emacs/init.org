@@ -1202,6 +1202,16 @@ Being in the correct mode (line or char) is the cure for all evils in =term-mode
     "sc" 'term-char-mode)
 #+END_SRC
 
+** Term
+#+BEGIN_SRC emacs-lisp
+  (defun term-with-name (name)
+    (interactive "sName: ")
+    (term "/bin/bash")
+    (rename-buffer name))
+
+  (define-key global-map (kbd "C-S-R") 'rename-buffer)
+#+END_SRC
+
 ** Eshell
  Fix an irritating warning about the pager program.
  #+BEGIN_SRC emacs-lisp
