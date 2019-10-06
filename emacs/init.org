@@ -1458,10 +1458,10 @@ Trying out [[https://gitlab.com/emacsomancer/equake][equake]].
 * Directories
 These days Treemacs is the coolest directory browser.
 #+BEGIN_SRC emacs-lisp
-  (use-package treemacs
-    :config (add-to-list 'evil-emacs-state-modes  'treemacs-mode))
+  ;;(use-package treemacs
+  ;;  :config (add-to-list 'evil-emacs-state-modes  'treemacs-mode))
 
-  (evil-leader/set-key "t" 'treemacs)
+  ;;(evil-leader/set-key "t" 'treemacs)
 #+END_SRC
 
 Customize dired a bit and give it a key.
