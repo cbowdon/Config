@@ -266,11 +266,12 @@ For future reference, find =rules/base.lst= in the =xkb= directory to learn all 
   (define-key repl-map (kbd "C-c") 'cider-jack-in)
   (define-key repl-map (kbd "C-d") 'run-dig)
   (define-key repl-map (kbd "C-e") 'eshell)
+  (define-key repl-map (kbd "C-s") 'shell)
   (define-key repl-map (kbd "C-i") 'ielm)
   (define-key repl-map (kbd "C-p") 'run-python)
-  (define-key repl-map (kbd "C-s C-m") 'sql-mysql)
-  (define-key repl-map (kbd "C-s C-p") 'sql-postgres)
-  (define-key repl-map (kbd "C-s C-s") 'sql-sqlite)
+  (define-key repl-map (kbd "C-q C-m") 'sql-mysql)
+  (define-key repl-map (kbd "C-q C-p") 'sql-postgres)
+  (define-key repl-map (kbd "C-q C-s") 'sql-sqlite)
   (define-key repl-map (kbd "C-t") 'term)
 
   (evil-leader/set-key
