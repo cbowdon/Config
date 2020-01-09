@@ -582,6 +582,16 @@ Using =eglot= (see above) for interacting with an LSP backend. The Python suppor
     (use-package eglot)
     (use-package pyvenv)
 
+    ;; TODO make this work without setup
+    (use-package flymake-cursor
+      :load-path "~/Projects/cbowdon/emacs-flymake-cursor"
+      :config (flymake-cursor-mode))
+
+    (use-package conda
+      :config (progn
+                (conda-env-initialize-interactive-shells)
+                (conda-env-initialize-eshell)))
+
     (defun venv ()
       (interactive)
       (pyvenv-activate "./venv")
@@ -922,7 +932,7 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
 #+BEGIN_SRC emacs-lisp
   (defmodule yaml
     "Init module for YAML support."
-    (use-package yaml-mode :mode "\\.ya?ml"))
+    (use-package yaml-mode :mode "\\.ya?ml|\\.dvc$"))
 #+END_SRC
 
 *** GraphQL
