@@ -599,6 +599,15 @@ Using =eglot= (see above) for interacting with an LSP backend. The Python suppor
       (message (format "Activated venv: python is now %s"
                        (shell-command-to-string "which python"))))
 
+    (defun poetry--list ()
+      (thread-first "ls ~/.cache/pypoetry/virtualenvs/"
+        (shell-command-to-string)
+        (split-string "[\n\r]+" t)))
+
+    (defun poetry-activate (project-name)
+      (interactive (list (completing-read "Project: " (poetry--list))))
+      (pyvenv-activate (string-join (list "~/.cache/pypoetry/virtualenvs/" project-name) "")))
+
     (add-hook 'python-mode-hook #'(lambda () (define-key python-mode-map (kbd "C-c C-v") 'venv))))
 #+END_SRC
 
@@ -1059,8 +1068,6 @@ The dot language user guide is [[https://graphviz.gitlab.io/_pages/pdf/dotguide.
 ** Daemons
 Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services and customize it for evil.
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'evil-emacs-state-modes 'daemons-mode)
-  (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
   (use-package daemons
     :config
     (progn
