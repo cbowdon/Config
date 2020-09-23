@@ -1097,7 +1097,7 @@ Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services
     (interactive "nforeground percent:\nnbackground percent:")
     (set-frame-parameter (selected-frame) 'alpha (list fg-percent bg-percent)))
 
-  (set-frame-transparency 93 80)
+  (set-frame-transparency 100 80)
 
   (evil-leader/set-key
     "F" 'toggle-frame-fullscreen)
