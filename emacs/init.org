@@ -810,6 +810,14 @@ Ansible is my configuration management solution of choice. The Emacs support isn
     (use-package company-ansible))
 #+END_SRC
 
+** Terraform
+#+BEGIN_SRC emacs-lisp
+  (defmodule terraform
+    "Init module for Terraform."
+    (use-package terraform-mode
+      :mode "\\.tf|.hcl\\'"))
+#+END_SRC
+
 ** Ruby
 I ended up coding some Ruby for use with Chef and Capistrano.
 #+BEGIN_SRC emacs-lisp
