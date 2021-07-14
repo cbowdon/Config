@@ -1194,7 +1194,7 @@ Another good idea lovingly ripped off from Spacemacs.
     (progn
       (dashboard-setup-startup-hook)
       (setq dashboard-banner-logo-title "[ E M A C S ]"
-            dashboard-startup-banner "~/unikitty.png" ;; replace 'logo with AWESOME
+            dashboard-startup-banner "~/Pictures/batman_kick.png" ;; replace 'logo with AWESOME
             dashboard-set-footer t
             dashboard-set-file-icons t
             dashboard-items '((recents  . 12)
