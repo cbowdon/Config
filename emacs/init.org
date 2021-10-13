@@ -243,6 +243,7 @@ For future reference, find =rules/base.lst= in the =xkb= directory to learn all 
 
   (define-key global-map (kbd "C-f C-s") 'save-buffer)
   (define-key global-map (kbd "C-f C-f") 'ido-find-file)
+  (define-key global-map (kbd "C-f C-p") 'projectile-find-file)
   (define-key global-map (kbd "C-b") 'switch-to-buffer)
 
   (define-key evil-normal-state-map (kbd "C-k") 'kill-buffer)
