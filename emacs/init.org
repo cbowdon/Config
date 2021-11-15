@@ -1099,6 +1099,26 @@ Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services
         "d R" 'daemons-restart)))
 #+END_SRC
 
+** Env vars
+
+It's handy to have a function that can parse a `.env` file. The [[https://www.emacswiki.org/emacs/ElispCookbook#h5o-33][EmacsWiki cookbook]] helped a lot writing this.
+
+#+begin_src emacs-lisp
+  (defun parse-env (filepath)
+    (interactive "fPath to env file: ")
+    (with-temp-buffer
+      (insert-file-contents filepath)
+      (goto-char (point-min))
+
+      (while (re-search-forward "\\(export \\)?\\([A-Za-z0-9_]+\\)=[\"']?\\(.*\\)[\"']?\n"
+                                nil  ;; unbounded, whole buffer
+                                t) ;; don't emit an error
+        (let ((var (match-string 2))
+              (val (match-string 3)))
+          (message (format "Setting env var %s=%s" var val))
+          (setenv var val)))))
+#+end_src
+
 * Frame
 #+BEGIN_SRC emacs-lisp
   (defun set-frame-transparency (fg-percent bg-percent)
