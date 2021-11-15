@@ -1110,7 +1110,7 @@ It's handy to have a function that can parse a `.env` file. The [[https://www.em
       (insert-file-contents filepath)
       (goto-char (point-min))
 
-      (while (re-search-forward "\\(export \\)?\\([A-Za-z0-9_]+\\)=[\"']?\\(.*\\)[\"']?\n"
+      (while (re-search-forward "\\(export \\)?\\([A-Za-z0-9_]+\\)=[\"']?\\([^\n'\"]*\\)[\"']?\n?"
                                 nil  ;; unbounded, whole buffer
                                 t) ;; don't emit an error
         (let ((var (match-string 2))
