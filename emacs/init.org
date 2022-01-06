@@ -1115,7 +1115,9 @@ It's handy to have a function that can parse a `.env` file. The [[https://www.em
                                 t) ;; don't emit an error
         (let ((var (match-string 2))
               (val (match-string 3)))
-          (message (format "Setting env var %s=%s" var val))
+          (message (format "Setting env var %s=%s"
+                           var
+                           (replace-regexp-in-string "%" "%%" val)))
           (setenv var val)))))
 #+end_src
 
