@@ -1233,6 +1233,12 @@ For a bit of snazz, =all-the-icons= is nice. Run =all-the-icons-install-fonts= a
     :config (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC
 
+** Font
+Emacs 28 seems t o be disrespecting my choices made via the options UI, so doing this in elisp.
+#+begin_src emacs-lisp
+  (set-frame-font "Source Code Pro 12" nil t)
+#+end_src
+
 * Temporary files
 Backups and lock files not required.
 #+BEGIN_SRC emacs-lisp
