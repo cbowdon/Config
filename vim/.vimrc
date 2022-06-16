@@ -1,6 +1,6 @@
 set nocompatible              " be iMproved, required
 
-execute pathogen#infect()
+" execute pathogen#infect()
 
 filetype plugin indent on    " required
 
@@ -44,6 +44,7 @@ set shiftwidth=4
 set expandtab
 
 set vb "set visual bell - means no audio bell
+set t_vb=  "do nothing, visual bell, no flashy flash
 
 set hlsearch " search highlighting
 
@@ -64,11 +65,11 @@ au BufWinEnter ?* silent loadview
 "au BufEnter *.fs,*.fsx,*.fsi setlocal omnifunc=fsharpbinding#python#Complete
 
 " TypeScript
-au BufRead,BufNewFile *.ts setlocal filetype=typescript
-set rtp+=/usr/local/lib/node_modules/typescript-tools
+" au BufRead,BufNewFile *.ts setlocal filetype=typescript
+" set rtp+=/usr/local/lib/node_modules/typescript-tools
 
 " Syntastic
-nnoremap `` :SyntasticCheck<CR>
+" nnoremap `` :SyntasticCheck<CR>
 
 au BufRead,BufNewFile *.md set filetype=markdown "Markdown
 au BufRead,BufNewFile *.hbs set filetype=html syntax=html "Handlebars
