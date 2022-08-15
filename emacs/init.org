@@ -584,15 +584,15 @@ Using =eglot= (see above) for interacting with an LSP backend. The Python suppor
     (use-package eglot)
     (use-package pyvenv)
 
-    ;; TODO make this work without setup
-    (use-package flymake-cursor
-      :load-path "~/Projects/cbowdon/emacs-flymake-cursor"
-      :config (flymake-cursor-mode))
+    ;; TODO both died with emacs 28 and macOS
+    ;; (use-package flymake-cursor
+    ;;   :load-path "~/Projects/cbowdon/emacs-flymake-cursor"
+    ;;   :config (flymake-cursor-mode))
 
-    (use-package conda
-      :config (progn
-                (conda-env-initialize-interactive-shells)
-                (conda-env-initialize-eshell)))
+    ;; (use-package conda
+    ;;   :config (progn
+    ;;             (conda-env-initialize-interactive-shells)
+    ;;             (conda-env-initialize-eshell)))
 
     (defun venv ()
       (interactive)
@@ -1205,7 +1205,7 @@ Remember to =M-x all-the-icons-install-fonts.=
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
     :ensure t
-    :hook (after-init . doom-modeline-init))
+    :hook (after-init . doom-modeline-mode))
 #+END_SRC
 
 ** Dashboard
@@ -1217,7 +1217,7 @@ Another good idea lovingly ripped off from Spacemacs.
     (progn
       (dashboard-setup-startup-hook)
       (setq dashboard-banner-logo-title "[ E M A C S ]"
-            dashboard-startup-banner "~/Pictures/batman_kick.png" ;; replace 'logo with AWESOME
+            dashboard-startup-banner "~/unikitty.png" ;; replace 'logo with AWESOME
             dashboard-set-footer t
             dashboard-set-file-icons t
             dashboard-items '((recents  . 12)
@@ -1234,9 +1234,12 @@ For a bit of snazz, =all-the-icons= is nice. Run =all-the-icons-install-fonts= a
 #+END_SRC
 
 ** Font
-Emacs 28 seems t o be disrespecting my choices made via the options UI, so doing this in elisp.
+Emacs 28 seems to be disrespecting my choices made via the options UI, so doing this in elisp.
 #+begin_src emacs-lisp
-  (set-frame-font "Source Code Pro 12" nil t)
+  (let ((font-name "Source Code Pro 12"))
+    (condition-case nil
+              (set-frame-font font-name nil t)
+            (error (warn "Missing font %s - using system default" font-name))))
 #+end_src
 
 * Temporary files
@@ -1474,6 +1477,9 @@ Trying out [[https://gitlab.com/emacsomancer/equake][equake]].
      "String at end of prompt.")
 
    (unless (frame-parameter nil 'tty)
+
+     (require 'color)
+
      ;; TODO fancy prompt in terminal mode also
      (defvar eshell-fg-color
        (let ((fg-color (frame-parameter nil 'foreground-color)))
@@ -1543,6 +1549,7 @@ Customize dired a bit and give it a key.
   (defmodule magit
     "Init module for Magit."
     (use-package magit
+      :pin melpa-stable
       :config
       (progn
         (global-set-key (kbd "C-x g") 'magit-status)
