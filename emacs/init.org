@@ -669,7 +669,8 @@ I'm using =eglot= for completion/checking support, which requires installing the
                              cider-browse-spec-example-mode
                              cider-browse-spec-view-mode))
                   (add-to-list 'evil-emacs-state-modes m))
-                (add-hook 'cider-repl-mode-hook 'paredit-mode)
+                ;; Removed for bad behaviour of locking REPL:
+                ;; (add-hook 'cider-repl-mode-hook 'paredit-mode)
                 (add-hook 'cider-repl-mode-hook 'company-mode)
                 (dolist (m (list cider-mode-map cider-repl-mode-map))
                   (define-key m (kbd "C-c C-n") 'cider-repl-set-ns)
