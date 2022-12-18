@@ -737,7 +737,7 @@ The below setup includes autocompletion with =compliment= and namespace refreshi
              (reqs "(require '[compliment.core] '[clojure.tools.namespace.repl] '[orchard.info])")
              (opts "-Dclojure.server.repl={:port,50505,:accept,clojure.core.server/repl}")
              (cmd (format "clojure -J'%s' -Sdeps '%s' --eval \"%s\" --repl" opts deps reqs))
-             (dir (inf-clojure-project-root))
+             (dir default-directory)
              (buf (get-buffer-create "*Clojure socket REPL*")))
         (message "Starting REPL in %s:\n%s" dir cmd)
         (with-current-buffer buf
