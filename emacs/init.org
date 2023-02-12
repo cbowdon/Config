@@ -270,6 +270,7 @@ For future reference, find =rules/base.lst= in the =xkb= directory to learn all 
   (define-key repl-map (kbd "C-s") 'shell)
   (define-key repl-map (kbd "C-i") 'ielm)
   (define-key repl-map (kbd "C-p") 'run-python)
+  (define-key repl-map (kbd "C-j") 'js-comint)
   (define-key repl-map (kbd "C-q C-m") 'sql-mysql)
   (define-key repl-map (kbd "C-q C-p") 'sql-postgres)
   (define-key repl-map (kbd "C-q C-s") 'sql-sqlite)
@@ -280,6 +281,7 @@ For future reference, find =rules/base.lst= in the =xkb= directory to learn all 
     "rf" 'run-fsharp
     "ri" 'ielm
     "rp" 'run-python
+    "rj" 'js-comint
     "rr" 'run-ruby
     "R" 'repl-map)
 
@@ -627,8 +629,19 @@ I'm using =eglot= for completion/checking support, which requires installing the
 #+BEGIN_SRC emacs-lisp
   (defmodule javascript
     "Init module for JavaScript (including React/JSX)."
-    (use-package prettier-js)
-    (use-package rjsx-mode :mode "\\.[jt]sx?$"))
+    ;; (use-package prettier-js
+    ;;   :config (progn
+    ;;             (define-key js2-mode-map (kbd "C-c C-p") 'prettier-js)))
+    ;;
+    (use-package typescript-mode :pin melpa-stable :mode "\\.ts")
+    (use-package js-comint
+      :pin melpa-stable
+      :config (progn
+                (define-key js-mode-map (kbd "C-c C-c") 'js-comint-send-buffer)
+                (define-key js-mode-map (kbd "C-c C-e") 'js-comint-send-last-sexp)
+                (define-key js-mode-map (kbd "C-c C-s") 'js-comint-send-region)))
+    (use-package rjsx-mode :mode "\\.[jt]sx?$")
+    (add-hook 'js2-mode-hook 'prettier-js-mode))
 #+END_SRC
 
 ** Clojure
