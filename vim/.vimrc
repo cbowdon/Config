@@ -8,6 +8,8 @@ filetype plugin indent on    " required
 set backupdir=~/.vim/backups
 set directory=~/.vim/backups
 
+set autochdir
+
 colorscheme default
 if has ('gui')
     colorscheme slate
@@ -31,11 +33,11 @@ syntax on
 set encoding=utf-8
 
 if has ('win32')
-	set guifont=Consolas
+    set guifont=Consolas
 elseif has('win64')
-	set guifont=Lucida_Console
+    set guifont=Lucida_Console
 else
-	set guifont=Monaco
+    set guifont=Monaco
 endif
 
 set nowrap
@@ -73,3 +75,37 @@ au BufWinEnter ?* silent loadview
 
 au BufRead,BufNewFile *.md set filetype=markdown "Markdown
 au BufRead,BufNewFile *.hbs set filetype=html syntax=html "Handlebars
+
+
+" Spacemacs land
+
+let mapleader = " "
+
+map <leader>g <C-c>
+
+map <leader>fs :w<CR>
+map <leader>e :e<space>
+map <leader>q :q<CR>
+map <leader>q! :q!<CR>
+
+map <leader>bb :buffers<CR>
+map <leader>bn :bn<CR>
+map <leader>bp :bp<CR>
+map <leader>bd :bdelete<CR>
+map <leader>bk :bdelete<CR>
+
+map <leader>j= mzgg=G`z
+
+map <leader>W :set wrap!<CR>
+
+map <leader>wh <C-w>h
+map <leader>wj <C-w>j
+map <leader>wk <C-w>k
+map <leader>wl <C-w>l
+map <leader>wc <C-w>c
+map <leader>ws <C-w>s
+map <leader>wv <C-w>v
+map <leader>ww <C-w><C-w>
+
+set notimeout
+set nottimeout
