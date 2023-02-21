@@ -81,11 +81,15 @@ au BufRead,BufNewFile *.hbs set filetype=html syntax=html "Handlebars
 
 let mapleader = " "
 
+map ; :
+
 map <leader>g <C-c>
+map <C-g> <C-c>
 
 map <leader>fs :w<CR>
 map <leader>e :e<space>
 map <leader>q :q<CR>
+map <leader>xc :q<CR>
 map <leader>q! :q!<CR>
 
 map <leader>bb :buffers<CR>
@@ -102,10 +106,19 @@ map <leader>wh <C-w>h
 map <leader>wj <C-w>j
 map <leader>wk <C-w>k
 map <leader>wl <C-w>l
+map <leader>wH <C-w>H
+map <leader>wJ <C-w>J
+map <leader>wK <C-w>K
+map <leader>wL <C-w>L
 map <leader>wc <C-w>c
 map <leader>ws <C-w>s
 map <leader>wv <C-w>v
 map <leader>ww <C-w><C-w>
+
+map <leader>rs :terminal<CR>
+map <leader>rp :terminal python3<CR>
+map <leader>rj :terminal deno<CR>
+map <leader>rc :terminal clojure<CR>
 
 set notimeout
 set nottimeout
