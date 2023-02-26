@@ -97,6 +97,7 @@ map <leader>bn :bn<CR>
 map <leader>bp :bp<CR>
 map <leader>bd :bdelete<CR>
 map <leader>bk :bdelete<CR>
+map <leader>k :bdelete<CR>
 
 map <leader>j= mzgg=G`z
 
@@ -122,3 +123,10 @@ map <leader>rc :terminal clojure<CR>
 
 set notimeout
 set nottimeout
+
+" paredit helpers
+map ,{ mz%r}`zr{
+map ,[ mz%r]`zr[
+map ,( mz%r)`zr(
+map ,K mz%a)<ESC>`zi(<ESC>
+map ,J mz%x`zx
