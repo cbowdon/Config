@@ -128,5 +128,8 @@ set nottimeout
 map ,{ mz%r}`zr{
 map ,[ mz%r]`zr[
 map ,( mz%r)`zr(
-map ,K mz%a)<ESC>`zi(<ESC>
-map ,J mz%x`zx
+map ,J mz%a)<ESC>`zi(<ESC>
+map ,K mz%x`zx
+
+" stop annoying terminal behaviour
+tmap <S-SPACE> <SPACE>
