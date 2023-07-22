@@ -97,7 +97,7 @@ map <leader>bn :bn<CR>
 map <leader>bp :bp<CR>
 map <leader>bd :bdelete<CR>
 map <leader>bk :bdelete<CR>
-map <leader>k :bdelete<CR>
+map <leader>k<CR> :bdelete<CR>
 
 map <leader>j= mzgg=G`z
 
