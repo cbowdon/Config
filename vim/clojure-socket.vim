@@ -18,7 +18,6 @@ enddef
 
 def SendClj(expression: string): string
     const body = shellescape(expression)
-    :echo body
     const request = "nc localhost 5555 < <(echo " .. body .. ")"
     const response = system(request)
     return response
@@ -30,7 +29,22 @@ def CljSelected()
     :echo response
 enddef
 
-command! -range=% CLJ CljSelected()
+def CljBuffer()
+    const text = BufferText()
+    const response = SendClj(text)
+    :echo response
+enddef
+
+def StartSocketRepl()
+    const body = "clojure -J-Dclojure.server.repl=\"{:port 5555 :accept clojure.core.server/io-prepl}\""
+    const response = system(shellescape(body))
+    :echo response
+enddef
 
 defcompile
+
+command! -range=% CljSelected CljSelected()
+command! -range=% CljBuffer CljBuffer()
+command! StartClj StartSocketRepl()
+
 echom "Evaluated clojure-socket.vim"
