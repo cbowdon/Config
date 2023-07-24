@@ -362,11 +362,6 @@ I'm slowly warming up to Projectile.
   (projectile-mode)
 #+END_SRC
 
-So far =eglot= is pretty good.
-#+BEGIN_SRC emacs-lisp
-  (use-package eglot :demand)
-#+END_SRC
-
 ** Emacs Lisp
 Nobody likes dynamic binding by default.
 #+BEGIN_SRC emacs-lisp :padline no
@@ -500,9 +495,11 @@ Make ad-hoc lisping more comfortable.
 
 *** Package development
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck-package)
-  (eval-after-load 'flycheck '(flycheck-package-setup))
-  (use-package package-lint)
+  (defmodule package-development
+    "Init module to install helpers for Elisp package development."
+    (use-package flycheck-package)
+    (eval-after-load 'flycheck '(flycheck-package-setup))
+    (use-package package-lint))
 #+END_SRC
 
 *** REST
@@ -579,7 +576,7 @@ Ensure there's a symlink to the F# bin dir!
 #+END_SRC
 
 ** Python
-Using =eglot= (see above) for interacting with an LSP backend. The Python support requires [[https://github.com/palantir/python-language-server][python-language-server]] from PIP. For minimal stress, just install '[all]'.
+Using =eglot= for interacting with an LSP backend. The Python support requires [[https://github.com/palantir/python-language-server][python-language-server]] from PIP. For minimal stress, just install '[all]'.
 #+BEGIN_SRC emacs-lisp
   (defmodule python3
     "Init module for Python 3 development."
@@ -919,7 +916,9 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
 ** Data languages
 *** CSV
 #+BEGIN_SRC emacs-lisp
-  (use-package csv-mode)
+  (defmodule csv
+    "Init module to add CSV mode."
+    (use-package csv-mode))
 #+END_SRC
 
 *** JSON
@@ -975,17 +974,23 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
 
 *** GraphQL
 #+BEGIN_SRC emacs-lisp
-  (use-package graphql-mode :mode "\\.sdl$|\\.graphql$")
+  (defmodule graphql
+    "Init module to add GraphQL support."
+    (use-package graphql-mode :mode "\\.sdl$|\\.graphql$"))
 #+END_SRC
 
 *** ElasticSearch
 #+BEGIN_EXAMPLE emacs-lisp
-  (use-package es-mode :mode "\\.es$")
+  (defmodule elasticsearch
+    "Init module adding ES client."
+    (use-package es-mode :mode "\\.es$"))
 #+END_EXAMPLE
 
 *** SPARQL
 #+BEGIN_SRC emacs-lisp
-  (use-package sparql-mode :mode "\\.sparql$")
+  (defmodule sparql
+    "Init module adding SparQL support."
+    (use-package sparql-mode :mode "\\.sparql$"))
 #+END_SRC
 
 ** Config languages
@@ -1007,10 +1012,12 @@ Rust support is pretty basic at this stage. Autocompletion comes from a separate
 ** Text markup languages
    The ubiquitous, but not actually-that-pleasant, Markdown. I've looked at a couple of real-time preview modes and they're nice, but all have external dependencies requiring Go or Ruby, which I'm not interested in installing. (I run a lean system. 😉)
 #+BEGIN_SRC emacs-lisp
-  (use-package markdown-mode
-    :mode "\\.md$"
-    :config (progn
-              (define-key markdown-mode-map (kbd "C-c C-TAB") 'markdown-table-align)))
+  (defmodule markdown
+    "Init module adding Markdown mode and keymaps."
+    (use-package markdown-mode
+      :mode "\\.md$"
+      :config (progn
+                (define-key markdown-mode-map (kbd "C-c C-TAB") 'markdown-table-align))))
 #+END_SRC
 
 * Org
@@ -1076,18 +1083,22 @@ It's nice to disable evil indentation, which doesn't play nice. I set a few lead
 ** Exporting
 Because everyone else uses GitHub-flavored markdown...
 #+BEGIN_SRC emacs-lisp
+  (defmodule org-exports
+    "Init module installing Org mode export formats."
     (use-package htmlize)
-    (use-package ox-gfm)
+    (use-package ox-gfm))
 #+END_SRC
 
 ** Diagrams (graphviz)
 I prefer graphviz to ditaa. The binding for (re)displaying inline images helps iterate quickly on diagrams.
 
 #+BEGIN_SRC emacs-lisp
-  (setq default-tab-width tab-width)
-  (use-package graphviz-dot-mode)
-  (evil-leader/set-key-for-mode 'org-mode
-    "oI" 'org-display-inline-images)
+  (defmodule graphviz
+    "Init module to add Graphviz support and configure usage in Org mode."
+    (setq default-tab-width tab-width)
+    (use-package graphviz-dot-mode)
+    (evil-leader/set-key-for-mode 'org-mode
+      "oI" 'org-display-inline-images))
 #+END_SRC
 
 The dot language user guide is [[https://graphviz.gitlab.io/_pages/pdf/dotguide.pdf][here]].
@@ -1096,26 +1107,28 @@ The dot language user guide is [[https://graphviz.gitlab.io/_pages/pdf/dotguide.
 ** Daemons
 Use [[https://github.com/cbowdon/daemons.el][daemons]] to manage system services and customize it for evil.
 #+BEGIN_SRC emacs-lisp
-  (use-package daemons
-    :config
-    (progn
-      (define-prefix-command 'daemons-prefix-map)
-      (define-key daemons-prefix-map (kbd "d") 'daemons)
-      (define-key daemons-prefix-map (kbd "RET") 'daemons-status)
-      (define-key daemons-prefix-map (kbd "s") 'daemons-start)
-      (define-key daemons-prefix-map (kbd "S") 'daemons-stop)
-      (define-key daemons-prefix-map (kbd "r") 'daemons-reload)
-      (define-key daemons-prefix-map (kbd "R") 'daemons-restart)
-      (define-key global-map (kbd "C-x C-y") 'daemons-prefix-map)
-      (add-to-list 'evil-emacs-state-modes 'daemons-mode)
-      (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
-      (evil-leader/set-key
-        "d d" 'daemons
-        "d RET" 'daemons-status
-        "d s" 'daemons-start
-        "d S" 'daemons-stop
-        "d r" 'daemons-reload
-        "d R" 'daemons-restart)))
+  (defmodule daemons
+    "Init module to install and configure my daemons package."
+    (use-package daemons
+      :config
+      (progn
+        (define-prefix-command 'daemons-prefix-map)
+        (define-key daemons-prefix-map (kbd "d") 'daemons)
+        (define-key daemons-prefix-map (kbd "RET") 'daemons-status)
+        (define-key daemons-prefix-map (kbd "s") 'daemons-start)
+        (define-key daemons-prefix-map (kbd "S") 'daemons-stop)
+        (define-key daemons-prefix-map (kbd "r") 'daemons-reload)
+        (define-key daemons-prefix-map (kbd "R") 'daemons-restart)
+        (define-key global-map (kbd "C-x C-y") 'daemons-prefix-map)
+        (add-to-list 'evil-emacs-state-modes 'daemons-mode)
+        (add-to-list 'evil-emacs-state-modes 'daemons-output-mode)
+        (evil-leader/set-key
+          "d d" 'daemons
+          "d RET" 'daemons-status
+          "d s" 'daemons-start
+          "d S" 'daemons-stop
+          "d r" 'daemons-reload
+          "d R" 'daemons-restart))))
 #+END_SRC
 
 ** Env vars
@@ -1166,11 +1179,13 @@ It's handy to have a function that can parse a `.env` file. The [[https://www.em
 
 * Window management
 #+BEGIN_SRC emacs-lisp
-  (use-package golden-ratio)
-  (evil-leader/set-key
-    "w" 'evil-window-map
-    "wg" 'golden-ratio
-    "wG" 'golden-ratio-mode)
+  (defmodule golden-ratio
+    "Init module to install and configure golden ratio for window management."
+    (use-package golden-ratio)
+    (evil-leader/set-key
+      "w" 'evil-window-map
+      "wg" 'golden-ratio
+      "wG" 'golden-ratio-mode))
 
   (define-key evil-window-map (kbd "C-l") 'evil-window-right)
   (define-key evil-window-map (kbd "C-h") 'evil-window-left)
@@ -1187,21 +1202,22 @@ Attempt to improve long line performance.
 
 ** Themes
 #+BEGIN_SRC emacs-lisp
-  ;; strong color/dark themes
-  (use-package doom-themes :defer t)
-  (use-package django-theme :defer t)
-  (use-package ubuntu-theme :defer t)
-  (use-package monokai-theme :defer t)
-  (use-package darkokai-theme :defer t)
-  (use-package badger-theme :defer t)
+  (defmodule themes
+    "Init module to install preferred themes."
+    ;; strong color/dark themes
+    (use-package doom-themes :defer t)
+    (use-package django-theme :defer t)
+    (use-package ubuntu-theme :defer t)
+    (use-package monokai-theme :defer t)
+    (use-package darkokai-theme :defer t)
+    (use-package badger-theme :defer t)
 
-  ;; gentler themes
-  (use-package color-theme-sanityinc-tomorrow :defer t)
-  (use-package color-theme-sanityinc-solarized :defer t)
+    ;; gentler themes
+    (use-package color-theme-sanityinc-tomorrow :defer t)
+    (use-package color-theme-sanityinc-solarized :defer t)
 
-  ;; moody themes
-  (use-package gotham-theme :defer t)
-
+    ;; moody themes
+    (use-package gotham-theme :defer t))
 #+END_SRC
 
 ** Widgets
@@ -1222,34 +1238,39 @@ Joining the rest of the Emacs universe with the DOOM modeline. Gave up on Teleph
 Remember to =M-x all-the-icons-install-fonts.=
 
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-modeline
-    :ensure t
-    :hook (after-init . doom-modeline-mode))
+  (defmodule modeline
+    "Init module to configure modeline."
+    (use-package doom-modeline
+      :ensure t
+      :hook (after-init . doom-modeline-mode)))
 #+END_SRC
 
 ** Dashboard
 Another good idea lovingly ripped off from Spacemacs.
 #+BEGIN_SRC emacs-lisp
-  (use-package dashboard
-    :demand
-    :config
-    (progn
-      (dashboard-setup-startup-hook)
-      (setq dashboard-banner-logo-title "[ E M A C S ]"
-            dashboard-startup-banner "~/unikitty.png" ;; replace 'logo with AWESOME
-            dashboard-set-footer t
-            dashboard-set-file-icons t
-            dashboard-items '((recents  . 12)
-                              (bookmarks . 8)))))
+  (defmodule dashboard
+    "Init module to install and configure dashboard."
+    (use-package dashboard
+      :demand
+      :config
+      (progn
+        (dashboard-setup-startup-hook)
+        (setq dashboard-banner-logo-title "[ E M A C S ]"
+              dashboard-startup-banner "~/unikitty.png" ;; replace 'logo with AWESOME
+              dashboard-set-footer t
+              dashboard-set-file-icons t
+              dashboard-items '((recents  . 12)
+                                (bookmarks . 8))))))
 #+END_SRC
 
 ** Icons
 For a bit of snazz, =all-the-icons= is nice. Run =all-the-icons-install-fonts= after getting the package.
 #+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons)
-
-  (use-package all-the-icons-dired
-    :config (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+  (defmodule icons
+    "Init module to install fancy icons. (Needs manual command - see init.org.)"
+    (use-package all-the-icons)
+    (use-package all-the-icons-dired
+      :config (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
 #+END_SRC
 
 ** Font
@@ -1352,14 +1373,16 @@ Being in the correct mode (line or char) is the cure for all evils in =term-mode
 *** Pop-down shell
 Trying out [[https://gitlab.com/emacsomancer/equake][equake]].
 #+BEGIN_SRC emacs-lisp
-  (use-package equake
+  (defmodule equake
+    "Init module to run the equal pop out shell."
+    (use-package equake
       :ensure t
       :config  ; some examples of optional settings follow:
       (global-set-key (kbd "C-x C-c") 'equake-check-if-in-equake-frame-before-closing) ; prevent accidental frame-closure
       (global-set-key (kbd "C-`") 'equake-invoke)
       (setq equake-size-width 0.99) ; set width a bit less than full-screen (prevent 'overflow' on multi-monitor)
       ;; set distinct face for Equake: white foreground with dark blue background, and different font
-      (set-face-attribute 'equake-buffer-face 'nil :inherit 'default :family "Iosevka Term Regular" :background "#000022" :foreground "white"))
+      (set-face-attribute 'equake-buffer-face 'nil :inherit 'default :family "Iosevka Term Regular" :background "#000022" :foreground "white")))
 #+END_SRC
 
 *** Prompt
@@ -1654,13 +1677,15 @@ Provide functions to set all the necessary proxy variables for =$day_job=, assum
 * Pass
 For working with [[https://password-store.org][pass]].
 #+BEGIN_SRC emacs-lisp
-  (use-package password-store
-    :config (evil-leader/set-key
-              "Pc" 'password-store-copy
-              "Pg" 'password-store-generate
-              "Pr" 'password-store-remove
-              "Pe" 'password-store-edit
-              "PR" 'password-store-rename
-              "Pi" 'password-store-insert
-              "Pu" 'password-store-url))
+  (defmodule pass
+    "Init module to install and configure pass support."
+    (use-package password-store
+      :config (evil-leader/set-key
+                "Pc" 'password-store-copy
+                "Pg" 'password-store-generate
+                "Pr" 'password-store-remove
+                "Pe" 'password-store-edit
+                "PR" 'password-store-rename
+                "Pi" 'password-store-insert
+                "Pu" 'password-store-url)))
 #+END_SRC
