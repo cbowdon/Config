@@ -583,11 +583,6 @@ Using =eglot= for interacting with an LSP backend. The Python support requires [
     (use-package eglot)
     (use-package pyvenv)
 
-    (use-package conda
-      :config (progn
-                (conda-env-initialize-interactive-shells)
-                (conda-env-initialize-eshell)))
-
     (defun venv ()
       (interactive)
       (pyvenv-activate "./venv")
@@ -607,6 +602,23 @@ Using =eglot= for interacting with an LSP backend. The Python support requires [
     (defun poetry-activate (project-name)
       (interactive (list (completing-read "Project: " (poetry--list))))
       (pyvenv-activate (string-join (list poetry--venv-dir project-name) "")))
+
+  ;; Doesn't recognise micromamba
+    ;; (use-package conda
+    ;;   :config (progn
+    ;;             (conda-env-initialize-interactive-shells)
+    ;;             (conda-env-initialize-eshell)))
+
+    (defvar conda--venv-dir "~/micromamba/envs/")
+
+    (defun conda--list ()
+      (thread-first (format "ls %s" conda--venv-dir)
+                    (shell-command-to-string)
+                    (split-string "[\n\r]+" t)))
+
+    (defun conda-activate (project-name)
+      (interactive (list (completing-read "Project: " (conda--list))))
+      (pyvenv-activate (string-join (list conda--venv-dir project-name) "")))
 
     (add-hook 'python-mode-hook #'(lambda () (define-key python-mode-map (kbd "C-c C-v") 'venv))))
 #+END_SRC
