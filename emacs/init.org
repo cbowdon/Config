@@ -583,15 +583,10 @@ Using =eglot= for interacting with an LSP backend. The Python support requires [
     (use-package eglot)
     (use-package pyvenv)
 
-    ;; TODO both died with emacs 28 and macOS
-    ;; (use-package flymake-cursor
-    ;;   :load-path "~/Projects/cbowdon/emacs-flymake-cursor"
-    ;;   :config (flymake-cursor-mode))
-
-    ;; (use-package conda
-    ;;   :config (progn
-    ;;             (conda-env-initialize-interactive-shells)
-    ;;             (conda-env-initialize-eshell)))
+    (use-package conda
+      :config (progn
+                (conda-env-initialize-interactive-shells)
+                (conda-env-initialize-eshell)))
 
     (defun venv ()
       (interactive)
